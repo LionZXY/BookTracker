@@ -5,6 +5,7 @@ import com.lionzxy.vkapi.users.User;
 import com.lionzxy.vkapi.VKUser;
 import org.json.simple.JSONObject;
 
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -12,17 +13,44 @@ import java.util.HashMap;
  * LeaveBot
  */
 public class Message {
-    String message;
+    String message = null;
     StringBuilder media = new StringBuilder();
+    User user = null;
+    Date date = null;
+    boolean read_state, isOut;
+    int idMess;
 
     public Message(String message) {
         this.message = message;
     }
 
-    public Message addMedia(String media) {
-        this.media.append(media).append(',');
+    public Message(JSONObject msg) {
+        idMess = Integer.parseInt(msg.get("id").toString());
+        user = new User(Integer.parseInt(msg.get("from_id").toString()));
+        date = new Date(Long.parseLong(msg.get("date").toString()));
+        read_state = Byte.parseByte(msg.get("read_state").toString()) == 1;
+        isOut = Byte.parseByte(msg.get("out").toString()) == 1;
+        message = msg.get("body").toString();
+        media.append(msg.get("attachments"));
+    }
+
+    public Message setUser(User user) {
+        this.user = user;
         return this;
     }
+
+    public Message setDate(long date) {
+        this.date = new Date(date);
+        return this;
+    }
+
+    public Message addMedia(String media) {
+        if (this.media.length() > 0)
+            this.media.append(',');
+        this.media.append(media);
+        return this;
+    }
+
 
     public boolean sendMessage(VKUser from, User to) {
         VKUser.log.print("Send to " + to.getFullName() + ":");
