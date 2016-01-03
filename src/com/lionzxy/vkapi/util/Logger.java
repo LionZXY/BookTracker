@@ -23,6 +23,7 @@ public class Logger {
                 FileInputStream fis = new FileInputStream(logFile);
                 buf = new byte[fis.available()];
                 av = fis.read(buf);
+                fis.close();
             }
             this.log = new FileOutputStream(logFile);
             if (buf != null)
