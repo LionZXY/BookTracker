@@ -1,6 +1,7 @@
 package com.lionzxy.vkapi.exceptions;
 
 import com.lionzxy.vkapi.VKUser;
+import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -45,7 +46,7 @@ public class VKException extends RuntimeException {
 
     }
 
-    public VKException(String answer, VKUser vkUser) {
+    public VKException(String answer, @Nullable VKUser vkUser) {
         error_code = getIdException(answer);
         VKUser.log.print("Error #" + error_code + ". " + error.get(error_code));
         isFix = tryFixError(vkUser);
@@ -106,8 +107,9 @@ public class VKException extends RuntimeException {
             case 17:
             case 20:
             case 21:
+                if(vk != null){
                 vk.getAccesToken();
-                return true;
+                return true;}
             default:
                 return tryFixError();
         }

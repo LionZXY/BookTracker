@@ -2,6 +2,7 @@ package com.lionzxy.vkapi;
 
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.util.Logger;
+import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,12 +22,11 @@ import java.util.*;
 public class VKUser {
 
     String accesToken, login, password;
-    public static Logger log;
+    public static Logger log = new Logger("[VKAPI]");
 
-    public VKUser(String login, String password, Logger logger) {
+    public VKUser(String login, String password) {
         this.login = login;
         this.password = password;
-        log = logger;
         getAccesToken();
     }
 
@@ -37,15 +37,23 @@ public class VKUser {
         HashMap<String, String> paramsHash = new HashMap<>();
         for (String param : params)
             paramsHash.put(param.substring(0, param.indexOf('=')), param.substring(param.indexOf('=') + 1));
-        return getAnswer(method, paramsHash);
+        return getAnswer(method, paramsHash, this);
     }
 
     public JSONObject getAnswer(String method, HashMap<String, String> params) {
+        return getAnswer(method, params, this);
+    }
+
+    public static JSONObject getAnswer(String method, HashMap<String, String> params, @Nullable VKUser vkUser) {
         try {
             try {
                 try {
-                    URL url = new URL("https://api.vk.com/method/" + method + "?access_token=" + accesToken);
-
+                    URL url;
+                    if (vkUser != null)
+                        url = new URL("https://api.vk.com/method/" + method + "?access_token=" + vkUser.accesToken);
+                    else {
+                        url = new URL("https://api.vk.com/method/" + method);
+                    }
                     StringBuilder postData = new StringBuilder();
                     for (Map.Entry<String, String> param : params.entrySet()) {
                         if (postData.length() != 0) postData.append('&');
@@ -74,7 +82,7 @@ public class VKUser {
                     String answer = br.readLine();
                     JSONObject exit = (JSONObject) new JSONParser().parse(new StringReader(answer));
                     if (VKException.isException(answer))
-                        throw new VKException(answer, this);
+                        throw new VKException(answer, vkUser);
                     br.close();
                     sleep(1000);
                     return exit;
@@ -85,12 +93,12 @@ public class VKUser {
             } catch (IOException e) {
                 sleep(60000);
                 e.printStackTrace();
-                getAnswer(method, params);
+                getAnswer(method, params, vkUser);
             }
         } catch (VKException e) {
             e.printStackTrace();
             if (e.isFix)
-                getAnswer(method, params);
+                getAnswer(method, params, vkUser);
         }
         return null;
     }

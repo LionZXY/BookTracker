@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,6 +20,10 @@ public class User {
         this.id = id;
         this.name = name;
         this.surname = surname;
+    }
+
+    public User(int id) {
+        this.id = id;
     }
 
     public static List<User> getListUser(List<Integer> users, VKUser vk) {
@@ -39,6 +44,15 @@ public class User {
             usr.add(new User(id, fN, LN));
         }
         return usr;
+    }
+
+    public User getSurnameAndName() {
+        HashMap<String, String> req = new HashMap<>();
+        req.put("user_ids", String.valueOf(id));
+        JSONObject obj = (JSONObject) ((JSONArray) VKUser.getAnswer("users.get", req, null).get("response")).get(0);
+        name = obj.get("first_name").toString();
+        surname = obj.get("last_name").toString();
+        return this;
     }
 
     public int getId() {
