@@ -10,6 +10,6 @@ import com.lionzxy.vkapi.util.Logger;
 public class Main {
     public static Logger logger = new Logger("[BookTracker]");
     public static void main(String... args) {
-
+        new Logger("Log").print("Lol");
     }
 }
