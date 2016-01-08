@@ -10,7 +10,8 @@ import java.util.EventObject;
  * BookTracker
  */
 public class NewMessageEvent extends EventObject {
-    Message msg;
+    Message msg = null;
+
     /**
      * Constructs a prototypical Event.
      *
@@ -20,6 +21,11 @@ public class NewMessageEvent extends EventObject {
     public NewMessageEvent(Object source, Message msg) {
         super(source);
         this.msg = msg;
-
     }
+
+    public Message getMsg() {
+        return msg;
+    }
+
+
 }

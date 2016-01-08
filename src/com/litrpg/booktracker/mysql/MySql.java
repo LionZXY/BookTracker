@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.mysql;
 
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.Main;
 import com.litrpg.booktracker.books.IBook;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
@@ -28,9 +29,9 @@ public class MySql {
             statement = connection.createStatement();
 
             if (!connection.isClosed())
-                Main.logger.print("Соединение с БД установленно!");
+                Logger.getLogger().print("Соединение с БД установленно!");
         } catch (SQLException e) {
-            Main.logger.print("Соединение с БД не установленно!");
+            Logger.getLogger().print("Соединение с БД не установленно!");
             e.printStackTrace();
             System.exit(-1);
         }
@@ -61,7 +62,7 @@ public class MySql {
                 stmt.setString(i, names.get(i));
             stmt.executeUpdate();
         } catch (SQLException e) {
-            Main.logger.print("Error while try add in table " + table);
+            Logger.getLogger().print("Error while try add in table " + table);
             e.printStackTrace();
         }
 

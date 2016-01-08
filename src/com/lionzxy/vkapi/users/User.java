@@ -1,6 +1,7 @@
 package com.lionzxy.vkapi.users;
 
 import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.util.MarketArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -27,14 +28,26 @@ public class User {
     }
 
     public static List<User> getListUser(List<Integer> users, VKUser vk) {
-        if (users.size() > 1000)
-            return null;
+        if (users.size() < 1000)
+            return getListUser(users, vk, 0);
+        else {
+            List<User> toExit = new ArrayList<>();
+            for (int i = 0; i < users.size() / 1000 + 1; i++) {
+                toExit.addAll(getListUser(users, vk, i * 1000));
+            }
+            return toExit;
+        }
+    }
+
+    public static List<User> getListUser(List<Integer> users, VKUser vk, int from) {
         List<User> usr = new ArrayList<>();
         if (users.size() == 0)
             return usr;
         StringBuilder usersIds = new StringBuilder();
-        for (Integer user : users)
-            usersIds.append(user).append(",");
+        for (int i = from; i < users.size(); i++) {
+            usersIds.append(users.get(i)).append(",");
+            from++;
+        }
         JSONObject obj2 = vk.getAnswer("users.get?user_ids=" + usersIds.toString());
         JSONArray arr = (JSONArray) obj2.get("response");
         for (Object obj : arr) {
@@ -60,7 +73,9 @@ public class User {
     }
 
     public String getFullName() {
-        return name + " " + surname;
+        if (name != null || surname != null)
+            return name + " " + surname;
+        else return String.valueOf(getId());
     }
 
     public String getName() {
@@ -69,5 +84,13 @@ public class User {
 
     public String getSurname() {
         return surname;
+    }
+
+    public boolean isFriend(VKUser vk) {
+        for (Object obj : (JSONArray) vk.getAnswer("friends.get", new HashMap<>()).get("response")) {
+            if (Integer.parseInt(obj.toString()) == this.getId())
+                return true;
+        }
+        return false;
     }
 }

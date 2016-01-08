@@ -23,10 +23,13 @@ public class VKUser {
 
     String accesToken, login, password;
     public static Logger log = new Logger("[VKAPI]");
+    public int nowOnAcc = 0, messageSendNotFriend = 0;
+    public Stack<String> accounts = new Stack<>();
 
     public VKUser(String login, String password) {
         this.login = login;
         this.password = password;
+        accounts.add(login + '-' + password);
         getAccesToken();
     }
 
@@ -52,7 +55,7 @@ public class VKUser {
                     if (vkUser != null)
                         url = new URL("https://api.vk.com/method/" + method + "?access_token=" + vkUser.accesToken);
                     else {
-                        url = new URL("https://api.vk.com/method/" + method);
+                        url = new URL("https://api.vk.com/method/" + method + '?');
                     }
                     StringBuilder postData = new StringBuilder();
                     for (Map.Entry<String, String> param : params.entrySet()) {
@@ -80,6 +83,7 @@ public class VKUser {
                     DataInputStream is = new DataInputStream(conn.getInputStream());
                     BufferedReader br = new BufferedReader(new InputStreamReader(is));
                     String answer = br.readLine();
+                    System.out.println(answer);
                     JSONObject exit = (JSONObject) new JSONParser().parse(new StringReader(answer));
                     if (VKException.isException(answer))
                         throw new VKException(answer, vkUser);
@@ -153,6 +157,18 @@ public class VKUser {
         } catch (Exception e) {
             getAccesToken();
         }
+    }
 
+    public void preLogin() {
+        if (accounts.size() == 1 || accounts.size() - 1 == nowOnAcc)
+            return;
+        else {
+            nowOnAcc++;
+            String[] pars = accounts.get(nowOnAcc).split("-");
+            login = pars[0];
+            password = pars[1];
+            messageSendNotFriend = 0;
+            getAccesToken();
+        }
     }
 }

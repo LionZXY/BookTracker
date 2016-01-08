@@ -1,6 +1,9 @@
 package com.litrpg.booktracker;
 
+import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.event.SubscribeMessageEvent;
 import com.lionzxy.vkapi.util.Logger;
+import com.litrpg.booktracker.message.MessageListiner;
 
 /**
  * com.litrpg.booktracker
@@ -8,8 +11,10 @@ import com.lionzxy.vkapi.util.Logger;
  * BookTracker
  */
 public class Main {
-    public static Logger logger = new Logger("[BookTracker]");
+    static {
+        Logger.setDefaultLogger("[BookTracker]");
+    }
     public static void main(String... args) {
-        new Logger("Log").print("Lol");
+        MessageListiner msg = new MessageListiner();
     }
 }

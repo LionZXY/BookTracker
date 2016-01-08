@@ -10,6 +10,7 @@ import java.util.Calendar;
 public class Logger {
     String name;
     FileOutputStream log = null;
+    private static Logger logger = null;
 
     public Logger(String name) {
         this.name = name;
@@ -27,7 +28,7 @@ public class Logger {
             }
             this.log = new FileOutputStream(logFile);
             if (buf != null)
-                this.log.write(buf,0,av);
+                this.log.write(buf, 0, av);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Ошибка инициализации системы логирования");
@@ -42,6 +43,17 @@ public class Logger {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    public static Logger getLogger() {
+        if (logger == null) {
+            return new Logger("[UNNAMED]");
+        } else return logger;
+    }
+
+    public static Logger setDefaultLogger(String name) {
+        logger = new Logger(name);
+        return logger;
     }
 
 }
