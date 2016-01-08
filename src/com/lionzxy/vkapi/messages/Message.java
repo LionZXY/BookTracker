@@ -1,8 +1,8 @@
 package com.lionzxy.vkapi.messages;
 
+import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.users.User;
-import com.lionzxy.vkapi.VKUser;
 import org.json.simple.JSONObject;
 
 import java.util.Date;

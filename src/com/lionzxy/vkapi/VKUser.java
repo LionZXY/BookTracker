@@ -29,7 +29,16 @@ public class VKUser {
     public VKUser(String login, String password) {
         this.login = login;
         this.password = password;
-        accounts.add(login + '-' + password);
+        accounts.add(login + ' ' + password);
+        getAccesToken();
+    }
+
+    public VKUser(String logPsw) {
+        String[] pars = logPsw.split(" ");
+        login = pars[0];
+        password = pars[1];
+        messageSendNotFriend = 0;
+        accounts.add(logPsw);
         getAccesToken();
     }
 
@@ -83,7 +92,6 @@ public class VKUser {
                     DataInputStream is = new DataInputStream(conn.getInputStream());
                     BufferedReader br = new BufferedReader(new InputStreamReader(is));
                     String answer = br.readLine();
-                    System.out.println(answer);
                     JSONObject exit = (JSONObject) new JSONParser().parse(new StringReader(answer));
                     if (VKException.isException(answer))
                         throw new VKException(answer, vkUser);
@@ -164,7 +172,7 @@ public class VKUser {
             return;
         else {
             nowOnAcc++;
-            String[] pars = accounts.get(nowOnAcc).split("-");
+            String[] pars = accounts.get(nowOnAcc).split(" ");
             login = pars[0];
             password = pars[1];
             messageSendNotFriend = 0;

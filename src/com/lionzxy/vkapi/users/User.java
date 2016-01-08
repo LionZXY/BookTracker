@@ -1,7 +1,6 @@
 package com.lionzxy.vkapi.users;
 
 import com.lionzxy.vkapi.VKUser;
-import com.lionzxy.vkapi.util.MarketArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
