@@ -42,25 +42,29 @@ public class MySql {
     }
 
     public void addInTable(String table, LinkedHashMap<String, String> request) {
-        //TODO
-        //Вроде должно работать, но я не уверен. Как-нибудь на свежую голову посмотрю.
         StringBuilder sqlReq = new StringBuilder();
         sqlReq.append("INSERT INTO ").append(table).append("(");
         List<String> names = new ArrayList<>();
         for (String name : request.keySet()) {
             sqlReq.append(name);
+            sqlReq.append(',');
             names.add(name);
         }
+        sqlReq.deleteCharAt(sqlReq.length() - 1);
         sqlReq.append(") values (");
-        for (int i = 0; i < request.size(); i++)
-            sqlReq.append("?,");
+        for (int i = 0; i < request.size(); i++) {
+            if (i != 0) sqlReq.append(',');
+            sqlReq.append('?');
+        }
         sqlReq.append(')');
         PreparedStatement stmt = null;
         try {
+            System.out.println();
             stmt = connection.prepareStatement(sqlReq.toString());
-            for (int i = 0; i < request.size(); i++)
-                stmt.setString(i, names.get(i));
+            for (int i = 1; i <= request.size(); i++)
+                stmt.setString(i, request.get(names.get(i - 1)));
             stmt.executeUpdate();
+            Logger.getLogger().print("MySQL add to table " + table + " successful");
         } catch (SQLException e) {
             Logger.getLogger().print("Error while try add in table " + table);
             e.printStackTrace();
