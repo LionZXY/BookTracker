@@ -36,14 +36,14 @@ public class SubscribeMessageEvent {
         return list.toArray(new IMessageListener[list.size()]);
     }
 
-    public void sendMSG(JSONObject msgJsonObj) {
+    public void sendMSG(JSONObject msgJsonObj, VKUser vkUser) {
         if (Integer.parseInt(msgJsonObj.get("read_state").toString()) == 0) {
             boolean inChat = msgJsonObj.get("chat_id") != null;
             if (inChat)
                 for (IMessageListener messageListener : list)
-                    messageListener.onNewMessageInMultiDialog(new NewMessageEvent(this, new Message(msgJsonObj)));
+                    messageListener.onNewMessageInMultiDialog(new NewMessageEvent(this, new Message(msgJsonObj), vkUser));
             else for (IMessageListener messageListener : list)
-                messageListener.onNewMessageInPrivate(new NewMessageEvent(this, new Message(msgJsonObj)));
+                messageListener.onNewMessageInPrivate(new NewMessageEvent(this, new Message(msgJsonObj), vkUser));
         }
     }
 
@@ -60,6 +60,6 @@ public class SubscribeMessageEvent {
         }
 
         for (JSONObject jsonObject : msgObjs)
-            sendMSG(jsonObject);
+            sendMSG(jsonObject, vkUser);
     }
 }

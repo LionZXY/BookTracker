@@ -15,7 +15,6 @@ import java.util.List;
 public class User {
     int id;
     String name, surname;
-
     public User(int id, String name, String surname) {
         this.id = id;
         this.name = name;
@@ -92,4 +91,9 @@ public class User {
         }
         return false;
     }
+
+    public boolean equals(Object obj) {
+        return obj instanceof User && ((User) obj).getId() == getId();
+    }
+
 }

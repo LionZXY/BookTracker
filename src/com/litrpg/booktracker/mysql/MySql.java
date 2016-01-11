@@ -1,12 +1,14 @@
 package com.litrpg.booktracker.mysql;
 
 import com.lionzxy.vkapi.util.Logger;
-import com.litrpg.booktracker.Main;
 import com.litrpg.booktracker.books.IBook;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * com.litrpg.booktracker.mysql
@@ -37,7 +39,7 @@ public class MySql {
         }
     }
 
-    public void addBookInDB(IBook book) {
+    public void addBookInTable(IBook book) {
         //TODO
     }
 
@@ -64,11 +66,41 @@ public class MySql {
             for (int i = 1; i <= request.size(); i++)
                 stmt.setString(i, request.get(names.get(i - 1)));
             stmt.executeUpdate();
+            stmt.close();
             Logger.getLogger().print("MySQL add to table " + table + " successful");
         } catch (SQLException e) {
             Logger.getLogger().print("Error while try add in table " + table);
             e.printStackTrace();
         }
-
     }
+
+    public List<HashMap<String, Object>> getFullTable(List<String> columns, String tableName) {
+        List<HashMap<String, Object>> toExit = new ArrayList<>();
+
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+            while (resultSet.next()) {
+                HashMap<String, Object> row = new HashMap<>();
+                for (String column : columns)
+                    row.put(column, resultSet.getObject(column));
+                toExit.add(row);
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return toExit;
+    }
+
+    public boolean removeRowFromTable(String whereCondition, String tableName) {
+        try {
+            statement.execute("DELETE FROM " + tableName + " WHERE " + whereCondition + ";");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

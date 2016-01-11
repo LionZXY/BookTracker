@@ -1,5 +1,6 @@
 package com.lionzxy.vkapi.event;
 
+import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.messages.Message;
 
 import java.util.EventObject;
@@ -10,7 +11,8 @@ import java.util.EventObject;
  * BookTracker
  */
 public class NewMessageEvent extends EventObject {
-    Message msg = null;
+    private Message msg = null;
+    private VKUser vkUser = null;
 
     /**
      * Constructs a prototypical Event.
@@ -18,13 +20,18 @@ public class NewMessageEvent extends EventObject {
      * @param source The object on which the Event initially occurred.
      * @throws IllegalArgumentException if source is null.
      */
-    public NewMessageEvent(Object source, Message msg) {
+    public NewMessageEvent(Object source, Message msg, VKUser vkUser) {
         super(source);
         this.msg = msg;
+        this.vkUser = vkUser;
     }
 
     public Message getMsg() {
         return msg;
+    }
+
+    public VKUser getVkUser() {
+        return vkUser;
     }
 
 

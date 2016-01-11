@@ -3,6 +3,7 @@ package com.lionzxy.vkapi.messages;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.users.User;
+import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONObject;
 
 import java.util.Date;
@@ -17,8 +18,8 @@ public class Message {
     StringBuilder media = new StringBuilder();
     User user = null;
     Date date = null;
-    boolean read_state, isOut;
-    int idMess;
+    boolean read_state, isOut, isChat = false;
+    int idMess, idChat;
 
     public Message(String message) {
         this.message = message;
@@ -32,6 +33,10 @@ public class Message {
         isOut = Byte.parseByte(msg.get("out").toString()) == 1;
         message = msg.get("body").toString();
         media.append(msg.get("attachments"));
+        if (msg.get("chat_id") != null) {
+            isChat = true;
+            idChat = Math.toIntExact((Long) msg.get("chat_id"));
+        }
     }
 
     public Message setUser(User user) {
@@ -52,16 +57,16 @@ public class Message {
     }
 
 
-    public boolean sendMessage(VKUser from, User to) {
+    public boolean sendMessage(VKUser from, @Nullable User to) {
 
-        if (!to.isFriend(from)) {
+        if (to != null && !isChat && !to.isFriend(from)) {
             if (from.messageSendNotFriend > 19) {
                 from.preLogin();
             } else from.messageSendNotFriend++;
         }
 
         if (message.length() > 4090) {
-            if (!to.isFriend(from) && 20 - from.messageSendNotFriend < message.length() / 4090)
+            if (to != null && !isChat && !to.isFriend(from) && 20 - from.messageSendNotFriend < message.length() / 4090)
                 from.preLogin();
             VKUser.log.print("Send big message!" + message.length() + " Symbols");
             String newMessage = null;
@@ -76,13 +81,19 @@ public class Message {
             return sendMessage(from, to);
         }
 
-
-        VKUser.log.print("Send to " + to.getFullName() + ":");
+        if (isChat || to == null)
+            VKUser.log.print("Send to chat #" + idChat + ":");
+        else VKUser.log.print("Send to " + to.getFullName() + ":");
         VKUser.log.print("===============");
         VKUser.log.print(replaceMessageForUser(to));
         VKUser.log.print("===============");
+
         HashMap<String, String> request = new HashMap<>();
-        request.put("user_id", String.valueOf(to.getId()));
+
+        if (isChat || to == null)
+            request.put("chat_id", String.valueOf(getIdChat()));
+        else request.put("user_id", String.valueOf(to.getId()));
+
         request.put("message", replaceMessageForUser(to));
         if (media.capacity() > 1)
             request.put("attachment", media.toString());
@@ -108,7 +119,23 @@ public class Message {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return message;
+    }
+
+    public int getIdChat() {
+        if (isChat)
+            return idChat;
+        return -1;
+    }
+
+    public Message setChat(int chatId) {
+        isChat = true;
+        idChat = chatId;
+        return this;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

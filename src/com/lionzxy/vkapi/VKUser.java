@@ -1,12 +1,15 @@
 package com.lionzxy.vkapi;
 
 import com.lionzxy.vkapi.exceptions.VKException;
+import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
 import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import static java.lang.Math.toIntExact;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -178,5 +181,18 @@ public class VKUser {
             messageSendNotFriend = 0;
             getAccesToken();
         }
+    }
+
+    public int getVkID() {
+        return toIntExact((Long) ((JSONObject) ((JSONArray) this.getAnswer("users.get", new HashMap<>()).get("response")).get(0)).get("uid"));
+    }
+
+    public boolean inChat(int chatId) {
+        int id = this.getVkID();
+        for (Object obj : (JSONArray) ((JSONObject) getAnswer("messages.getChat", ListHelper.getHashMap("chat_id", String.valueOf(chatId))).get("response")).get("users")) {
+            if (toIntExact((Long) obj) == id)
+                return true;
+        }
+        return false;
     }
 }

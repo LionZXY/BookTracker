@@ -48,10 +48,16 @@ public class VKException extends RuntimeException {
 
     public VKException(String answer, @Nullable VKUser vkUser) {
         error_code = getIdException(answer);
-        VKUser.log.print("Error #" + error_code + ". " + error.get(error_code));
+        String errorReason = error.get(error_code);
+        try {
+            errorReason = (String) ((JSONObject) ((JSONObject) new JSONParser().parse(new StringReader(answer))).get("error")).get("error_msg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        VKUser.log.print("Error #" + error_code + ". " + errorReason);
         isFix = tryFixError(vkUser);
         VKUser.log.print(". Is Fix: " + isFix);
-        errors.append("Error #").append(error_code).append(". ").append(error.get(error_code)).append(". Is Fix: ").append(isFix).append('\n');
+        errors.append("Error #").append(error_code).append(". ").append(errorReason).append(". Is Fix: ").append(isFix).append('\n');
     }
 
     public int getErrorCode() {
@@ -107,9 +113,10 @@ public class VKException extends RuntimeException {
             case 17:
             case 20:
             case 21:
-                if(vk != null){
-                vk.getAccesToken();
-                return true;}
+                if (vk != null) {
+                    vk.getAccesToken();
+                    return true;
+                }
             default:
                 return tryFixError();
         }
