@@ -4,7 +4,6 @@ import com.lionzxy.vkapi.event.IMessageListener;
 import com.lionzxy.vkapi.event.NewMessageEvent;
 import com.lionzxy.vkapi.event.SubscribeMessageEvent;
 import com.lionzxy.vkapi.messages.Message;
-import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.message.botanswer.IAnswer;
 import com.litrpg.booktracker.message.botanswer.SimplyAnswer;
 

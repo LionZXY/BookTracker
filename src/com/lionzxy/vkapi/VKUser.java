@@ -9,13 +9,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import static java.lang.Math.toIntExact;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
+
+import static java.lang.Math.toIntExact;
 
 /**
  * com.lionzxy.leavebot.vk
@@ -171,9 +171,16 @@ public class VKUser {
     }
 
     public void preLogin() {
-        if (accounts.size() == 1 || accounts.size() - 1 == nowOnAcc)
+        if (accounts.size() == 1)
             return;
-        else {
+        if (accounts.size() - 1 == nowOnAcc) {
+            nowOnAcc = 0;
+            String[] pars = accounts.get(nowOnAcc).split(" ");
+            login = pars[0];
+            password = pars[1];
+            messageSendNotFriend = 0;
+            getAccesToken();
+        } else {
             nowOnAcc++;
             String[] pars = accounts.get(nowOnAcc).split(" ");
             login = pars[0];
@@ -187,12 +194,18 @@ public class VKUser {
         return toIntExact((Long) ((JSONObject) ((JSONArray) this.getAnswer("users.get", new HashMap<>()).get("response")).get(0)).get("uid"));
     }
 
+    List<Integer> leaveFromChat = new ArrayList<>();
+
     public boolean inChat(int chatId) {
         int id = this.getVkID();
-        for (Object obj : (JSONArray) ((JSONObject) getAnswer("messages.getChat", ListHelper.getHashMap("chat_id", String.valueOf(chatId))).get("response")).get("users")) {
-            if (toIntExact((Long) obj) == id)
-                return true;
-        }
+        if (leaveFromChat.contains(chatId))
+            return false;
+        else
+            for (Object obj : (JSONArray) ((JSONObject) getAnswer("messages.getChat", ListHelper.getHashMap("chat_id", String.valueOf(chatId))).get("response")).get("users")) {
+                if (toIntExact((Long) obj) == id)
+                    return true;
+            }
+        leaveFromChat.add(chatId);
         return false;
     }
 }
