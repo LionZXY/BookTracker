@@ -1,4 +1,4 @@
-package com.litrpg.booktracker.books;
+package com.litrpg.booktracker.enums;
 
 import com.sun.istack.internal.NotNull;
 
@@ -8,7 +8,8 @@ import com.sun.istack.internal.NotNull;
  * BookTracker
  */
 public enum TypeSite {
-    SAMLIB("http://samlib.ru/", "samlib");
+    SAMLIB("http://samlib.ru/", "samlib"),
+    LITERA("https://lit-era.com/", "litera");
     private String site, nameInDB;
 
     TypeSite(String site, @NotNull String nameInDB) {
@@ -31,5 +32,8 @@ public enum TypeSite {
         return nameInDB;
     }
 
-
+    @Override
+    public String toString() {
+        return getNameInBD();
+    }
 }

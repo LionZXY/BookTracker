@@ -1,6 +1,6 @@
 package com.litrpg.booktracker.authors;
 
-import com.litrpg.booktracker.books.TypeSite;
+import com.litrpg.booktracker.enums.TypeSite;
 
 /**
  * com.litrpg.booktracker.authors
@@ -30,6 +30,8 @@ public class Author {
     }
 
     public String getUrl() {
+        if (!url.startsWith(typeSite.getSite()))
+            return typeSite.getSite() + url;
         return url;
     }
 
@@ -37,4 +39,8 @@ public class Author {
         return typeSite;
     }
 
+    @Override
+    public String toString() {
+        return name + "\n" + url + "\n" + typeSite;
+    }
 }

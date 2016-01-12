@@ -14,7 +14,7 @@ import java.net.URL;
  */
 public class URLHelper {
 
-    public static String getSiteAsString(String url) {
+    public static String getSiteAsString(String url, String encode) {
         System.out.println("Получение файла " + url);
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -28,9 +28,9 @@ public class URLHelper {
         try {
             urlObj = new URL(url);
             is = urlObj.openStream();  // throws an IOException
-            br = new BufferedReader(new InputStreamReader(is, "Cp1251"));
+            br = new BufferedReader(new InputStreamReader(is, encode));
             while ((line = br.readLine()) != null) {
-                stringBuilder.append(line);
+                stringBuilder.append(line).append('\n');
             }
         } catch (MalformedURLException mue) {
             mue.printStackTrace();

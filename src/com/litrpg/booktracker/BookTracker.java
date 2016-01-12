@@ -1,6 +1,7 @@
 package com.litrpg.booktracker;
 
 import com.lionzxy.vkapi.util.Logger;
+import com.litrpg.booktracker.parsers.LitEraParser;
 
 /**
  * com.litrpg.booktracker
@@ -13,7 +14,6 @@ public class BookTracker {
     }
 
     public static void main(String... args) {
-        //MessageListiner.sme.checkMessage(new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]));
-        //System.out.println(new VKUser("nikita@kulikof.ru 789456za").inChat(69));
+        LitEraParser.parseBook(null);
     }
 }
