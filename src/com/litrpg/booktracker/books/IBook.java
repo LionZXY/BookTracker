@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.books;
 
 import com.litrpg.booktracker.authors.Author;
+import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 
 import java.util.Date;
@@ -25,6 +26,8 @@ public interface IBook {
     Date getLastUpdate();
 
     Date getLastChecked();
+
+    Genres[] getGenres();
 
     int getSize();
 

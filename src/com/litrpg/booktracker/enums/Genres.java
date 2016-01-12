@@ -9,7 +9,7 @@ import com.lionzxy.vkapi.util.Logger;
  */
 public enum Genres {
     LitRPG("ЛитРПГ"),
-    Love("Любовные романы", "Любовь","любовь", "love story", "любовный роман"),
+    Love("Любовные романы", "Любовь", "любовь", "love story", "любовный роман"),
     Detective("Детектив", "Детектив/Триллер"),
     Fantasy("Фентези", "Фэнтези"),
     Popadantsy("Попаданцы"),
@@ -84,5 +84,9 @@ public enum Genres {
                         return genres;
         Logger.getLogger().print("Not found genre for " + genre);
         return Genres.Unknown;
+    }
+
+    public String[] getParseCod() {
+        return parseCod;
     }
 }

@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.parsers;
 
 import com.litrpg.booktracker.authors.Author;
+import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
@@ -11,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -21,19 +23,16 @@ import java.util.regex.Pattern;
  */
 public class LitEraParser {
     String html = null;
+    String url = null;
 
     public LitEraParser(String url) {
+        this.url = url;
         this.html = URLHelper.getSiteAsString(url, "utf8");
     }
 
     public IBook parseBook() {
-        getName();
-        getAuthor();
-        System.out.println(getBookSize());
-        getGenres();
-        System.out.println(getDateEdit());
-        System.out.println(getAnnotation());
-        return null;
+        return new Book(TypeSite.LITERA, getName(), getAnnotation(), url, getAuthor(), getDateEdit(), getGenres(), getBookSize());
+
     }
 
     public String getAnnotation() {
@@ -81,37 +80,5 @@ public class LitEraParser {
     public static String findWord(String parse, String startWith, String endWith) {
         int first = parse.indexOf(startWith);
         return parse.substring(first + startWith.length(), parse.indexOf(endWith, first));
-    }
-
-    public static String getText(String url) {
-        List<Integer> partValue = new ArrayList<>();
-        for (String part : new LitEraParser(url).findWord("<option value=\"\">Содержание</option>", "</select>").replaceFirst("                                                                                                            ", "").split("                                                                                                                                                "))
-            partValue.add(Integer.parseInt(findWord(part, "<option value=\"", "\">")));
-        StringBuilder book = new StringBuilder();
-        for (Integer part : partValue) {
-            String html = URLHelper.getSiteAsString(url.replaceFirst("https://lit-era.com/book/", "https://lit-era.com/reader/") + "?c=" + part, "utf8");
-            String workOnText = temlareText(findWord(html, "<div class=\"reader-text font-size-medium\"", "</div>"));
-            workOnText = workOnText.substring(workOnText.indexOf("</h2>") + "</h2>".length() + 1)
-                    .replaceAll("</p>", "\n\n")
-                    .replaceAll("&mdash;", "-")
-                    .replaceAll("<p>", "")
-                    .replaceAll("&nbsp;", "\n")
-                    .replaceAll("&hellip;", "...")
-                    .replaceAll("<br />", "\n")
-                    .replaceAll("<strong>","")
-                    .replaceAll("</strong>","")
-                    .replaceAll("&ndash;","-");
-            book.append(workOnText);
-        }
-        System.out.println(book);
-        return null;
-    }
-
-    public static String temlareText(String s) {
-        while (s.contains("<p style=")) {
-            int found = s.indexOf("<p style=\"");
-            s = s.replaceAll(s.substring(found, s.indexOf("\">", found)) + 2, "");
-        }
-        return s;
     }
 }

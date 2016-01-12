@@ -41,6 +41,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return name + "\n" + url + "\n" + typeSite;
+        return name;
     }
 }

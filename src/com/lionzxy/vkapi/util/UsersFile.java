@@ -1,6 +1,8 @@
 package com.lionzxy.vkapi.util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,5 +32,16 @@ public class UsersFile {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public static void save(String s, String path) {
+        File file = new File(path);
+        try {
+            file.createNewFile();
+            new FileOutputStream(file).write(s.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Logger.getLogger().print("Не удалось создать файл " + path);
+        }
     }
 }

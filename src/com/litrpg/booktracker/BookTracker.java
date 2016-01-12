@@ -2,6 +2,7 @@ package com.litrpg.booktracker;
 
 import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.parsers.LitEraParser;
+import com.litrpg.booktracker.parsers.other.ToText;
 
 /**
  * com.litrpg.booktracker
@@ -15,6 +16,6 @@ public class BookTracker {
 
     public static void main(String... args) {
         //new LitEraParser("https://lit-era.com/book/prikladnaya-nekromantiya-zapiski-mezhdu-stranic-b3904").parseBook();
-        LitEraParser.getText("https://lit-era.com/book/parallel-kniga-chetvertaya-bog-b3228");
+        ToText.getText(new LitEraParser("https://lit-era.com/book/parallel-kniga-chetvertaya-bog-b3228").parseBook());
     }
 }
