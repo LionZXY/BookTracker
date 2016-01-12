@@ -14,6 +14,7 @@ public class BookTracker {
     }
 
     public static void main(String... args) {
-        LitEraParser.parseBook(null);
+        //new LitEraParser("https://lit-era.com/book/prikladnaya-nekromantiya-zapiski-mezhdu-stranic-b3904").parseBook();
+        LitEraParser.getText("https://lit-era.com/book/parallel-kniga-chetvertaya-bog-b3228");
     }
 }

@@ -30,7 +30,7 @@ public class URLHelper {
             is = urlObj.openStream();  // throws an IOException
             br = new BufferedReader(new InputStreamReader(is, encode));
             while ((line = br.readLine()) != null) {
-                stringBuilder.append(line).append('\n');
+                stringBuilder.append(line);
             }
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
