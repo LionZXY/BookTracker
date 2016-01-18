@@ -34,14 +34,16 @@ public class UsersFile {
         return null;
     }
 
-    public static void save(String s, String path) {
+    public static File save(String s, String path) {
         File file = new File(path);
         try {
             file.createNewFile();
             new FileOutputStream(file).write(s.getBytes());
+            return file;
         } catch (Exception e) {
             e.printStackTrace();
             Logger.getLogger().print("Не удалось создать файл " + path);
         }
+        return null;
     }
 }

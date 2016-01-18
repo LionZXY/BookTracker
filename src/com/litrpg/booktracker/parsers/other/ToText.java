@@ -1,12 +1,14 @@
 package com.litrpg.booktracker.parsers.other;
 
 import com.lionzxy.vkapi.util.UsersFile;
+import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.helper.URLHelper;
 import com.litrpg.booktracker.parsers.LitEraParser;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,7 +19,8 @@ import java.util.LinkedHashMap;
  * BookTracker
  */
 public class ToText {
-    public static String getText(IBook book) {
+
+    public static File getAsFile(IBook book) {
         if (book.getType().equals(TypeSite.LITERA)) {
             LinkedHashMap<Integer, String> partValue = new LinkedHashMap<>();
             for (String part : new LitEraParser(book.getUrl()).findWord("<option value=\"\">Содержание</option>", "</select>").replaceFirst("                                                                                                            ", "").split("                                                                                                                                                "))
@@ -41,7 +44,7 @@ public class ToText {
                 bookText.append("\n</section>");
             }
             bookText.append("</body>\n").append("</FictionBook>");
-            UsersFile.save(bookText.toString(), "book.fb2");
+            return UsersFile.save(bookText.toString(), book.getUrl().replace("/", "_").replace("\\", "_").replace(" ", "_") + ".fb2");
         }
         return null;
     }
@@ -49,7 +52,8 @@ public class ToText {
     public static String temlareText(String s) {
         while (s.contains("<p style=")) {
             int found = s.indexOf("<p style=\"");
-            s = s.replaceAll(s.substring(found, s.indexOf("\">", found)) + 2, "");
+            s = s.replaceAll(s.substring(found, s.indexOf("\">", found) + 2), "");
+
         }
         return s;
     }
@@ -62,7 +66,7 @@ public class ToText {
         for (Genres genres : book.getGenres())
             for (String genString : genres.getParseCod())
                 builder.append("<genre>").append(genString).append("</genre>");
-        builder.append("<author><first-name></first-name><last-name>").append(book.getAuthor()).append("</last-name></author>");
+        builder.append("<author><first-name></first-name><last-name>").append(Author.getAsString(book.getAuthors())).append("</last-name></author>");
         builder.append("<book-title>").append(book.getNameBook()).append("</book-title>");
         builder.append("<annotation><p>").append(book.getAnnotation().replaceAll("\n", "</p><p>")).append("</p></annotation>");
         builder.append("<date>").append(book.getLastUpdate()).append("</date>");
@@ -75,4 +79,6 @@ public class ToText {
                 "        </publish-info>");
         builder.append("</description><body>");
     }
+
+
 }

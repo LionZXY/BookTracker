@@ -1,11 +1,13 @@
 package com.lionzxy.vkapi.messages;
 
 import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.users.User;
 import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -137,5 +139,10 @@ public class Message {
 
     public User getUser() {
         return user;
+    }
+
+    public Message addFile(File file, VKUser vkUser) {
+        addMedia(new VkFile(file, vkUser).getAsVkMedia());
+        return this;
     }
 }

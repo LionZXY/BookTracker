@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * Created by LionZXY on 12.01.2016.
  * BookTracker
  */
-public class LitEraParser {
+public class LitEraParser extends MainParser {
     String html = null;
     String url = null;
 
@@ -31,8 +31,12 @@ public class LitEraParser {
     }
 
     public IBook parseBook() {
-        return new Book(TypeSite.LITERA, getName(), getAnnotation(), url, getAuthor(), getDateEdit(), getGenres(), getBookSize());
-
+        IBook book = MainParser.findBook(url);
+        if (book == null) {
+            book = new Book(TypeSite.LITERA, getName(), getAnnotation(), url, getAuthors(), getDateEdit(), getGenres(), getBookSize());
+            MainParser.addBook(book);
+        }
+        return book;
     }
 
     public String getAnnotation() {
@@ -61,12 +65,18 @@ public class LitEraParser {
 
     }
 
-    public Author getAuthor() {
+    public Author[] getAuthors() {
         int first = html.indexOf("\" class=\"author\">");
-        Author author = new Author(html.substring(first + " class=\"author\">".length() + 1, html.indexOf("</a>", first)));
-        author.setURL(html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first));
-        author.setTypeSite(TypeSite.LITERA);
-        return author;
+        Author author = MainParser.findAuthor(html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first));
+        if (author == null) {
+            author = new Author(html.substring(first + " class=\"author\">".length() + 1, html.indexOf("</a>", first)));
+            author.setURL(html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first));
+            author.setTypeSite(TypeSite.LITERA);
+            MainParser.addAuthor(author);
+        }
+        Author[] authors = new Author[1];
+        authors[0] = author;
+        return authors;
     }
 
     public String getName() {

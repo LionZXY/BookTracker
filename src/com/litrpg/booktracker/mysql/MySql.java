@@ -1,6 +1,8 @@
 package com.litrpg.booktracker.mysql;
 
+import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
+import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
 
@@ -41,6 +43,19 @@ public class MySql {
 
     public void addBookInTable(IBook book) {
         //TODO
+        HashMap<String, String> column = new HashMap<>();
+        column.put("name", book.getNameBook());
+        column.put("authors", ListHelper.getAsString(book.getAuthors()));
+    }
+
+    public int getIdBook(IBook book) {
+        //TODO If book not exist in table
+        return -1;
+    }
+
+    public int getIdAuthor(Author author) {
+        //TODO If book not exist in table
+        return -1;
     }
 
     public void addInTable(String table, LinkedHashMap<String, String> request) {

@@ -60,6 +60,7 @@ public class VKUser {
     }
 
     public static JSONObject getAnswer(String method, HashMap<String, String> params, @Nullable VKUser vkUser) {
+        System.out.println(method);
         try {
             try {
                 try {
@@ -70,12 +71,13 @@ public class VKUser {
                         url = new URL("https://api.vk.com/method/" + method + '?');
                     }
                     StringBuilder postData = new StringBuilder();
-                    for (Map.Entry<String, String> param : params.entrySet()) {
-                        if (postData.length() != 0) postData.append('&');
-                        postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-                        postData.append('=');
-                        postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-                    }
+                    if (params != null)
+                        for (Map.Entry<String, String> param : params.entrySet()) {
+                            if (postData.length() != 0) postData.append('&');
+                            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                            postData.append('=');
+                            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+                        }
                     byte[] postDataBytes = postData.toString().getBytes("UTF-8");
 
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -83,7 +85,7 @@ public class VKUser {
                     conn.setDoOutput(true);
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    conn.setRequestProperty("charset", "utf-8");
+                    conn.setRequestProperty("charset", "UTF-8");
                     conn.setRequestProperty("Content-Length", Integer.toString(postDataBytes.length));
 
                     DataOutputStream wr = new DataOutputStream(conn.getOutputStream());

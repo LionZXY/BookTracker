@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.authors;
 
+import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.enums.TypeSite;
 
 /**
@@ -10,6 +11,7 @@ import com.litrpg.booktracker.enums.TypeSite;
 public class Author {
     private String name, url;
     private TypeSite typeSite;
+    int inDB = -1;
 
     public Author(String name) {
         this.name = name;
@@ -39,8 +41,24 @@ public class Author {
         return typeSite;
     }
 
+    public int getInDB() {
+        if (inDB == -1) {
+            inDB = BookTracker.DB.getIdAuthor(this);
+        }
+        return inDB;
+    }
+
     @Override
     public String toString() {
         return name;
+    }
+
+    public static String getAsString(Author[] authors) {
+        StringBuilder sb = new StringBuilder();
+        for (Author author : authors) {
+            if (sb.length() > 1) sb.append(",");
+            sb.append(author.getName());
+        }
+        return sb.toString();
     }
 }

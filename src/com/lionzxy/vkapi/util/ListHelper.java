@@ -1,5 +1,7 @@
 package com.lionzxy.vkapi.util;
 
+import com.litrpg.booktracker.authors.Author;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,9 +20,27 @@ public class ListHelper {
         return toExit;
     }
 
-    public static LinkedHashMap<String,String> getHashMap(String key, String set){
-        LinkedHashMap<String,String> toExit = new LinkedHashMap<>();
-        toExit.put(key,set);
+    public static LinkedHashMap<String, String> getHashMap(String key, String set) {
+        LinkedHashMap<String, String> toExit = new LinkedHashMap<>();
+        toExit.put(key, set);
         return toExit;
+    }
+
+    public static String getAsString(int... numb) {
+        StringBuilder toExit = new StringBuilder();
+        for (int num : numb) {
+            if (toExit.length() != 0) toExit.append(",");
+            toExit.append(num);
+        }
+        return toExit.toString();
+    }
+
+    public static String getAsString(Author[] authors) {
+        StringBuilder toExit = new StringBuilder();
+        for (Author author : authors) {
+            if (toExit.length() != 0) toExit.append(",");
+            toExit.append(author.getInDB());
+        }
+        return toExit.toString();
     }
 }

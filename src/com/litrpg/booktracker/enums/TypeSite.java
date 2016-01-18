@@ -9,7 +9,8 @@ import com.sun.istack.internal.NotNull;
  */
 public enum TypeSite {
     SAMLIB("http://samlib.ru/", "samlib"),
-    LITERA("https://lit-era.com/", "litera");
+    LITERA("https://lit-era.com/", "litera"),
+    Unknown("UNKNOWN SITE","unknown");
     private String site, nameInDB;
 
     TypeSite(String site, @NotNull String nameInDB) {
@@ -17,11 +18,20 @@ public enum TypeSite {
         this.nameInDB = nameInDB;
     }
 
-    public static TypeSite getBookFromNameInDB(String nameInDB) {
+    public static TypeSite getTypeFromNameInDB(String nameInDB) {
         for (TypeSite book : TypeSite.values())
             if (book.getNameInBD().equalsIgnoreCase(nameInDB))
                 return book;
-        return null;
+        return Unknown;
+    }
+
+    public static TypeSite getTypeFromUrl(String url){
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            url = "http://" + url;
+        for (TypeSite book : TypeSite.values())
+            if (url.startsWith(book.getSite()))
+                return book;
+        return Unknown;
     }
 
     public String getSite() {

@@ -72,13 +72,13 @@ public class LeaveBot {
             if (!inVK.contains(user))
                 toLeave.add(user);
 
-        addToTable(sql,toExit,"vkusers");
-        removeFromTable(sql,toLeave,"vkusers");
+        addToTable(sql, toExit, "vkusers");
+        removeFromTable(sql, toLeave, "vkusers");
         int send = 0;
         List<User> users = User.getListUser(toLeave, vk);
         List<User> usersExit = User.getListUser(toExit, vk);
-        send = send + sendAllUsers(users, vk, message);
-        send = send + sendAllUsers(usersExit, vk, messageExit);
+        send = send + sendAllUsers(users, vk, new Message(message).addMedia("photo286477373_398516287"));
+        send = send + sendAllUsers(usersExit, vk, new Message(messageExit).addMedia("photo286477373_398517605"));
 
         StringBuilder sb = new StringBuilder();
         sb.append("Отчет по группе #").append(groupId).append('\n').append("Вышло ").append(toLeave.size()).append(" человек").append('\n');
@@ -94,17 +94,17 @@ public class LeaveBot {
 
     }
 
-    public static int sendAllUsers(List<User> users, VKUser vk, String message) {
+    public static int sendAllUsers(List<User> users, VKUser vk, Message message) {
         int send = 0;
         for (User user : users)
             try {
-                if (new Message(message).sendMessage(vk, user))
+                if (message.sendMessage(vk, user))
                     send++;
             } catch (Exception e) {
                 //У контакта ограничение по запросам. Не более трех в секундку.
                 VKUser.sleep(1000);
                 try {
-                    if (new Message(message).sendMessage(vk, user))
+                    if (message.sendMessage(vk, user))
                         send++;
                 } catch (Exception e1) {
                     e1.printStackTrace();
@@ -114,7 +114,7 @@ public class LeaveBot {
     }
 
     public static void firstInit(VKUser vkUser, int groupId, String bd, String[] args) {
-        addToTable( new MySql(bd,"root","root"),vkUser.getUserList(groupId),"vkusers");
+        addToTable(new MySql(bd, "root", "root"), vkUser.getUserList(groupId), "vkusers");
     }
 
     public static void addToTable(MySql mySql, List<Integer> list, String table) {
@@ -125,7 +125,7 @@ public class LeaveBot {
 
     public static void removeFromTable(MySql mySql, List<Integer> list, String table) {
         for (Integer row : list) {
-            mySql.removeRowFromTable("userid="+row,table);
+            mySql.removeRowFromTable("userid=" + row, table);
         }
     }
 }

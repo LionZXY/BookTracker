@@ -17,7 +17,7 @@ public interface IBook {
 
     String getNameBook();
 
-    Author getAuthor();
+    Author[] getAuthors();
 
     String getAnnotation();
 
@@ -25,10 +25,14 @@ public interface IBook {
 
     Date getLastUpdate();
 
+    int getIdInDB();
+
     Date getLastChecked();
 
     Genres[] getGenres();
 
     int getSize();
+
+    void setDBid(int id);
 
 }
