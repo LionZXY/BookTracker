@@ -18,19 +18,20 @@ import java.io.File;
  * BookTracker
  */
 public class BookTracker {
-    public static MySql DB = new MySql("book_updater", "root", "root");
-
     static {
         Logger.setDefaultLogger("[BookTracker]");
     }
+
+    public static MySql DB = new MySql("book_updater", "root", "root");
 
     public static void main(String... args) {
         //new LitEraParser("https://lit-era.com/book/prikladnaya-nekromantiya-zapiski-mezhdu-stranic-b3904").parseBook();
         //ToText.getText(new LitEraParser("https://lit-era.com/book/parallel-kniga-chetvertaya-bog-b3228").parseBook());
         //new Message("test").addMedia("photo286477373_398516287").sendMessage(new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]),new User(3495873));
-        VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
-        new Message("Получите и распишитесь.").addFile(ToText.getAsFile(new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook()), vk).sendMessage(vk, new User(3495873));
+        //VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
+        //new Message("Получите и распишитесь.").addFile(, vk).sendMessage(vk, new User(3495873));
         //System.out.println(new File("book.fb2").exists());
         //new VkFile(new File("book.fb2"), new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]));
+        ToText.getAsFile(new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook());
     }
 }

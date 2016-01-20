@@ -34,17 +34,17 @@ public class ToText {
                     String workOnText = temlareText(LitEraParser.findWord(html, "<div class=\"reader-text font-size-medium\"", "</div>"));
                     workOnText = workOnText.substring(workOnText.indexOf("</h2>") + "</h2>".length() + 1)
                             .replaceAll("&mdash;", "-")
-                            .replaceAll("&nbsp;", "\n<empty-line/>")
+                            .replaceAll("&nbsp;", "")
                             .replaceAll("&hellip;", "...")
-                            .replaceAll("<br />", "\n")
+                            //.replaceAll("<br />", "\n")
                             .replaceAll("&ndash;", "-");
                     bookText.append(workOnText);
                 } else
                     bookText.append("<p>Эта книга находится в платной подписке. Чтобы продолжить чтение, пожалуйста, оплатите доступ.</p>");
-                bookText.append("\n</section>");
+                bookText.append("</section>");
             }
-            bookText.append("</body>\n").append("</FictionBook>");
-            return UsersFile.save(bookText.toString(), book.getUrl().replace("/", "_").replace("\\", "_").replace(" ", "_") + ".fb2");
+            bookText.append("</body>").append("</FictionBook>");
+            return UsersFile.save(bookText.toString(), book.getUrl().replace(book.getType().getSite(), "").replace("/", "-").replace("\\", "-").replace(" ", "").replace(".", "").replace(":", "") + ".fb2");
         }
         return null;
     }

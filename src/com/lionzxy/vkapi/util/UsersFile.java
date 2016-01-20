@@ -39,6 +39,7 @@ public class UsersFile {
         try {
             file.createNewFile();
             new FileOutputStream(file).write(s.getBytes());
+            Logger.getLogger().print("Файл создан по адресу " + file.getPath());
             return file;
         } catch (Exception e) {
             e.printStackTrace();
