@@ -53,6 +53,10 @@ public abstract class MainParser {
         books.add(book);
         BookTracker.DB.addBookInTable(book);
         book.setDBid(BookTracker.DB.getIdBook(book));
+        for (Author author : book.getAuthors()) {
+            author.addBook(book);
+        }
+
     }
 
     public static void addAuthor(Author author) {

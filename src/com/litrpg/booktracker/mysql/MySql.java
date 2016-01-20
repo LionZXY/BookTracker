@@ -3,14 +3,15 @@ package com.litrpg.booktracker.mysql;
 import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
+import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.enums.TypeSite;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
+import sun.util.calendar.BaseCalendar;
+import sun.util.calendar.CalendarDate;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * com.litrpg.booktracker.mysql
@@ -42,20 +43,69 @@ public class MySql {
     }
 
     public void addBookInTable(IBook book) {
-        //TODO
-        HashMap<String, String> column = new HashMap<>();
+        LinkedHashMap<String, String> column = new LinkedHashMap<>();
         column.put("name", book.getNameBook());
         column.put("authors", ListHelper.getAsString(book.getAuthors()));
+        column.put("annotation", book.getAnnotation());
+        column.put("url", book.getUrl());
+        column.put("lastUpdate", dateToString(book.getLastUpdate()));
+        column.put("lastChecked", dateToString(book.getLastChecked()));
+        column.put("genres", ListHelper.getAsString(book.getGenres()));
+        column.put("size", String.valueOf(book.getSize()));
+        addInTable("books", column);
+        getIdBook(book);
+        Logger.getLogger().print("Добавленна книга \"" + book.getNameBook() + "\"");
+    }
+
+    public void addAuthorInTable(Author author) {
+        LinkedHashMap<String, String> column = new LinkedHashMap<>();
+        column.put("name", author.getName());
+        column.put("url", author.getUrl());
+        column.put("books", author.getBooks());
+        addInTable("authors", column);
+        getIdAuthor(author);
+    }
+
+    public List<IBook> getBooksFromTable() {
+        //TODO
+        List<IBook> books = new ArrayList<>();
+        /*for (HashMap<String, Object> row :
+                getFullTable(ListHelper.getStringList("name","id, "author", "annotation",
+                        "url", "lastUpdate", "lastChecked", "genres", "size"), "books")) {
+            books.add(new Book(TypeSite.getTypeFromUrl((String) row.get("url")),
+                    (String) row.get("name"),
+                    (String) row.get("annotation"),
+                    (String) row.get("url"),
+                    ))
+        }*/
+        return books;
     }
 
     public int getIdBook(IBook book) {
-        //TODO If book not exist in table
-        return -1;
+        try {
+            ResultSet set = statement.executeQuery("SELECT id FROM books WHERE url = \"" + book.getUrl() + "\"");
+            set.next();
+            int id = set.getInt("id");
+            book.setDBid(id);
+            return id;
+        } catch (SQLException e) {
+            addBookInTable(book);
+            return getIdBook(book);
+        }
     }
 
     public int getIdAuthor(Author author) {
-        //TODO If book not exist in table
-        return -1;
+        try {
+            ResultSet set = statement.executeQuery("SELECT id FROM authors WHERE url = \"" + author.getUrl() + "\"");
+            set.next();
+            int id = set.getInt("id");
+            author.setIdDB(id);
+            return id;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            addAuthorInTable(author);
+            return getIdAuthor(author);
+        }
     }
 
     public void addInTable(String table, LinkedHashMap<String, String> request) {
@@ -76,7 +126,6 @@ public class MySql {
         sqlReq.append(')');
         PreparedStatement stmt = null;
         try {
-            System.out.println();
             stmt = connection.prepareStatement(sqlReq.toString());
             for (int i = 1; i <= request.size(); i++)
                 stmt.setString(i, request.get(names.get(i - 1)));
@@ -116,6 +165,22 @@ public class MySql {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void updateAuthorBook(Author author) {
+        try {
+            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\" WHERE id = " + author.getInDB() + ";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String dateToString(java.util.Date date) {
+        //YYYY-MM-DD HH:MM:SS
+        CalendarDate calendarDate = BaseCalendar.getGregorianCalendar().getCalendarDate(date.getTime());
+        String dateStr = calendarDate.getYear() + "-" + calendarDate.getMonth() + "-" + calendarDate.getDayOfMonth();
+        dateStr += " " + calendarDate.getHours() + ":" + calendarDate.getMinutes() + ":" + calendarDate.getSeconds();
+        return dateStr;
     }
 
 }

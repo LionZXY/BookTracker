@@ -1,6 +1,7 @@
 package com.lionzxy.vkapi.util;
 
 import com.litrpg.booktracker.authors.Author;
+import com.litrpg.booktracker.enums.Genres;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,6 +41,15 @@ public class ListHelper {
         for (Author author : authors) {
             if (toExit.length() != 0) toExit.append(",");
             toExit.append(author.getInDB());
+        }
+        return toExit.toString();
+    }
+
+    public static String getAsString(Genres[] authors) {
+        StringBuilder toExit = new StringBuilder();
+        for (Genres author : authors) {
+            if (toExit.length() != 0) toExit.append(",");
+            toExit.append(author.ordinal());
         }
         return toExit.toString();
     }

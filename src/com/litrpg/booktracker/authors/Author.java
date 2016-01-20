@@ -1,7 +1,12 @@
 package com.litrpg.booktracker.authors;
 
 import com.litrpg.booktracker.BookTracker;
+import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * com.litrpg.booktracker.authors
@@ -11,6 +16,7 @@ import com.litrpg.booktracker.enums.TypeSite;
 public class Author {
     private String name, url;
     private TypeSite typeSite;
+    List<IBook> books = new ArrayList<>();
     int inDB = -1;
 
     public Author(String name) {
@@ -37,6 +43,22 @@ public class Author {
         return url;
     }
 
+    public void addBook(IBook book) {
+        if (!books.contains(book)) {
+            books.add(book);
+            BookTracker.DB.updateAuthorBook(this);
+        }
+    }
+
+    public String getBooks() {
+        StringBuilder toExit = new StringBuilder();
+        for (IBook book : books) {
+            if (toExit.length() != 0) toExit.append(",");
+            toExit.append(book.getIdInDB());
+        }
+        return toExit.toString();
+    }
+
     public TypeSite getTypeSite() {
         return typeSite;
     }
@@ -46,6 +68,11 @@ public class Author {
             inDB = BookTracker.DB.getIdAuthor(this);
         }
         return inDB;
+    }
+
+    public Author setIdDB(int id){
+        this.inDB = id;
+        return this;
     }
 
     @Override
