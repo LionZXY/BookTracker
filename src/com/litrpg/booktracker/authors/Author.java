@@ -80,7 +80,7 @@ public class Author {
         return name;
     }
 
-    public static String getAsString(Author[] authors) {
+    public static String getAsString(List<Author> authors) {
         StringBuilder sb = new StringBuilder();
         for (Author author : authors) {
             if (sb.length() > 1) sb.append(",");

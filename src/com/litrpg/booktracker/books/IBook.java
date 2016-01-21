@@ -5,6 +5,7 @@ import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * com.litrpg.booktracker.books
@@ -17,7 +18,7 @@ public interface IBook {
 
     String getNameBook();
 
-    Author[] getAuthors();
+    List<Author> getAuthors();
 
     String getAnnotation();
 
@@ -29,7 +30,7 @@ public interface IBook {
 
     Date getLastChecked();
 
-    Genres[] getGenres();
+    List<Genres> getGenres();
 
     int getSize();
 

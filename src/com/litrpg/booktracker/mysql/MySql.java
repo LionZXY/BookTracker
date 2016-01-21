@@ -5,13 +5,19 @@ import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
+import com.litrpg.booktracker.parsers.MainParser;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * com.litrpg.booktracker.mysql
@@ -45,12 +51,12 @@ public class MySql {
     public void addBookInTable(IBook book) {
         LinkedHashMap<String, String> column = new LinkedHashMap<>();
         column.put("name", book.getNameBook());
-        column.put("authors", ListHelper.getAsString(book.getAuthors()));
+        column.put("authors", ListHelper.getAsStringAuthor(book.getAuthors()));
         column.put("annotation", book.getAnnotation());
         column.put("url", book.getUrl());
         column.put("lastUpdate", dateToString(book.getLastUpdate()));
         column.put("lastChecked", dateToString(book.getLastChecked()));
-        column.put("genres", ListHelper.getAsString(book.getGenres()));
+        column.put("genres", ListHelper.getAsStringGenr(book.getGenres()));
         column.put("size", String.valueOf(book.getSize()));
         addInTable("books", column);
         getIdBook(book);
@@ -67,18 +73,32 @@ public class MySql {
     }
 
     public List<IBook> getBooksFromTable() {
-        //TODO
         List<IBook> books = new ArrayList<>();
-        /*for (HashMap<String, Object> row :
-                getFullTable(ListHelper.getStringList("name","id, "author", "annotation",
+        for (HashMap<String, Object> row :
+                getFullTable(ListHelper.getStringList("name", "id", "authors", "annotation",
                         "url", "lastUpdate", "lastChecked", "genres", "size"), "books")) {
-            books.add(new Book(TypeSite.getTypeFromUrl((String) row.get("url")),
+            Book book = new Book(TypeSite.getTypeFromUrl((String) row.get("url")),
                     (String) row.get("name"),
                     (String) row.get("annotation"),
                     (String) row.get("url"),
-                    ))
-        }*/
+                    MainParser.getAllAuthorById(ListHelper.parseString((String) row.get("authors"))),
+                    new Date(((Timestamp) row.get("lastUpdate")).getTime()),
+                    Genres.getGenrFromString((String) row.get("genres")),
+                    (Integer) row.get("size")
+            );
+            for (Author author : book.getAuthors())
+                author.addBook(book);
+            books.add(book);
+
+        }
         return books;
+    }
+
+    public List<Author> getAuthorsFromTable() {
+        List<Author> authors = getFullTable(ListHelper.getStringList("id", "name", "url"), "authors").stream().map(row -> new Author((String) row.get("name"))
+                .setIdDB((Integer) row.get("id"))
+                .setURL((String) row.get("url"))).collect(Collectors.toList());
+        return authors;
     }
 
     public int getIdBook(IBook book) {
@@ -181,6 +201,16 @@ public class MySql {
         String dateStr = calendarDate.getYear() + "-" + calendarDate.getMonth() + "-" + calendarDate.getDayOfMonth();
         dateStr += " " + calendarDate.getHours() + ":" + calendarDate.getMinutes() + ":" + calendarDate.getSeconds();
         return dateStr;
+    }
+
+    public static Date stringToDate(String date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        try {
+            return simpleDateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

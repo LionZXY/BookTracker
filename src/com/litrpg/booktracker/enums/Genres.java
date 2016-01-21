@@ -1,6 +1,10 @@
 package com.litrpg.booktracker.enums;
 
+import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * com.litrpg.booktracker.enums
@@ -11,7 +15,7 @@ public enum Genres {
     LitRPG("ЛитРПГ"),
     Love("Любовные романы", "Любовь", "любовь", "love story", "любовный роман"),
     Detective("Детектив", "Детектив/Триллер"),
-    Fantasy("Фентези","Фэнтези"),
+    Fantasy("Фентези", "Фэнтези"),
     Popadantsy("Попаданцы"),
     Humor("Юмор"),
     Fanfik("Фанфик", "фан", "fun"),
@@ -70,6 +74,7 @@ public enum Genres {
     Unknown("Unknown", "Неизвестный", "Пусто", "null");
 
     String[] parseCod;
+    int id = 0;
 
     Genres(String... parseCod) {
         this.parseCod = parseCod;
@@ -87,7 +92,22 @@ public enum Genres {
         return Genres.Unknown;
     }
 
+    public static Genres getGenre(int id) {
+        for (Genres genres : Genres.values())
+            if (genres.ordinal() == id)
+                return genres;
+        return Unknown;
+    }
+
     public String[] getParseCod() {
         return parseCod;
+    }
+
+    public static List<Genres> getGenrFromString(String genres) {
+        List<Genres> gnr = new ArrayList<>();
+        for (Integer gnrId : ListHelper.parseString(genres)) {
+            gnr.add(getGenre(gnrId));
+        }
+        return gnr;
     }
 }

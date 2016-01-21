@@ -21,6 +21,14 @@ public class ListHelper {
         return toExit;
     }
 
+    public static List<Integer> parseString(String str) {
+        List<Integer> lst = new ArrayList<>();
+        for (String numb : str.split(",")) {
+            lst.add(Integer.parseInt(numb));
+        }
+        return lst;
+    }
+
     public static LinkedHashMap<String, String> getHashMap(String key, String set) {
         LinkedHashMap<String, String> toExit = new LinkedHashMap<>();
         toExit.put(key, set);
@@ -36,7 +44,7 @@ public class ListHelper {
         return toExit.toString();
     }
 
-    public static String getAsString(Author[] authors) {
+    public static String getAsStringAuthor(List<Author> authors) {
         StringBuilder toExit = new StringBuilder();
         for (Author author : authors) {
             if (toExit.length() != 0) toExit.append(",");
@@ -45,9 +53,9 @@ public class ListHelper {
         return toExit.toString();
     }
 
-    public static String getAsString(Genres[] authors) {
+    public static String getAsStringGenr(List<Genres> genres) {
         StringBuilder toExit = new StringBuilder();
-        for (Genres author : authors) {
+        for (Genres author : genres) {
             if (toExit.length() != 0) toExit.append(",");
             toExit.append(author.ordinal());
         }

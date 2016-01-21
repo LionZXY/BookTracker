@@ -8,6 +8,7 @@ import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
 import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.LitEraParser;
+import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.parsers.other.ToText;
 
 import java.io.File;
@@ -35,6 +36,12 @@ public class BookTracker {
         //new VkFile(new File("book.fb2"), new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]));
         //ToText.getAsFile(new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook());
         //System.out.println(MySql.dateToString(new Date()));
+        sync();
         new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook();
+    }
+
+    static void sync() {
+        MainParser.authors.addAll(DB.getAuthorsFromTable());
+        MainParser.books.addAll(DB.getBooksFromTable());
     }
 }

@@ -51,13 +51,13 @@ public class LitEraParser extends MainParser {
         }
     }
 
-    public Genres[] getGenres() {
+    public List<Genres> getGenres() {
         List<Genres> genres = new ArrayList<Genres>();
 
         for (String genre : findWord("<p><span class=\"meta-name\">Жанр: </span> ", "</p>").split(", "))
             genres.add(Genres.getGenre(findWord(genre, "'>", "</a>")));
 
-        return genres.toArray(new Genres[genres.size()]);
+        return genres;
     }
 
     public int getBookSize() {
@@ -65,7 +65,8 @@ public class LitEraParser extends MainParser {
 
     }
 
-    public Author[] getAuthors() {
+    public List<Author> getAuthors() {
+        //TODO Multiple choise
         int first = html.indexOf("\" class=\"author\">");
         Author author = MainParser.findAuthor(html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first));
         if (author == null) {
@@ -74,8 +75,8 @@ public class LitEraParser extends MainParser {
             author.setTypeSite(TypeSite.LITERA);
             MainParser.addAuthor(author);
         }
-        Author[] authors = new Author[1];
-        authors[0] = author;
+        List<Author> authors = new ArrayList<>();
+        authors.add(author);
         return authors;
     }
 

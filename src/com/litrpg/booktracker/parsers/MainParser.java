@@ -15,8 +15,8 @@ import java.util.List;
  * BookTracker
  */
 public abstract class MainParser {
-    private static List<IBook> books = new ArrayList<>();
-    private static List<Author> authors = new ArrayList<>();
+    public static List<IBook> books = new ArrayList<>();
+    public static List<Author> authors = new ArrayList<>();
 
     public static IBook getBook(String url) {
         IBook book = findBook(url);
@@ -50,16 +50,30 @@ public abstract class MainParser {
     }
 
     public static void addBook(IBook book) {
-        books.add(book);
-        BookTracker.DB.addBookInTable(book);
-        book.setDBid(BookTracker.DB.getIdBook(book));
-        for (Author author : book.getAuthors()) {
-            author.addBook(book);
+        if (!books.contains(book)) {
+            books.add(book);
+            BookTracker.DB.addBookInTable(book);
+            book.setDBid(BookTracker.DB.getIdBook(book));
+            for (Author author : book.getAuthors()) {
+                author.addBook(book);
+            }
         }
 
     }
 
     public static void addAuthor(Author author) {
-        authors.add(author);
+        if (!authors.contains(author)) {
+            authors.add(author);
+            BookTracker.DB.addAuthorInTable(author);
+            author.setIdDB(BookTracker.DB.getIdAuthor(author));
+        }
+    }
+
+    public static List<Author> getAllAuthorById(List<Integer> arr) {
+        List<Author> authorsL = new ArrayList<>();
+        for (Author author : authors)
+            if (arr.contains(author.getInDB()))
+                authorsL.add(author);
+        return authorsL;
     }
 }

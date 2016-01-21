@@ -10,6 +10,7 @@ import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.parsers.other.ToText;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * com.litrpg.booktracker.books
@@ -21,18 +22,18 @@ public class Book implements IBook {
     String nameBook;
     String annotation;
     String url;
-    Author[] author;
+    List<Author> authors;
     Date lastUpdate;
     Date lastChecked = null;
-    Genres[] genres;
+    List<Genres> genres;
     int bookSize, idInDB = -1;
 
-    public Book(TypeSite typeSite, String nameBook, String annotation, String url, Author[] author, Date lastUpdate, Genres[] genres, int bookSize) {
+    public Book(TypeSite typeSite, String nameBook, String annotation, String url, List<Author> authors, Date lastUpdate, List<Genres> genres, int bookSize) {
         this.typeSite = typeSite;
         this.nameBook = nameBook;
         this.annotation = annotation;
         this.url = url;
-        this.author = author;
+        this.authors = authors;
         this.lastUpdate = lastUpdate;
         this.genres = genres;
         this.bookSize = bookSize;
@@ -49,8 +50,8 @@ public class Book implements IBook {
     }
 
     @Override
-    public Author[] getAuthors() {
-        return author;
+    public List<Author> getAuthors() {
+        return authors;
     }
 
     @Override
@@ -84,7 +85,7 @@ public class Book implements IBook {
     }
 
     @Override
-    public Genres[] getGenres() {
+    public List<Genres> getGenres() {
         return genres;
     }
 
