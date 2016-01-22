@@ -2,7 +2,6 @@ package com.litrpg.booktracker.updaters;
 
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.helper.URLHelper;
-import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

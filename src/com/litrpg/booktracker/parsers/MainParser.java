@@ -2,10 +2,8 @@ package com.litrpg.booktracker.parsers;
 
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
-import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.user.IUser;
 
 import java.util.ArrayList;
@@ -43,6 +41,7 @@ public abstract class MainParser {
     }
 
     public static Author findAuthor(String url) {
+        System.out.println(url);
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (Author author : authors) {
@@ -56,7 +55,6 @@ public abstract class MainParser {
         if (!books.contains(book)) {
             books.add(book);
             BookTracker.DB.addBookInTable(book);
-            book.setDBid(BookTracker.DB.getIdBook(book));
             for (Author author : book.getAuthors()) {
                 author.addBook(book);
             }
@@ -68,8 +66,15 @@ public abstract class MainParser {
         if (!authors.contains(author)) {
             authors.add(author);
             BookTracker.DB.addAuthorInTable(author);
-            author.setIdDB(BookTracker.DB.getIdAuthor(author));
         }
+    }
+
+    public static IUser addUser(IUser user) {
+        if (!users.contains(user)) {
+            users.add(user);
+            BookTracker.DB.addUserInTable(user);
+        }
+        return user;
     }
 
     public static List<Author> getAllAuthorById(List<Integer> arr) {
@@ -81,17 +86,24 @@ public abstract class MainParser {
     }
 
 
-    public static Author getAuthorById(int idInDB){
-        for(Author author : authors)
-            if(author.getInDB() == idInDB)
+    public static Author getAuthorById(int idInDB) {
+        for (Author author : authors)
+            if (author.getInDB() == idInDB)
                 return author;
         return null;
     }
 
-    public static IBook getBookById(int idInDB){
-        for(IBook book : books)
-            if(book.getIdInDB() == idInDB)
+    public static IBook getBookById(int idInDB) {
+        for (IBook book : books)
+            if (book.getIdInDB() == idInDB)
                 return book;
+        return null;
+    }
+
+    public static IUser getUserByVkId(int idInVk) {
+        for (IUser user : users)
+            if (user.getTypeID() == idInVk)
+                return user;
         return null;
     }
 }

@@ -6,6 +6,7 @@ import com.lionzxy.vkapi.event.SubscribeMessageEvent;
 import com.lionzxy.vkapi.messages.Message;
 import com.litrpg.booktracker.message.botanswer.IAnswer;
 import com.litrpg.booktracker.message.botanswer.SimplyAnswer;
+import com.litrpg.booktracker.message.botanswer.UserBot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class MessageListiner implements IMessageListener {
     static {
         sme.addMessageListener(new MessageListiner());
         addAnswer(new SimplyAnswer("Спасибо", "Пожалуйста :)"));
-        addAnswer(new SimplyAnswer("Пинг", "Понг"));
+        addAnswer(new UserBot());
     }
 
     @Override

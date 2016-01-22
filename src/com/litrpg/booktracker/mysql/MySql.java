@@ -19,8 +19,6 @@ import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -83,6 +81,7 @@ public class MySql implements IBookUpdateListiner {
         LinkedHashMap<String, String> column = new LinkedHashMap<>();
         column.put("userid", user.getType() + "_" + user.getTypeID());
         column.put("subscribes", user.getSubAsString());
+        column.put("permission", String.valueOf(user.getPerm()));
         addInTable("users", column);
         getIdUser(user);
     }
@@ -111,19 +110,20 @@ public class MySql implements IBookUpdateListiner {
 
     public List<IUser> getUsersFromTable() {
         List<IUser> users = new ArrayList<>();
-        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "userid", "subscribes"), "users")) {
+        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "userid", "subscribes", "permission"), "users")) {
             switch (UsersType.getType((String) row.get("userid"))) {
                 case VK:
-                    users.add(new VKUser((String) row.get("userid"), (String) row.get("subscribes")).setIdInDB((Integer) row.get("id")));
+                    users.add(new VKUser((String) row.get("userid"), (String) row.get("subscribes")).setIdInDB((Integer) row.get("id")).setPerm((Integer) row.get("permission")));
             }
         }
         return users;
     }
 
     public List<Author> getAuthorsFromTable() {
-        List<Author> authors = getFullTable(ListHelper.getStringList("id", "name", "url"), "authors").stream().map(row -> new Author((String) row.get("name"))
-                .setIdDB((Integer) row.get("id"))
-                .setURL((String) row.get("url"))).collect(Collectors.toList());
+       List<Author> authors = new ArrayList<>();
+        for(HashMap<String,Object> row : getFullTable(ListHelper.getStringList("id","name","url","books"),"authors")){
+            authors.add(new Author((String) row.get("name"),(String) row.get("url")).setIdDB((Integer) row.get("id")).addBooks((String) row.get("books")));
+        }
         return authors;
     }
 

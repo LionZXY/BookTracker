@@ -6,17 +6,12 @@ import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.helper.URLHelper;
-import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
-import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * com.litrpg.booktracker.parsers
@@ -72,10 +67,10 @@ public class LitEraParser extends MainParser {
     public List<Author> getAuthors() {
         //TODO Multiple choise
         int first = html.indexOf("\" class=\"author\">");
-        Author author = MainParser.findAuthor(html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first));
+        String url = "https://lit-era.com" + html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first);
+        Author author = MainParser.findAuthor(url);
         if (author == null) {
-            author = new Author(html.substring(first + " class=\"author\">".length() + 1, html.indexOf("</a>", first)));
-            author.setURL(html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first));
+            author = new Author(html.substring(first + " class=\"author\">".length() + 1, html.indexOf("</a>", first)), url);
             author.setTypeSite(TypeSite.LITERA);
             MainParser.addAuthor(author);
         }

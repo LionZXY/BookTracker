@@ -28,6 +28,7 @@ public class Updater implements IBookUpdateListiner {
         litera = new LitEraUpdater();
         Logger.getLogger().print("Проверка книг началась. На очереди " + MainParser.books.size() + " книг");
         MainParser.books.forEach(Updater::checkBook);
+        Logger.getLogger().print("Всё книги проверенны!");
     }
 
     public static void checkBook(IBook book) {

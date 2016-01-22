@@ -60,7 +60,6 @@ public class VKUser {
     }
 
     public static JSONObject getAnswer(String method, HashMap<String, String> params, @Nullable VKUser vkUser) {
-        System.out.println(method);
         try {
             try {
                 try {

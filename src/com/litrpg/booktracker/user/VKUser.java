@@ -1,9 +1,13 @@
 package com.litrpg.booktracker.user;
 
+import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.users.User;
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +20,18 @@ import java.util.List;
 public class VKUser implements IUser {
     List<IBook> books = new ArrayList<>();
     List<Author> authors = new ArrayList<>();
+    int perm = 0;
     int idInDB = -1, idInVk = -1;
 
     public VKUser(String id, String subcr) {
-        idInVk = Integer.parseInt(id.substring(0, id.indexOf("_") + 1));
+        idInVk = Integer.parseInt(id.substring(id.indexOf("_") + 1));
         addAllSub(subcr);
     }
+
+    public VKUser(User usr) {
+        idInVk = usr.getId();
+    }
+
 
     public VKUser addSub(IBook book) {
         if (!books.contains(book))
@@ -36,8 +46,29 @@ public class VKUser implements IUser {
     }
 
     @Override
+    public List<IBook> getSubsBook() {
+        return books;
+    }
+
+    @Override
+    public List<Author> getSubsAuthor() {
+        return authors;
+    }
+
+    @Override
     public int getTypeID() {
         return idInVk;
+    }
+
+    @Override
+    public int getPerm() {
+        return perm;
+    }
+
+    @Override
+    public IUser setPerm(int perm) {
+        this.perm = perm;
+        return this;
     }
 
     @Override
@@ -49,15 +80,17 @@ public class VKUser implements IUser {
 
     public VKUser addAllSub(String sub) {
         for (String id : sub.split(",")) {
-            int subId = Integer.parseInt(id);
-            if (subId < 0) {
-                Author author = MainParser.getAuthorById(subId * -1);
-                if (!authors.contains(author))
-                    authors.add(author);
-            } else {
-                IBook book = MainParser.getBookById(idInDB);
-                if (!books.contains(book))
-                    books.add(book);
+            if (id.length() > 0) {
+                int subId = Integer.parseInt(id);
+                if (subId < 0) {
+                    Author author = MainParser.getAuthorById(subId * -1);
+                    if (!authors.contains(author))
+                        authors.add(author);
+                } else {
+                    IBook book = MainParser.getBookById(idInDB);
+                    if (!books.contains(book))
+                        books.add(book);
+                }
             }
         }
         return this;
@@ -81,6 +114,12 @@ public class VKUser implements IUser {
     @Override
     public boolean isBookSubscribe(IBook book) {
         return false;
+    }
+
+    @Override
+    public void onUpdateBook(BookUpdateEvent e) {
+        new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
+        Logger.getLogger().print("Отправленно сообщение об обновлении книги \"" + e.book.getNameBook() + "\" пользователю vk с id" + idInVk);
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.litrpg.booktracker.authors;
 
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.books.IBook;
-import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
+import com.litrpg.booktracker.parsers.MainParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +14,16 @@ import java.util.List;
  * BookTracker
  */
 public class Author {
-    private String name, url;
+    private String name, url = "";
     private TypeSite typeSite;
     List<IBook> books = new ArrayList<>();
     int inDB = -1;
 
-    public Author(String name) {
+    public Author(String name, String url) {
+        //System.out.println(url);
         this.name = name;
-    }
-
-    public Author setURL(String url) {
         this.url = url;
-        return this;
+        typeSite = TypeSite.getTypeFromUrl(url);
     }
 
     public Author setTypeSite(TypeSite typeSite) {
@@ -50,6 +48,15 @@ public class Author {
         }
     }
 
+    public Author addBooks(String book) {
+        for (String id : book.split(",")) {
+            if (id.length() > 0) {
+                addBook(MainParser.getBookById(Integer.parseInt(id)));
+            }
+        }
+        return this;
+    }
+
     public String getBooks() {
         StringBuilder toExit = new StringBuilder();
         for (IBook book : books) {
@@ -70,7 +77,7 @@ public class Author {
         return inDB;
     }
 
-    public Author setIdDB(int id){
+    public Author setIdDB(int id) {
         this.inDB = id;
         return this;
     }
