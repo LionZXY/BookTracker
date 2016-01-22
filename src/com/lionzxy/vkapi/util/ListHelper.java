@@ -53,6 +53,15 @@ public class ListHelper {
         return toExit.toString();
     }
 
+    public static String getAsStringAuthorName(List<Author> authors) {
+        StringBuilder toExit = new StringBuilder();
+        for (Author author : authors) {
+            if (toExit.length() != 0) toExit.append(", ");
+            toExit.append(author.getName());
+        }
+        return toExit.toString();
+    }
+
     public static String getAsStringGenr(List<Genres> genres) {
         StringBuilder toExit = new StringBuilder();
         for (Genres author : genres) {

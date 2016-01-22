@@ -3,6 +3,7 @@ package com.litrpg.booktracker.books;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.util.ListHelper;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.enums.Genres;
@@ -126,5 +127,10 @@ public class Book implements IBook {
 
     public void addToMessageAsFile(VKUser vkUser, Message message) {
         message.addMedia(new VkFile(ToText.getAsFile(this), vkUser).getAsVkMedia());
+    }
+
+    @Override
+    public String toString() {
+        return getNameBook().toUpperCase() + "\n" + getAnnotation() + "\n\nАвтор: " + ListHelper.getAsStringAuthorName(getAuthors()) + "\n\n";
     }
 }

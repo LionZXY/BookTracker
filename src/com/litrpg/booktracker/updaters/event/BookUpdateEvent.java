@@ -21,6 +21,11 @@ public class BookUpdateEvent extends EventObject {
         this.sizeUp = sizeUp;
         this.updateTime = updateDate;
     }
+
+    @Override
+    public String toString() {
+        return "#прода@litrpg_book\n\n" + book.toString() + "Добавленно продолжение от " + updateTime + ": " + book.getSize() / 1000 + "К (" + "+" + sizeUp + " Знаков).";
+    }
 }
 
 

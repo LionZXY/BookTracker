@@ -207,16 +207,6 @@ public class MySql implements IBookUpdateListiner {
         return dateStr;
     }
 
-    public static Date stringToDate(String date) {
-        //YYYY-MM-DD HH:MM:SS
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        try {
-            return simpleDateFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     @Override
     public void bookUpdate(BookUpdateEvent e) {

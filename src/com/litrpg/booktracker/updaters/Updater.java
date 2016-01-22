@@ -49,5 +49,6 @@ public class Updater implements IBookUpdateListiner {
                 annotation = new LitEraParser(e.book.getUrl()).getAnnotation();
         }
         e.book.setAnnotation(annotation).setLastUpdate(e.updateTime).setSize(e.sizeUp + e.book.getSize());
+        System.out.println(e);
     }
 }
