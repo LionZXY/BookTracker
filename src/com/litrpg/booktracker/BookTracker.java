@@ -46,5 +46,6 @@ public class BookTracker {
     static void sync() {
         MainParser.authors.addAll(DB.getAuthorsFromTable());
         MainParser.books.addAll(DB.getBooksFromTable());
+        MainParser.users.addAll(DB.getUsersFromTable());
     }
 }

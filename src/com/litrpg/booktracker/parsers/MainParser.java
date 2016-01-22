@@ -2,9 +2,11 @@ package com.litrpg.booktracker.parsers;
 
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
+import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.mysql.MySql;
+import com.litrpg.booktracker.user.IUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 public abstract class MainParser {
     public static List<IBook> books = new ArrayList<>();
     public static List<Author> authors = new ArrayList<>();
+    public static List<IUser> users = new ArrayList<>();
 
     public static IBook getBook(String url) {
         IBook book = findBook(url);
@@ -75,5 +78,20 @@ public abstract class MainParser {
             if (arr.contains(author.getInDB()))
                 authorsL.add(author);
         return authorsL;
+    }
+
+
+    public static Author getAuthorById(int idInDB){
+        for(Author author : authors)
+            if(author.getInDB() == idInDB)
+                return author;
+        return null;
+    }
+
+    public static IBook getBookById(int idInDB){
+        for(IBook book : books)
+            if(book.getIdInDB() == idInDB)
+                return book;
+        return null;
     }
 }

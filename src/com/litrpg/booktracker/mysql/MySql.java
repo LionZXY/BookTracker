@@ -11,6 +11,9 @@ import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.Updater;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
+import com.litrpg.booktracker.user.IUser;
+import com.litrpg.booktracker.user.UsersType;
+import com.litrpg.booktracker.user.VKUser;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
@@ -76,6 +79,14 @@ public class MySql implements IBookUpdateListiner {
         getIdAuthor(author);
     }
 
+    public void addUserInTable(IUser user) {
+        LinkedHashMap<String, String> column = new LinkedHashMap<>();
+        column.put("userid", user.getType() + "_" + user.getTypeID());
+        column.put("subscribes", user.getSubAsString());
+        addInTable("users", column);
+        getIdUser(user);
+    }
+
     public List<IBook> getBooksFromTable() {
         List<IBook> books = new ArrayList<>();
         for (HashMap<String, Object> row :
@@ -96,6 +107,17 @@ public class MySql implements IBookUpdateListiner {
 
         }
         return books;
+    }
+
+    public List<IUser> getUsersFromTable() {
+        List<IUser> users = new ArrayList<>();
+        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "userid", "subscribes"), "users")) {
+            switch (UsersType.getType((String) row.get("userid"))) {
+                case VK:
+                    users.add(new VKUser((String) row.get("userid"), (String) row.get("subscribes")).setIdInDB((Integer) row.get("id")));
+            }
+        }
+        return users;
     }
 
     public List<Author> getAuthorsFromTable() {
@@ -129,6 +151,20 @@ public class MySql implements IBookUpdateListiner {
             e.printStackTrace();
             addAuthorInTable(author);
             return getIdAuthor(author);
+        }
+    }
+
+    public int getIdUser(IUser user) {
+        try {
+            ResultSet set = statement.executeQuery("SELECT id FROM users WHERE userid = \"" + user.getType() + "_" + user.getTypeID() + "\"");
+            set.next();
+            int id = set.getInt("id");
+            user.setIdInDB(id);
+            return id;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            addUserInTable(user);
+            return getIdUser(user);
         }
     }
 
@@ -199,6 +235,14 @@ public class MySql implements IBookUpdateListiner {
         }
     }
 
+    public void updateUser(IUser user) {
+        try {
+            statement.execute("UPDATE users SET subscribes = \"" + user.getSubAsString() + "\" WHERE id = " + user.getDBId() + ";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String dateToString(java.util.Date date) {
         //YYYY-MM-DD HH:MM:SS
         CalendarDate calendarDate = BaseCalendar.getGregorianCalendar().getCalendarDate(date.getTime());
@@ -220,7 +264,7 @@ public class MySql implements IBookUpdateListiner {
             stmt.setString(3, e.book.getSize() + "");
             stmt.executeUpdate();
             stmt.close();
-            Logger.getLogger().print("Информация о книге \""+e.book.getNameBook()+"\" обновленна");
+            Logger.getLogger().print("Информация о книге \"" + e.book.getNameBook() + "\" обновленна");
         } catch (SQLException ex) {
             Logger.getLogger().print("Ошибка при обновлении книги в базе данных");
             ex.printStackTrace();
