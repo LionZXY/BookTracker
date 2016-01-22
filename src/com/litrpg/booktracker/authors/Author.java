@@ -48,15 +48,6 @@ public class Author {
         }
     }
 
-    public Author addBooks(String book) {
-        for (String id : book.split(",")) {
-            if (id.length() > 0) {
-                addBook(MainParser.getBookById(Integer.parseInt(id)));
-            }
-        }
-        return this;
-    }
-
     public String getBooks() {
         StringBuilder toExit = new StringBuilder();
         for (IBook book : books) {

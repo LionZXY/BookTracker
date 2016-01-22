@@ -11,10 +11,6 @@ import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
  * BookTracker
  */
 public class Users implements IBookUpdateListiner {
-    static {
-        Updater.subscribe.subscribe(new Users());
-    }
-
     @Override
     public void bookUpdate(BookUpdateEvent e) {
         for (IUser user : MainParser.users) {

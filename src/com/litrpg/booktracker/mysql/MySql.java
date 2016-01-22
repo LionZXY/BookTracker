@@ -122,7 +122,7 @@ public class MySql implements IBookUpdateListiner {
     public List<Author> getAuthorsFromTable() {
        List<Author> authors = new ArrayList<>();
         for(HashMap<String,Object> row : getFullTable(ListHelper.getStringList("id","name","url","books"),"authors")){
-            authors.add(new Author((String) row.get("name"),(String) row.get("url")).setIdDB((Integer) row.get("id")).addBooks((String) row.get("books")));
+            authors.add(new Author((String) row.get("name"),(String) row.get("url")).setIdDB((Integer) row.get("id")));
         }
         return authors;
     }

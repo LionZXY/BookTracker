@@ -52,6 +52,7 @@ public class Book implements IBook {
 
     @Override
     public List<Author> getAuthors() {
+        System.out.println(authors.size());
         return authors;
     }
 
@@ -131,6 +132,6 @@ public class Book implements IBook {
 
     @Override
     public String toString() {
-        return getNameBook().toUpperCase() + "\n" + getAnnotation() + "\n\nАвтор: " + ListHelper.getAsStringAuthorName(getAuthors()) + "\n\n";
+        return getNameBook().toUpperCase() + "\n\n" + getAnnotation() + "Автор: " + ListHelper.getAsStringAuthorName(getAuthors()) + "\n\n";
     }
 }

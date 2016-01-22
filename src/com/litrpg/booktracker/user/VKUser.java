@@ -87,7 +87,7 @@ public class VKUser implements IUser {
                     if (!authors.contains(author))
                         authors.add(author);
                 } else {
-                    IBook book = MainParser.getBookById(idInDB);
+                    IBook book = MainParser.getBookById(subId);
                     if (!books.contains(book))
                         books.add(book);
                 }
@@ -113,7 +113,7 @@ public class VKUser implements IUser {
 
     @Override
     public boolean isBookSubscribe(IBook book) {
-        return false;
+        return books.contains(book);
     }
 
     @Override

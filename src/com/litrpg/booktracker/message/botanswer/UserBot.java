@@ -49,7 +49,7 @@ public class UserBot implements IAnswer {
                     new Message(sb.toString()).sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().equalsIgnoreCase("!инфо")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("Что прикажете госодин?\n");
+                    sb.append("Что прикажете господин?\n");
                     sb.append("* \"!пинг\" - Проверка доступности бота.\n");
                     sb.append("* \"!добавитьКнигу %ссылка%\" - Добавить книгу в проверку на обновление.\n");
                     sb.append("* \"!скачать %ссылка%\" - Минимальный уровень доступа 50. Ваш - ").append(user.getPerm()).append(".\n");

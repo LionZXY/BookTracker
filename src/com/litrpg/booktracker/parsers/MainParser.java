@@ -79,9 +79,9 @@ public abstract class MainParser {
 
     public static List<Author> getAllAuthorById(List<Integer> arr) {
         List<Author> authorsL = new ArrayList<>();
-        for (Author author : authors)
+        for (Author author : authors){
             if (arr.contains(author.getInDB()))
-                authorsL.add(author);
+                authorsL.add(author);}
         return authorsL;
     }
 

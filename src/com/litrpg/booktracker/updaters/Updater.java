@@ -7,6 +7,7 @@ import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateSubscribe;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
+import com.litrpg.booktracker.user.Users;
 
 /**
  * com.litrpg.booktracker.updaters.event
@@ -22,6 +23,7 @@ public class Updater implements IBookUpdateListiner {
 
     static {
         subscribe.subscribe(new Updater());
+        subscribe.subscribe(new Users());
     }
 
     public static void checkAllBooks() {
