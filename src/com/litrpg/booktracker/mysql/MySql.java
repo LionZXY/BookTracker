@@ -120,9 +120,9 @@ public class MySql implements IBookUpdateListiner {
     }
 
     public List<Author> getAuthorsFromTable() {
-       List<Author> authors = new ArrayList<>();
-        for(HashMap<String,Object> row : getFullTable(ListHelper.getStringList("id","name","url","books"),"authors")){
-            authors.add(new Author((String) row.get("name"),(String) row.get("url")).setIdDB((Integer) row.get("id")));
+        List<Author> authors = new ArrayList<>();
+        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "name", "url", "books"), "authors")) {
+            authors.add(new Author((String) row.get("name"), (String) row.get("url")).setIdDB((Integer) row.get("id")));
         }
         return authors;
     }
@@ -193,7 +193,7 @@ public class MySql implements IBookUpdateListiner {
             stmt.close();
             Logger.getLogger().print("MySQL add to table " + table + " successful");
         } catch (SQLException e) {
-            Logger.getLogger().print("Error while try add in table " + table);
+            Logger.getLogger().print(e.getMessage() + ".Error while try add in table " + table);
             e.printStackTrace();
         }
     }
@@ -237,7 +237,7 @@ public class MySql implements IBookUpdateListiner {
 
     public void updateUser(IUser user) {
         try {
-            statement.execute("UPDATE users SET subscribes = \"" + user.getSubAsString() + "\" WHERE id = " + user.getDBId() + ";");
+            statement.execute("UPDATE users SET subscribes = \"" + user.getSubAsString() + "\", permission = \"" + user.getPerm() + "\" WHERE id = " + user.getDBId() + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }

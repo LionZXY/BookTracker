@@ -15,6 +15,9 @@ import com.litrpg.booktracker.updaters.Updater;
  * BookTracker
  */
 public class BookTracker {
+    public static float VERSION = 1.0F;
+    public static boolean stop = false;
+
     static {
         Logger.setDefaultLogger("[BookTracker]");
     }
@@ -24,8 +27,13 @@ public class BookTracker {
 
     public static void main(String... args) {
         sync();
-        Updater.checkAllBooks();
-        MessageListiner.sme.checkMessage(vk);
+        while (!stop) {
+            for (int i = 0; i < 15; i++) {
+                MessageListiner.sme.checkMessage(vk);
+                VKUser.sleep(1000 * 60);
+            }
+            Updater.checkAllBooks();
+        }
         //new LitEraParser("https://lit-era.com/book/o-polze-neudachnoi-pomolvki-b2952").getAuthors();
 
     }

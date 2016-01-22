@@ -4,6 +4,7 @@ import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.messages.Message;
 import com.lionzxy.vkapi.util.Logger;
+import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.parsers.MainParser;
@@ -55,6 +56,10 @@ public class UserBot implements IAnswer {
                     sb.append("* \"!скачать %ссылка%\" - Минимальный уровень доступа 50. Ваш - ").append(user.getPerm()).append(".\n");
                     sb.append("* \"!наЧтоПодписан\" - Выводит весь список подписок.\n");
                     new Message(sb.toString()).addMedia("photo286477373_399675033").sendMessage(vkUser, user.getTypeID());
+                } else if (msg.toString().startsWith("!нп") && user.getTypeID() == 76844299) {
+                    BookTracker.DB.updateUser(MainParser.getUserByVkId(Integer.parseInt(msg.toString().substring(4, msg.toString().indexOf(" ", 4)))).setPerm(Integer.parseInt(msg.toString().substring(msg.toString().lastIndexOf(" ") + 1))));
+                } else if (msg.toString().equalsIgnoreCase("!стоп") && user.getPerm() == 100) {
+                    BookTracker.stop = true;
                 } else
                     new Message("Хм... Такой команды у бота нет. Ты уверен, что всё правильно ввел? Попробуй посмотреть доступные комманды \"!инфо\" ").addMedia("photo286477373_399674456").sendMessage(vkUser, user.getTypeID());
             } catch (Exception e) {
