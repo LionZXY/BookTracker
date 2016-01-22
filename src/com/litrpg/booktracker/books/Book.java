@@ -95,8 +95,33 @@ public class Book implements IBook {
     }
 
     @Override
-    public void setDBid(int id) {
+    public IBook setDBid(int id) {
         idInDB = id;
+        return this;
+    }
+
+    @Override
+    public IBook setLastCheck(Date date) {
+        this.lastChecked = date;
+        return this;
+    }
+
+    @Override
+    public IBook setAnnotation(String annotation) {
+        this.annotation = annotation;
+        return this;
+    }
+
+    @Override
+    public IBook setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+        return this;
+    }
+
+    @Override
+    public IBook setSize(int size) {
+        this.bookSize = size;
+        return this;
     }
 
     public void addToMessageAsFile(VKUser vkUser, Message message) {

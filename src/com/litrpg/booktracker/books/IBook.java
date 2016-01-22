@@ -15,25 +15,20 @@ import java.util.List;
 public interface IBook {
 
     TypeSite getType();
-
     String getNameBook();
-
     List<Author> getAuthors();
-
     String getAnnotation();
-
     String getUrl();
-
     Date getLastUpdate();
-
     int getIdInDB();
-
     Date getLastChecked();
-
     List<Genres> getGenres();
-
     int getSize();
 
-    void setDBid(int id);
+    IBook setDBid(int id);
+    IBook setLastCheck(Date date);
+    IBook setAnnotation(String annotation);
+    IBook setLastUpdate(Date lastUpdate);
+    IBook setSize(int size);
 
 }

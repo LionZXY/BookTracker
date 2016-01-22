@@ -8,6 +8,9 @@ import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.updaters.Updater;
+import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
+import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 import com.mysql.fabric.jdbc.FabricMySQLDriver;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
  * Created by LionZXY on 02.01.2016.
  * BookTracker
  */
-public class MySql {
+public class MySql implements IBookUpdateListiner {
 
     public Connection connection;
     public Statement statement;
@@ -46,6 +49,7 @@ public class MySql {
             e.printStackTrace();
             System.exit(-1);
         }
+        Updater.subscribe.subscribe(this);
     }
 
     public void addBookInTable(IBook book) {
@@ -204,6 +208,7 @@ public class MySql {
     }
 
     public static Date stringToDate(String date) {
+        //YYYY-MM-DD HH:MM:SS
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
             return simpleDateFormat.parse(date);
@@ -213,4 +218,22 @@ public class MySql {
         return null;
     }
 
+    @Override
+    public void bookUpdate(BookUpdateEvent e) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE books SET annotation = ?, lastUpdate = ?, size = ? WHERE id = " + e.book.getIdInDB());
+        PreparedStatement stmt = null;
+        try {
+            stmt = connection.prepareStatement(sb.toString());
+            stmt.setString(1, e.book.getAnnotation());
+            stmt.setString(2, dateToString(e.updateTime));
+            stmt.setString(3, e.book.getSize() + "");
+            stmt.executeUpdate();
+            stmt.close();
+            Logger.getLogger().print("Информация о книге \""+e.book.getNameBook()+"\" обновленна");
+        } catch (SQLException ex) {
+            Logger.getLogger().print("Ошибка при обновлении книги в базе данных");
+            ex.printStackTrace();
+        }
+    }
 }

@@ -10,6 +10,7 @@ import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.LitEraParser;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.parsers.other.ToText;
+import com.litrpg.booktracker.updaters.Updater;
 
 import java.io.File;
 import java.util.Date;
@@ -36,8 +37,10 @@ public class BookTracker {
         //new VkFile(new File("book.fb2"), new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]));
         //ToText.getAsFile(new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook());
         //System.out.println(MySql.dateToString(new Date()));
+        //new LitEraParser("https://lit-era.com/book/testovoe-proizvedenie-dlya-proverki-trekera-b4840").parseBook();
         sync();
-        new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook();
+        Updater.checkAllBooks();
+        //new LitEraParser("https://lit-era.com/book/rastyk-nevezuchii-b3493").parseBook();
     }
 
     static void sync() {

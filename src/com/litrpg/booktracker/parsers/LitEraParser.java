@@ -6,6 +6,8 @@ import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.helper.URLHelper;
+import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
+import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -27,6 +29,8 @@ public class LitEraParser extends MainParser {
 
     public LitEraParser(String url) {
         this.url = url;
+        if (!url.startsWith("https://"))
+            url = "https://" + url;
         this.html = URLHelper.getSiteAsString(url, "utf8");
     }
 
