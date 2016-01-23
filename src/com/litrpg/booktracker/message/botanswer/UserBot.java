@@ -4,6 +4,7 @@ import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.users.User;
 import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
@@ -38,7 +39,7 @@ public class UserBot implements IAnswer {
                         new Message("У Вас нет прав доступа на это действие.").addMedia("photo286477373_399685563").sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().startsWith("!добавитьКнигу") && TypeSite.getTypeFromUrl(msg.toString().substring(15)) != TypeSite.Unknown) {
                     user.addSub(MainParser.getBook(msg.toString().substring(15)));
-                    new Message("Книга успешно добавлена к Вам в обновления. Как только она обновится, мы дадим Вам знать!").addMedia("photo286477373_399676422").sendMessage(vkUser, user.getTypeID());
+                    new Message("Книга \"" + MainParser.getBook(msg.toString().substring(15)).getNameBook() + "\" успешно добавлена к Вам в обновления. Как только она обновится, мы дадим Вам знать!").addMedia("photo286477373_399676422").sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().equalsIgnoreCase("!наЧтоПодписан")) {
                     StringBuilder sb = new StringBuilder();
                     if (user.getSubsBook().size() != 0) {
@@ -67,7 +68,7 @@ public class UserBot implements IAnswer {
                 } else if (msg.toString().equalsIgnoreCase("!стоп") && user.getPerm() == 100) {
                     BookTracker.stop = true;
                 } else
-                    new Message("Хм... Такой команды у бота нет. Ты уверен, что всё правильно ввел? Попробуй посмотреть доступные комманды \"!инфо\" ").addMedia("photo286477373_399674456").sendMessage(vkUser, user.getTypeID());
+                    new Message("Хм... Комадны \"" + msg.toString() + "\" у бота нет. Ты уверен, что всё правильно ввел? Попробуй посмотреть доступные комманды \"!инфо\" ").addMedia("photo286477373_399674456").sendMessage(vkUser, user.getTypeID());
             } catch (Exception e) {
                 new CrashFileHelper(e);
                 e.printStackTrace();
