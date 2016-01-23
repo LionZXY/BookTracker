@@ -1,10 +1,10 @@
 package com.lionzxy.vkapi.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,5 +46,40 @@ public class UsersFile {
             Logger.getLogger().print("Не удалось создать файл " + path);
         }
         return null;
+    }
+
+    public static File getLinkAsFile(String url) {
+        File outputFile = new File("tmpFile" + url.substring(url.lastIndexOf(".")));
+        URL urlObj;
+        InputStream is = null;
+        BufferedReader br;
+        String line;
+        try {
+            outputFile.createNewFile();
+            urlObj = new URL(url);
+            is = urlObj.openStream();  // throws an IOExceptio
+
+            FileOutputStream outputStream = new FileOutputStream(outputFile);
+            DataInputStream inputStream = new DataInputStream(is);
+            byte[] buffer = new byte[4096];
+            int bytesRead = -1;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+            inputStream.close();
+
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (is != null) is.close();
+            } catch (IOException ioe) {
+
+            }
+        }
+        return outputFile;
     }
 }

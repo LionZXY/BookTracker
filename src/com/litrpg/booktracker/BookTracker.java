@@ -1,13 +1,16 @@
 package com.litrpg.booktracker;
 
 import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.market.Categories;
+import com.lionzxy.vkapi.market.Item;
+import com.lionzxy.vkapi.market.ParseCSV;
+import com.lionzxy.vkapi.market.VkMarketPhoto;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
-import com.litrpg.booktracker.message.MessageListiner;
 import com.litrpg.booktracker.mysql.MySql;
-import com.litrpg.booktracker.parsers.LitEraParser;
 import com.litrpg.booktracker.parsers.MainParser;
-import com.litrpg.booktracker.updaters.Updater;
+
+import java.io.File;
 
 /**
  * com.litrpg.booktracker
@@ -15,7 +18,7 @@ import com.litrpg.booktracker.updaters.Updater;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.0F;
+    public static float VERSION = 1.1F;
     public static boolean stop = false;
 
     static {
@@ -26,14 +29,18 @@ public class BookTracker {
     public static VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
 
     public static void main(String... args) {
+        // System.out.println(Item.addItem(vk, 112637507, "Test", "TestTestTest", 304, 100, "http://velasat.ru/images/stories/virtuemart/product/_______________w_5624b934c5f33[1].png"));
+        //Categories.getAllCategories(vk);
+        new ParseCSV(new File("csvFile.csv")).addAllInMarket(vk,112637507);
+        /*
         sync();
         while (!stop) {
             for (int i = 0; i < 15; i++) {
                 MessageListiner.sme.checkMessage(vk);
                 VKUser.sleep(1000 * 60);
             }
-            Updater.checkAllBooks();
-        }
+            Updater.checkAllBooks()
+        }*/
         //new LitEraParser("https://lit-era.com/book/o-polze-neudachnoi-pomolvki-b2952").getAuthors();
 
     }

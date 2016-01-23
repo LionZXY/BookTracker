@@ -29,7 +29,6 @@ public class VkFile {
         req.put("title", fileName);
         req.put("tags", "book");
         JSONObject answer = (JSONObject) ((JSONArray) vkUser.getAnswer("docs.save", req).get("response")).get(0);
-        System.out.println(answer);
         bookId = Math.toIntExact((Long) answer.get("did"));
         ownerId = Math.toIntExact((Long) answer.get("owner_id"));
         url = (String) answer.get("url");

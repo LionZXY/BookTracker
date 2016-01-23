@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.updaters.event;
 
 import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.mysql.MySql;
 
 import java.util.Date;
 import java.util.EventObject;
@@ -24,7 +25,7 @@ public class BookUpdateEvent extends EventObject {
 
     @Override
     public String toString() {
-        return "#прода@litrpg_book\n\n" + book.toString() + "Добавленно продолжение от " + updateTime + ": " + book.getSize() / 1000 + "К (" + "+" + sizeUp + " Знаков).";
+        return "#прода@litrpg_book\n\n" + book.toString() + "Добавленно продолжение от " + MySql.dateToString(updateTime) + ": " + book.getSize() / 1000 + "К (" + "+" + sizeUp + " Знаков).\n\n" + book.getUrl();
     }
 }
 

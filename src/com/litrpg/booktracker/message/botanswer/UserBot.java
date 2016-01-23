@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.message.botanswer;
 
+import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.messages.Message;
@@ -17,7 +18,7 @@ import com.litrpg.booktracker.user.IUser;
  * BookTracker
  */
 public class UserBot implements IAnswer {
-    Message errorMsg = new Message("Простите... Кажется, что-то пошло не так :( Я не смог обработать Вашу комманду").addMedia("photo286477373_399674007");
+    Message errorMsg = new Message("Простите... Кажется, что-то пошло не так :( Я не смог обработать Вашу команду").addMedia("photo286477373_399674007");
 
     @Override
     public void onMessage(Message msg, VKUser vkUser) {
@@ -36,21 +37,25 @@ public class UserBot implements IAnswer {
                         new Message("У Вас нет прав доступа на это действие.").addMedia("photo286477373_399685563").sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().startsWith("!добавитьКнигу")) {
                     user.addSub(MainParser.getBook(msg.toString().substring(15)));
-                    new Message("Книга успешно добавленна к Вам в обновления. Как только она обновиться, мы дадим Вам знать!").addMedia("photo286477373_399676422").sendMessage(vkUser, user.getTypeID());
+                    new Message("Книга успешно добавлена к Вам в обновления. Как только она обновится, мы дадим Вам знать!").addMedia("photo286477373_399676422").sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().equalsIgnoreCase("!наЧтоПодписан")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("На данный момент Вы подписанны на следующие книги:\n");
-                    for (IBook book : user.getSubsBook())
-                        sb.append(book.getAuthors().get(0)).append(" \"").append(book.getNameBook()).append("\"\n");
+                    if (user.getSubsBook().size() != 0) {
+                        sb.append("На данный момент Вы подписаны на следующие книги:\n");
+                        for (IBook book : user.getSubsBook())
+                            sb.append(book.getAuthors().get(0)).append(" \"").append(book.getNameBook()).append("\"\n");
+                    }
                     if (user.getSubsAuthor().size() != 0) {
                         sb.append("Так же Вы еще подписаны на ряд авторов:\n");
                         for (Author author : user.getSubsAuthor())
                             sb.append(author.getName()).append("\n");
                     }
+                    if (sb.length() == 0)
+                        sb.append("Хм... Вижу, вы не подписаны ни на одну из книг. Напишите \"!добавитьКнигу %ссылка%\" и сможете следить за обновлениями.");
                     new Message(sb.toString()).sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().equalsIgnoreCase("!инфо")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("Что прикажете господин?\n");
+                    sb.append("Что прикажете, Господин?\n");
                     sb.append("* \"!пинг\" - Проверка доступности бота.\n");
                     sb.append("* \"!добавитьКнигу %ссылка%\" - Добавить книгу в проверку на обновление.\n");
                     sb.append("* \"!скачать %ссылка%\" - Минимальный уровень доступа 50. Ваш - ").append(user.getPerm()).append(".\n");
@@ -63,6 +68,7 @@ public class UserBot implements IAnswer {
                 } else
                     new Message("Хм... Такой команды у бота нет. Ты уверен, что всё правильно ввел? Попробуй посмотреть доступные комманды \"!инфо\" ").addMedia("photo286477373_399674456").sendMessage(vkUser, user.getTypeID());
             } catch (Exception e) {
+                new CrashFileHelper(e);
                 e.printStackTrace();
                 Logger.getLogger().print("Ошибка при обработке комманды " + msg.toString());
                 errorMsg.sendMessage(vkUser, user.getTypeID());

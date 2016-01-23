@@ -10,6 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -60,6 +61,7 @@ public class VKUser {
     }
 
     public static JSONObject getAnswer(String method, HashMap<String, String> params, @Nullable VKUser vkUser) {
+
         try {
             try {
                 try {
@@ -86,8 +88,8 @@ public class VKUser {
                     conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     conn.setRequestProperty("charset", "UTF-8");
                     conn.setRequestProperty("Content-Length", Integer.toString(postDataBytes.length));
-
-                    DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+                    DataOutputStream wr;
+                    wr = openConn(conn);
                     wr.write(postDataBytes);
                     wr.flush();
                     wr.close();
@@ -208,5 +210,20 @@ public class VKUser {
             }
         leaveFromChat.add(chatId);
         return false;
+    }
+
+    public static DataOutputStream openConn(HttpURLConnection conn) {
+        DataOutputStream os = null;
+        int timeout = 1000;
+        while (os == null) {
+            try {
+                conn.setConnectTimeout(timeout);
+                os = new DataOutputStream(conn.getOutputStream());
+            } catch (Exception e) {
+                log.print("Ошибка соединения.");
+            }
+            timeout = timeout * 2;
+        }
+        return os;
     }
 }
