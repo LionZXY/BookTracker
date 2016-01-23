@@ -8,6 +8,7 @@ import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.parsers.other.ToText;
 import com.litrpg.booktracker.user.IUser;
@@ -35,7 +36,7 @@ public class UserBot implements IAnswer {
                                 .addMedia(new VkFile(ToText.getAsFile(MainParser.getBook(msg.toString().substring(9))), vkUser).getAsVkMedia()).sendMessage(vkUser, user.getTypeID());
                     else
                         new Message("У Вас нет прав доступа на это действие.").addMedia("photo286477373_399685563").sendMessage(vkUser, user.getTypeID());
-                } else if (msg.toString().startsWith("!добавитьКнигу")) {
+                } else if (msg.toString().startsWith("!добавитьКнигу") && TypeSite.getTypeFromUrl(msg.toString().substring(15)) != TypeSite.Unknown) {
                     user.addSub(MainParser.getBook(msg.toString().substring(15)));
                     new Message("Книга успешно добавлена к Вам в обновления. Как только она обновится, мы дадим Вам знать!").addMedia("photo286477373_399676422").sendMessage(vkUser, user.getTypeID());
                 } else if (msg.toString().equalsIgnoreCase("!наЧтоПодписан")) {

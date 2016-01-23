@@ -23,7 +23,8 @@ public class ToText {
         if (book.getType().equals(TypeSite.LITERA)) {
             LinkedHashMap<Integer, String> partValue = new LinkedHashMap<>();
             for (String part : new LitEraParser(book.getUrl()).findWord("<option value=\"\">Содержание</option>", "</select>").replaceFirst("                                                                                                            ", "").split("                                                                                                                                                "))
-                partValue.put(Integer.parseInt(LitEraParser.findWord(part, "<option value=\"", "\">")), LitEraParser.findWord(part, ">", "<"));
+                if (part.length() > 10 && part.contains("<option value=\""))
+                    partValue.put(Integer.parseInt(LitEraParser.findWord(part, "<option value=\"", "\">")), LitEraParser.findWord(part, ">", "<"));
             StringBuilder bookText = new StringBuilder();
             addFB2Info(bookText, book);
             for (Integer part : partValue.keySet()) {

@@ -39,7 +39,7 @@ public class LitEraParser extends MainParser {
     }
 
     public String getAnnotation() {
-        return findWord("<h4>Аннотация:</h4>", "</div>").replaceAll("<br />", "\n").replaceFirst("                                            ", "");
+        return findWord("<h4>Аннотация:</h4>", "</div>").replaceAll("<br />", "\n").replaceFirst("                                            ", "").replaceAll("\n                                                                                                ", "");
     }
 
     public Date getDateEdit() {
@@ -90,5 +90,6 @@ public class LitEraParser extends MainParser {
     public static String findWord(String parse, String startWith, String endWith) {
         int first = parse.indexOf(startWith);
         return parse.substring(first + startWith.length(), parse.indexOf(endWith, first));
+
     }
 }
