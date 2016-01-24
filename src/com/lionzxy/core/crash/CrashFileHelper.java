@@ -15,15 +15,19 @@ public class CrashFileHelper {
 
     public CrashFileHelper(Exception e) {
         try {
-            File crashFile = new File("/crash/" + dateToString(new Date()) + "-crash.log");
-            if (crashFile.createNewFile()) {
-                crashFile.getParentFile().mkdirs();
-                crashFile.createNewFile();
-            }
+            File crashFile = new File(System.getProperty("user.dir") + "/crash/" + dateToString(new Date()) + "-crash.log");
+            System.out.println(crashFile.getPath());
+            crashFile.getParentFile().mkdirs();
+            crashFile.createNewFile();
             PrintWriter pw = new PrintWriter(new FileWriter(crashFile));
+            pw.print("---- Crash Report ----\n\n\n");
+            pw.print("Time: \n" + new Date() +
+                    "\nDescription: " + e.getLocalizedMessage() + "\n\n");
             e.printStackTrace(pw);
+            pw.flush();
+            pw.close();
         } catch (Exception ex) {
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
@@ -31,7 +35,7 @@ public class CrashFileHelper {
         //YYYY-MM-DD HH:MM:SS
         CalendarDate calendarDate = BaseCalendar.getGregorianCalendar().getCalendarDate(date.getTime());
         String dateStr = calendarDate.getYear() + "-" + calendarDate.getMonth() + "-" + calendarDate.getDayOfMonth();
-        dateStr += "_" + calendarDate.getHours() + ":" + calendarDate.getMinutes() + ":" + calendarDate.getSeconds();
+        dateStr += "_" + calendarDate.getHours() + "." + calendarDate.getMinutes() + "." + calendarDate.getSeconds();
         return dateStr;
     }
 }

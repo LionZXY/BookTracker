@@ -110,10 +110,15 @@ public class MySql implements IBookUpdateListiner {
 
     public List<IUser> getUsersFromTable() {
         List<IUser> users = new ArrayList<>();
-        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "userid", "subscribes", "permission"), "users")) {
+        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "userid", "subscribes", "permission", "sizeUpdate"), "users")) {
             switch (UsersType.getType((String) row.get("userid"))) {
-                case VK:
-                    users.add(new VKUser((String) row.get("userid"), (String) row.get("subscribes")).setIdInDB((Integer) row.get("id")).setPerm((Integer) row.get("permission")));
+                case VK: {
+                    IUser user = new VKUser((String) row.get("userid"), (String) row.get("subscribes")).setIdInDB((Integer) row.get("id")).setPerm((Integer) row.get("permission"));
+                    if (row.get("sizeUpdate") != null)
+                        user.setSizeUpdate((Integer) row.get("sizeUpdate"));
+                    users.add(user);
+
+                }
             }
         }
         return users;
@@ -237,7 +242,7 @@ public class MySql implements IBookUpdateListiner {
 
     public void updateUser(IUser user) {
         try {
-            statement.execute("UPDATE users SET subscribes = \"" + user.getSubAsString() + "\", permission = \"" + user.getPerm() + "\" WHERE id = " + user.getDBId() + ";");
+            statement.execute("UPDATE users SET subscribes = \"" + user.getSubAsString() + "\", permission = \"" + user.getPerm() + "\", sizeUpdate = \"" + user.getSizeUpdate() + "\" WHERE id = " + user.getDBId() + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }

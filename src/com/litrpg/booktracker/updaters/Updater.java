@@ -16,7 +16,7 @@ import com.litrpg.booktracker.user.Users;
  */
 public class Updater implements IBookUpdateListiner {
 
-    public static final int minSizeUp = 50;
+    public static final int minSizeUp = 0;
 
     public static BookUpdateSubscribe subscribe = new BookUpdateSubscribe();
     public static LitEraUpdater litera = new LitEraUpdater();

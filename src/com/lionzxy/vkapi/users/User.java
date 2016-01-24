@@ -95,5 +95,4 @@ public class User {
     public boolean equals(Object obj) {
         return obj instanceof User && ((User) obj).getId() == getId();
     }
-
 }

@@ -21,7 +21,7 @@ public class VKUser implements IUser {
     List<IBook> books = new ArrayList<>();
     List<Author> authors = new ArrayList<>();
     int perm = 0;
-    int idInDB = -1, idInVk = -1;
+    int idInDB = -1, idInVk = -1, sizeUpdate = 0;
 
     public VKUser(String id, String subcr) {
         idInVk = Integer.parseInt(id.substring(id.indexOf("_") + 1));
@@ -58,6 +58,17 @@ public class VKUser implements IUser {
     @Override
     public int getTypeID() {
         return idInVk;
+    }
+
+    @Override
+    public IUser setSizeUpdate(int sizeUpdate) {
+        this.sizeUpdate = sizeUpdate;
+        return this;
+    }
+
+    @Override
+    public int getSizeUpdate() {
+        return sizeUpdate;
     }
 
     @Override
@@ -118,8 +129,10 @@ public class VKUser implements IUser {
 
     @Override
     public void onUpdateBook(BookUpdateEvent e) {
-        new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
-        Logger.getLogger().print("Отправленно сообщение об обновлении книги \"" + e.book.getNameBook() + "\" пользователю vk с id" + idInVk);
+        if (e.sizeUp > sizeUpdate) {
+            new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
+            Logger.getLogger().print("Отправленно сообщение об обновлении книги \"" + e.book.getNameBook() + "\" пользователю vk с id" + idInVk);
+        }
     }
 
     @Override

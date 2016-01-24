@@ -8,7 +8,9 @@ import com.lionzxy.vkapi.market.ParseCSV;
 import com.lionzxy.vkapi.market.VkMarketPhoto;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
+import com.litrpg.booktracker.message.MessageBuffer;
 import com.litrpg.booktracker.message.MessageListiner;
+import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.LitEraParser;
 import com.litrpg.booktracker.parsers.MainParser;
@@ -23,7 +25,7 @@ import java.io.File;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.1F;
+    public static float VERSION = 1.2F;
     public static boolean stop = false;
 
     static {
@@ -38,8 +40,11 @@ public class BookTracker {
         try {
             sync();
             while (!stop) {
+                UserBot.fantasySubscr = vk.getUserList(98762647);
+                UserBot.litrpgSubscr = vk.getUserList(48785893);
                 for (int i = 0; i < 15; i++) {
                     MessageListiner.sme.checkMessage(vk);
+                    MessageBuffer.flush(vk);
                     VKUser.sleep(1000 * 60);
                 }
                 Updater.checkAllBooks();

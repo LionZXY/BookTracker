@@ -110,7 +110,7 @@ public class Book implements IBook {
 
     @Override
     public IBook setAnnotation(String annotation) {
-        this.annotation = annotation.replaceAll("\n                                                                                                ", "");
+        this.annotation = annotation;
         return this;
     }
 

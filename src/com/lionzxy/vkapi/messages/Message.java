@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class Message {
     String message = null;
     StringBuilder media = new StringBuilder();
-    User user = null;
+    User user = null, toUser = null;
     Date date = null;
     boolean read_state, isOut, isChat = false;
     int idMess, idChat;
@@ -144,5 +144,27 @@ public class Message {
     public Message addFile(File file, VKUser vkUser) {
         addMedia(new VkFile(file, vkUser).getAsVkMedia());
         return this;
+    }
+
+    public int getColMedia() {
+        return media.toString().split(",").length;
+    }
+
+    public User getToUser() {
+        return toUser;
+    }
+
+    public Message setToUser(User user) {
+        toUser = user;
+        return this;
+    }
+
+    public String getMedia() {
+        return media.toString();
+    }
+
+    public void addMessage(Message msg) {
+        message += "\n===================\n" + msg.message;
+        addMedia(msg.getMedia());
     }
 }

@@ -15,9 +15,17 @@ public interface IUser {
     UsersType getType();
 
     List<IBook> getSubsBook();
+
     List<Author> getSubsAuthor();
+
     int getTypeID();
+
+    IUser setSizeUpdate(int sizeUpdate);
+
+    int getSizeUpdate();
+
     int getPerm();
+
     IUser setPerm(int perm);
 
     IUser addSub(IBook book);
