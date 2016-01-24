@@ -1,7 +1,6 @@
 package com.litrpg.booktracker.user;
 
 import com.litrpg.booktracker.parsers.MainParser;
-import com.litrpg.booktracker.updaters.Updater;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 

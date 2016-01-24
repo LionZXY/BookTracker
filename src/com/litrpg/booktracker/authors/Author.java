@@ -3,7 +3,6 @@ package com.litrpg.booktracker.authors;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.parsers.MainParser;
 
 import java.util.ArrayList;
 import java.util.List;

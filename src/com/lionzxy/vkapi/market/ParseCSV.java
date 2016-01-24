@@ -2,7 +2,9 @@ package com.lionzxy.vkapi.market;
 
 import com.lionzxy.vkapi.VKUser;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

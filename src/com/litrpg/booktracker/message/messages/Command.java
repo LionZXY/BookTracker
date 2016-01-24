@@ -1,10 +1,7 @@
 package com.litrpg.booktracker.message.messages;
 
 import com.lionzxy.vkapi.messages.Message;
-import com.lionzxy.vkapi.users.User;
 import com.litrpg.booktracker.BookTracker;
-import com.litrpg.booktracker.books.Book;
-import com.litrpg.booktracker.message.MessageBuffer;
 
 /**
  * com.litrpg.booktracker.message.messages

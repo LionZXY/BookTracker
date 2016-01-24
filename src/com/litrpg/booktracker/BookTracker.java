@@ -2,22 +2,14 @@ package com.litrpg.booktracker;
 
 import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
-import com.lionzxy.vkapi.market.Categories;
-import com.lionzxy.vkapi.market.Item;
-import com.lionzxy.vkapi.market.ParseCSV;
-import com.lionzxy.vkapi.market.VkMarketPhoto;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
 import com.litrpg.booktracker.message.MessageBuffer;
 import com.litrpg.booktracker.message.MessageListiner;
 import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
-import com.litrpg.booktracker.parsers.LitEraParser;
 import com.litrpg.booktracker.parsers.MainParser;
-import com.litrpg.booktracker.parsers.other.ToText;
 import com.litrpg.booktracker.updaters.Updater;
-
-import java.io.File;
 
 /**
  * com.litrpg.booktracker
