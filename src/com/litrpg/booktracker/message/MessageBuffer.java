@@ -3,6 +3,7 @@ package com.litrpg.booktracker.message;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.messages.Message;
 import com.lionzxy.vkapi.users.User;
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.user.IUser;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class MessageBuffer {
     }
 
     public static void flush(VKUser vkUser) {
+        Logger.getLogger().print("Отправка " + messages.size() + " сообщений");
         for (Message message : messages)
             message.sendMessage(vkUser, message.getToUser());
         messages = new ArrayList<>();

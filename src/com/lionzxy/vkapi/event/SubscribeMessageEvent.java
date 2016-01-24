@@ -48,6 +48,7 @@ public class SubscribeMessageEvent {
     }
 
     public void checkMessage(VKUser vkUser) {
+        Logger.getLogger().print("Проверка сообщений начата...");
         List<JSONObject> msgObjs = new ArrayList<>();
         while (msgObjs.size() == 0 || Integer.parseInt(msgObjs.get(msgObjs.size() - 1).get("read_state").toString()) == 0) {
             HashMap<String, String> req = new HashMap<>();
@@ -61,5 +62,6 @@ public class SubscribeMessageEvent {
 
         for (JSONObject jsonObject : msgObjs)
             sendMSG(jsonObject, vkUser);
+        Logger.getLogger().print(msgObjs.size() + " сообщений проверенно");
     }
 }
