@@ -28,7 +28,7 @@ public class Command {
     static {
         StringBuilder sb = new StringBuilder();
         sb.append("Большое Вам спасибо! Ваше сообщение отправленно одному из администраторов\n");
-        sb.append("Если вас это интересует, вот наши реквезиты:\n");
+        sb.append("Если вас это интересует, вот наши реквизиты:\n");
         sb.append("Никита Куликов (Основной пОграммист) - Qiwi: +7 (926) 659-93-36\n");
         money = new Message(sb.toString()).addMedia("photo286477373_399995250");
 

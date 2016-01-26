@@ -39,7 +39,7 @@ public class LitEraParser extends MainParser {
     }
 
     public String getAnnotation() {
-        return findWord("<h4>Аннотация:</h4>", "</div>").replaceAll("<br />", "\n").replaceFirst("                                            ", "").replaceAll("\n                                                                                                ", "");
+        return removeLastSpace(findWord("<h4>Аннотация:</h4>", "</div>").replaceAll("<br />", "\n").replaceFirst("                                            ", ""));
     }
 
     public Date getDateEdit() {
@@ -91,5 +91,14 @@ public class LitEraParser extends MainParser {
         int first = parse.indexOf(startWith);
         return parse.substring(first + startWith.length(), parse.indexOf(endWith, first));
 
+    }
+
+    public static String removeLastSpace(String str) {
+        StringBuilder sb = new StringBuilder(str);
+        for (int i = sb.length(); i > 0; i++)
+            if (sb.charAt(i) == ' ')
+                sb.deleteCharAt(i);
+            else return sb.toString();
+        return str;
     }
 }

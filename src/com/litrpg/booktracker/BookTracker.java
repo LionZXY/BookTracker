@@ -11,6 +11,8 @@ import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.Updater;
 
+import java.util.TimeZone;
+
 /**
  * com.litrpg.booktracker
  * Created by LionZXY on 02.01.2016.
@@ -28,7 +30,7 @@ public class BookTracker {
     public static VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
 
     public static void main(String... args) {
-
+        TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
         try {
             sync();
             while (!stop) {

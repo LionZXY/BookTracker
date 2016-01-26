@@ -86,7 +86,8 @@ public class UserBot implements IAnswer {
                     BookTracker.DB.updateUser(user);
                     MessageBuffer.addMessage(new Message("Теперь оповещения будут приходить вам, только если размер обновления больше " + user.getSizeUpdate() + " символов. Старый минимальный порог обновления " + oldSize + " символов."), user);
                 } else if (msg.toString().startsWith("!сказатьСпасибо")) {
-                    MessageBuffer.addMessage(new Message("Сообщение от " + user.getTypeID() + ":\n" + msg.toString().substring(16)), new User(76844299));
+                    if (msg.toString().length() > 16)
+                        MessageBuffer.addMessage(new Message("Сообщение от " + user.getTypeID() + ":\n" + msg.toString().substring(16)), new User(76844299));
                     MessageBuffer.addMessage(Command.money, user);
                 } else if (msg.toString().startsWith("!бот версия")) {
                     MessageBuffer.addMessage(Command.version, user);
