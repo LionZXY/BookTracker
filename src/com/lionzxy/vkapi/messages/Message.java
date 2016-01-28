@@ -4,6 +4,7 @@ import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.users.User;
+import com.lionzxy.vkapi.util.Logger;
 import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONObject;
 
@@ -103,7 +104,9 @@ public class Message {
         if (obj != null && obj.get("error") == null)
             VKUser.log.print("Send successful");
         else {
-            new VKException(obj.toJSONString(), from);
+            if (obj != null && from != null)
+                new VKException(obj.toJSONString(), from);
+            else Logger.getLogger().print("Error! Message not send!");
             return sendMessage(from, to);
         }
         return true;

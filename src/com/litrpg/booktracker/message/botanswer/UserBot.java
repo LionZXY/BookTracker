@@ -82,7 +82,7 @@ public class UserBot implements IAnswer {
                     MessageBuffer.addMessage(Error.withoutProc, user);
                 } else if (msg.toString().startsWith("!минимальныйРазмер")) {
                     int oldSize = user.getSizeUpdate();
-                    user.setSizeUpdate(Integer.parseInt(msg.toString().substring(18)));
+                    user.setSizeUpdate(Integer.parseInt(msg.toString().substring(19)));
                     BookTracker.DB.updateUser(user);
                     MessageBuffer.addMessage(new Message("Теперь оповещения будут приходить вам, только если размер обновления больше " + user.getSizeUpdate() + " символов. Старый минимальный порог обновления " + oldSize + " символов."), user);
                 } else if (msg.toString().startsWith("!сказатьСпасибо")) {
