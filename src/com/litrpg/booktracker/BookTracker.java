@@ -19,7 +19,7 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.2F;
+    public static float VERSION = 1.3F;
     public static boolean stop = false;
 
     static {
