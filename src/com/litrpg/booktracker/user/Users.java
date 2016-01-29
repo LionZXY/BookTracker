@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.user;
 
 import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 
@@ -15,6 +16,14 @@ public class Users implements IBookUpdateListiner {
         for (IUser user : MainParser.users) {
             if (user.isBookSubscribe(e.book))
                 user.onUpdateBook(e);
+        }
+    }
+
+    @Override
+    public void authorUpdate(AuthorUpdateEvent e) {
+        for (IUser user : MainParser.users) {
+            if (user.isAuthorSubscribe(e.getAuthor()))
+                user.onUpdateAuthor(e);
         }
     }
 }

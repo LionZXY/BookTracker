@@ -3,8 +3,10 @@ package com.litrpg.booktracker.authors;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
+import com.litrpg.booktracker.updaters.IUpdateObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,9 +14,11 @@ import java.util.List;
  * Created by LionZXY on 02.01.2016.
  * BookTracker
  */
-public class Author {
+public class Author implements IUpdateObject{
     private String name, url = "";
     private TypeSite typeSite;
+    Date lastCheck = null;
+    Date lastUpdate = null;
     List<IBook> books = new ArrayList<>();
     int inDB = -1;
 
@@ -83,5 +87,29 @@ public class Author {
             sb.append(author.getName());
         }
         return sb.toString();
+    }
+
+
+    @Override
+    public Date getLastCheck() {
+        if(lastCheck == null)
+            return new Date();
+        return lastCheck;
+    }
+
+    public Author setLastCheck(Date lastCheck) {
+        this.lastCheck = lastCheck;
+        return this;
+    }
+
+    @Override
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    @Override
+    public Author setLastUpdate(Date date) {
+        this.lastUpdate = date;
+        return this;
     }
 }

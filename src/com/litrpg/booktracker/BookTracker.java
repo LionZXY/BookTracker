@@ -38,11 +38,13 @@ public class BookTracker {
                 UserBot.fantasySubscr = vk.getUserList(98762647);
                 UserBot.litrpgSubscr = vk.getUserList(48785893);
                 for (int i = 0; i < 15; i++) {
+                    Logger.getLogger().print("Проверка сообщений...");
                     MessageListiner.sme.checkMessage(vk);
                     MessageBuffer.flush(vk);
                     VKUser.sleep(1000 * 60);
                 }
                 Updater.checkAllBooks();
+                Updater.checkAllAuthor();
             }
         } catch (Exception e) {
             new CrashFileHelper(e);

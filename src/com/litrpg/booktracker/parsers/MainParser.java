@@ -27,25 +27,33 @@ public abstract class MainParser {
                     return new LitEraParser(url).parseBook();
             }
         return book;
+    }
 
+    public static Author getAuthor(String url){
+        Author author = findAuthor(url);
+        if(author == null)
+            switch (TypeSite.getTypeFromUrl(url)) {
+                case LITERA:
+                    return new LitEraParser(url).getAuthor();
+            }
+        return author;
     }
 
     public static IBook findBook(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (IBook book : books) {
-            if (book.getUrl().equalsIgnoreCase(url))
+            if (book.getUrl().startsWith(url))
                 return book;
         }
         return null;
     }
 
     public static Author findAuthor(String url) {
-        System.out.println(url);
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (Author author : authors) {
-            if (author.getUrl().equalsIgnoreCase(url))
+            if (author.getUrl().startsWith(url))
                 return author;
         }
         return null;

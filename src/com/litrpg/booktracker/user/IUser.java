@@ -2,6 +2,7 @@ package com.litrpg.booktracker.user;
 
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 
 import java.util.List;
@@ -29,14 +30,17 @@ public interface IUser {
     IUser setPerm(int perm);
 
     IUser addSub(IBook book);
-
+    IUser addSub(Author book);
+    IUser removeSub(IBook book);
+    IUser removeSub(Author book);
     int getDBId();
 
     String getSubAsString();
 
     boolean isBookSubscribe(IBook book);
-
+    boolean isAuthorSubscribe(Author author);
     void onUpdateBook(BookUpdateEvent e);
+    void onUpdateAuthor(AuthorUpdateEvent e);
 
     IUser setIdInDB(int id);
 }

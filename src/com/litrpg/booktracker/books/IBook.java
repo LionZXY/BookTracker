@@ -21,7 +21,7 @@ public interface IBook {
     String getUrl();
     Date getLastUpdate();
     int getIdInDB();
-    Date getLastChecked();
+    Date getLastCheck();
     List<Genres> getGenres();
     int getSize();
 

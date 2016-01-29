@@ -30,9 +30,10 @@ public class MessageBuffer {
     public static void addMessage(Message msg, IUser user) {
         addMessage(msg, new User(user.getTypeID()));
     }
-
+    public static void addMessage(String msg, IUser user) { addMessage(new Message(msg),user);}
     public static void flush(VKUser vkUser) {
-        VKUser.log.print("Отправка " + messages.size() + " сообщений");
+        if (messages.size() != 0)
+            VKUser.log.print("Отправка " + messages.size() + " сообщений");
         for (Message message : messages)
             message.sendMessage(vkUser, message.getToUser());
         messages = new ArrayList<>();

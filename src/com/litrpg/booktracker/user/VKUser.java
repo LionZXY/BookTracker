@@ -7,6 +7,7 @@ import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 
 import java.util.ArrayList;
@@ -36,6 +37,27 @@ public class VKUser implements IUser {
     public VKUser addSub(IBook book) {
         if (!books.contains(book))
             books.add(book);
+        BookTracker.DB.updateUser(this);
+        return this;
+    }
+
+    public VKUser addSub(Author author) {
+        if (!authors.contains(author))
+            authors.add(author);
+        BookTracker.DB.updateUser(this);
+        return this;
+    }
+
+    @Override
+    public IUser removeSub(IBook book) {
+        books.remove(book);
+        BookTracker.DB.updateUser(this);
+        return this;
+    }
+
+    @Override
+    public IUser removeSub(Author author) {
+        authors.remove(author);
         BookTracker.DB.updateUser(this);
         return this;
     }
@@ -128,11 +150,22 @@ public class VKUser implements IUser {
     }
 
     @Override
+    public boolean isAuthorSubscribe(Author author) {
+        return authors.contains(author);
+    }
+
+    @Override
     public void onUpdateBook(BookUpdateEvent e) {
         if (e.sizeUp > sizeUpdate) {
             new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
             Logger.getLogger().print("Отправленно сообщение об обновлении книги \"" + e.book.getNameBook() + "\" пользователю vk с id" + idInVk);
         }
+    }
+
+    @Override
+    public void onUpdateAuthor(AuthorUpdateEvent e) {
+        new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
+        Logger.getLogger().print("Отправленно сообщение об обновлении автора \"" + e.getAuthor() + "\" пользователю vk с id" + idInVk);
     }
 
     @Override

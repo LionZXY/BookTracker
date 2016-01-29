@@ -29,6 +29,21 @@ public class LitEraParser extends MainParser {
         this.html = URLHelper.getSiteAsString(url, "utf8");
     }
 
+    public Author getAuthor() {
+        try {
+            return getAuthors().get(0);
+        } catch (Exception e) {
+            if (url.startsWith("https://lit-era.com/author/")) {
+                Author author = new Author(findWord("<h1 class=\"narrow pull-left\">", " </h1>"), url);
+                author.setLastUpdate(new Date());
+                author.setLastCheck(new Date());
+                MainParser.addAuthor(author);
+                return author;
+            }
+        }
+        return null;
+    }
+
     public IBook parseBook() {
         IBook book = MainParser.findBook(url);
         if (book == null) {
@@ -71,6 +86,8 @@ public class LitEraParser extends MainParser {
         Author author = MainParser.findAuthor(url);
         if (author == null) {
             author = new Author(html.substring(first + " class=\"author\">".length() + 1, html.indexOf("</a>", first)), url);
+            author.setLastUpdate(new Date());
+            author.setLastCheck(new Date());
             author.setTypeSite(TypeSite.LITERA);
             MainParser.addAuthor(author);
         }

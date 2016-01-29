@@ -8,4 +8,6 @@ package com.litrpg.booktracker.updaters.event;
 public interface IBookUpdateListiner {
 
     void bookUpdate(BookUpdateEvent e);
+
+    void authorUpdate(AuthorUpdateEvent e);
 }

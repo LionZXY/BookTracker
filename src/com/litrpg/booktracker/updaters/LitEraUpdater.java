@@ -1,7 +1,10 @@
 package com.litrpg.booktracker.updaters;
 
+import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.helper.URLHelper;
+import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -32,7 +35,7 @@ public class LitEraUpdater {
     public BookUpdateEvent checkUpdateBook(IBook book) {
         for (Object bookJson : jsonArray) {
             if (bookJson instanceof JSONObject && ((String) ((JSONObject) bookJson).get("url")).startsWith(book.getUrl())) {
-                  if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() > book.getLastUpdate().getTime())
+                if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() > book.getLastUpdate().getTime())
                     if (Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize() > Updater.minSizeUp) {
                         BookUpdateEvent bookUpdateEvent = Updater.subscribe.getBookEvent(book, Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize(), stringToDate((String) ((JSONObject) bookJson).get("updated_at")));
                         return bookUpdateEvent;
@@ -40,6 +43,20 @@ public class LitEraUpdater {
             }
         }
         book.setLastCheck(new Date());
+        return null;
+    }
+
+    public AuthorUpdateEvent checkUpdateAuthor(Author author) {
+        for (Object updateJson : jsonArray) {
+            if (updateJson instanceof JSONObject
+                    && ((String) ((JSONObject) updateJson).get("author")).startsWith(author.getName())
+                    && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() > author.getLastUpdate().getTime()) {
+                IBook book = MainParser.getBook((String) ((JSONObject) updateJson).get("url"));
+                if (book.getAuthors().contains(author))
+                    return Updater.subscribe.getAuthorEvent(author, book, stringToDate((String) ((JSONObject) updateJson).get("updated_at")));
+            }
+        }
+        author.setLastCheck(new Date());
         return null;
     }
 

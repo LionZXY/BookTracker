@@ -1,9 +1,11 @@
 package com.litrpg.booktracker.updaters;
 
 import com.lionzxy.vkapi.util.Logger;
+import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.parsers.LitEraParser;
 import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateSubscribe;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
@@ -33,6 +35,12 @@ public class Updater implements IBookUpdateListiner {
         Logger.getLogger().print("Всё книги проверенны!");
     }
 
+    public static void checkAllAuthor() {
+        Logger.getLogger().print("Проверка авторов началась. На очереди " + MainParser.authors.size() + " книг");
+        MainParser.authors.forEach(Updater::checkAuthor);
+        Logger.getLogger().print("Всё авторы проверенны!");
+    }
+
     public static void checkBook(IBook book) {
         BookUpdateEvent event = null;
         switch (book.getType()) {
@@ -41,6 +49,18 @@ public class Updater implements IBookUpdateListiner {
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + " от " + event.updateTime);
+            subscribe.sendUpdateEvent(event);
+        }
+    }
+
+    public static void checkAuthor(Author author) {
+        AuthorUpdateEvent event = null;
+        switch (author.getTypeSite()) {
+            case LITERA:
+                event = litera.checkUpdateAuthor(author);
+        }
+        if (event != null) {
+            Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + " от " + event.getUpdateTime());
             subscribe.sendUpdateEvent(event);
         }
     }
@@ -54,5 +74,10 @@ public class Updater implements IBookUpdateListiner {
         }
         e.book.setAnnotation(annotation).setLastUpdate(e.updateTime).setSize(e.sizeUp + e.book.getSize());
         System.out.println(e);
+    }
+
+    @Override
+    public void authorUpdate(AuthorUpdateEvent e) {
+        e.getAuthor().setLastUpdate(e.getUpdateTime());
     }
 }

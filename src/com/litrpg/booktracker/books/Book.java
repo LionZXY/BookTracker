@@ -9,6 +9,7 @@ import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.parsers.other.ToText;
+import com.litrpg.booktracker.updaters.IUpdateObject;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by LionZXY on 12.01.2016.
  * BookTracker
  */
-public class Book implements IBook {
+public class Book implements IBook, IUpdateObject{
     TypeSite typeSite;
     String nameBook;
     String annotation;
@@ -52,7 +53,6 @@ public class Book implements IBook {
 
     @Override
     public List<Author> getAuthors() {
-        System.out.println(authors.size());
         return authors;
     }
 
@@ -66,10 +66,12 @@ public class Book implements IBook {
         return url;
     }
 
+
     @Override
     public Date getLastUpdate() {
         return lastUpdate;
     }
+
 
     @Override
     public int getIdInDB() {
@@ -80,7 +82,7 @@ public class Book implements IBook {
     }
 
     @Override
-    public Date getLastChecked() {
+    public Date getLastCheck() {
         if (lastChecked == null)
             return getLastUpdate();
         return lastChecked;
@@ -103,7 +105,7 @@ public class Book implements IBook {
     }
 
     @Override
-    public IBook setLastCheck(Date date) {
+    public Book setLastCheck(Date date) {
         this.lastChecked = date;
         return this;
     }
@@ -115,7 +117,7 @@ public class Book implements IBook {
     }
 
     @Override
-    public IBook setLastUpdate(Date lastUpdate) {
+    public Book setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
         return this;
     }
@@ -132,6 +134,6 @@ public class Book implements IBook {
 
     @Override
     public String toString() {
-        return getNameBook().toUpperCase() + "\n\n" + getAnnotation() + "Автор: " + ListHelper.getAsStringAuthorName(getAuthors()) + "\n\n";
+        return getNameBook().toUpperCase() + "\n\n" + getAnnotation() + "\n\nАвтор: " + ListHelper.getAsStringAuthorName(getAuthors()) + "\n\n";
     }
 }

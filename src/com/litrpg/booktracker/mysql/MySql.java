@@ -9,6 +9,7 @@ import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.Updater;
+import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 import com.litrpg.booktracker.user.IUser;
@@ -59,7 +60,7 @@ public class MySql implements IBookUpdateListiner {
         column.put("annotation", book.getAnnotation());
         column.put("url", book.getUrl());
         column.put("lastUpdate", dateToString(book.getLastUpdate()));
-        column.put("lastChecked", dateToString(book.getLastChecked()));
+        column.put("lastChecked", dateToString(book.getLastCheck()));
         column.put("genres", ListHelper.getAsStringGenr(book.getGenres()));
         column.put("size", String.valueOf(book.getSize()));
         addInTable("books", column);
@@ -72,6 +73,8 @@ public class MySql implements IBookUpdateListiner {
         column.put("name", author.getName());
         column.put("url", author.getUrl());
         column.put("books", author.getBooks());
+        column.put("lastUpdate", dateToString(author.getLastUpdate()));
+        column.put("lastCheck", dateToString(author.getLastCheck()));
         addInTable("authors", column);
         getIdAuthor(author);
     }
@@ -95,7 +98,7 @@ public class MySql implements IBookUpdateListiner {
                     (String) row.get("annotation"),
                     (String) row.get("url"),
                     MainParser.getAllAuthorById(ListHelper.parseString((String) row.get("authors"))),
-                    new Date(((Timestamp) row.get("lastUpdate")).getTime()),
+                    (Timestamp) row.get("lastUpdate"),
                     Genres.getGenrFromString((String) row.get("genres")),
                     (Integer) row.get("size")
             );
@@ -125,8 +128,8 @@ public class MySql implements IBookUpdateListiner {
 
     public List<Author> getAuthorsFromTable() {
         List<Author> authors = new ArrayList<>();
-        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "name", "url", "books"), "authors")) {
-            authors.add(new Author((String) row.get("name"), (String) row.get("url")).setIdDB((Integer) row.get("id")));
+        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "name", "url", "books", "lastUpdate", "lastCheck"), "authors")) {
+            authors.add(new Author((String) row.get("name"), (String) row.get("url")).setIdDB((Integer) row.get("id")).setLastCheck((Timestamp) row.get("lastCheck")).setLastUpdate((Timestamp) row.get("lastUpdate")));
         }
         return authors;
     }
@@ -233,7 +236,7 @@ public class MySql implements IBookUpdateListiner {
 
     public void updateAuthorBook(Author author) {
         try {
-            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\" WHERE id = " + author.getInDB() + ";");
+            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\", lastCheck = \"" + dateToString(author.getLastCheck()) + "\", lastUpdate = \"" + dateToString(author.getLastUpdate()) + "\" WHERE id = " + author.getInDB() + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -249,6 +252,8 @@ public class MySql implements IBookUpdateListiner {
 
     public static String dateToString(java.util.Date date) {
         //YYYY-MM-DD HH:MM:SS
+        if (date == null)
+            return dateToString(new Date());
         CalendarDate calendarDate = BaseCalendar.getGregorianCalendar().getCalendarDate(date.getTime());
         String dateStr = calendarDate.getYear() + "-" + calendarDate.getMonth() + "-" + calendarDate.getDayOfMonth();
         dateStr += " " + calendarDate.getHours() + ":" + calendarDate.getMinutes() + ":" + calendarDate.getSeconds();
@@ -273,5 +278,10 @@ public class MySql implements IBookUpdateListiner {
             Logger.getLogger().print("Ошибка при обновлении книги в базе данных");
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void authorUpdate(AuthorUpdateEvent e) {
+        updateAuthorBook(e.getAuthor());
     }
 }
