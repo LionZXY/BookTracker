@@ -56,7 +56,7 @@ public class SubscribeMessageEvent {
             req.put("offset", String.valueOf(msgObjs.size()));
             JSONArray array = (JSONArray) vkUser.getAnswer("messages.get", req).get("response");
             for (Object obj : array)
-                if (obj instanceof JSONObject && Integer.parseInt(((JSONObject) obj).get("read_state").toString()) == 0)
+                if (obj instanceof JSONObject)
                     msgObjs.add((JSONObject) obj);
         }
 
