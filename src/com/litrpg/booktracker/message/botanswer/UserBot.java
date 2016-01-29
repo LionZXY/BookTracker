@@ -10,7 +10,7 @@ import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.message.MessageBuffer;
+import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.litrpg.booktracker.message.messages.Command;
 import com.litrpg.booktracker.message.messages.Error;
 import com.litrpg.booktracker.parsers.MainParser;

@@ -66,7 +66,7 @@ public class LitEraParser extends MainParser {
 
     public List<Author> getAuthors() {
         //TODO Multiple choise
-        int first = html.indexOf("\" class=\"author\">");
+        int first = html.indexOf(" class=\"author\">");
         String url = "https://lit-era.com" + html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first);
         Author author = MainParser.findAuthor(url);
         if (author == null) {
@@ -95,7 +95,7 @@ public class LitEraParser extends MainParser {
 
     public static String removeLastSpace(String str) {
         StringBuilder sb = new StringBuilder(str);
-        for (int i = sb.length(); i > 0; i++)
+        for (int i = sb.length() - 1; i > 0; i--)
             if (sb.charAt(i) == ' ')
                 sb.deleteCharAt(i);
             else return sb.toString();

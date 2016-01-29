@@ -4,7 +4,7 @@ import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
-import com.litrpg.booktracker.message.MessageBuffer;
+import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.litrpg.booktracker.message.MessageListiner;
 import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
@@ -30,6 +30,7 @@ public class BookTracker {
     public static VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
 
     public static void main(String... args) {
+
         TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
         try {
             sync();

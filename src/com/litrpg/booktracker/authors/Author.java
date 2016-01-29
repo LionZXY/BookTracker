@@ -19,7 +19,6 @@ public class Author {
     int inDB = -1;
 
     public Author(String name, String url) {
-        //System.out.println(url);
         this.name = name;
         this.url = url;
         typeSite = TypeSite.getTypeFromUrl(url);
