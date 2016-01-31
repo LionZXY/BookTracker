@@ -18,7 +18,7 @@ public class MultipartUtility {
     private static final String LINE_FEED = "\r\n";
     private HttpURLConnection httpConn;
     private String charset;
-    private OutputStream outputStream;
+    public OutputStream outputStream;
     private PrintWriter writer;
 
     /**
@@ -139,6 +139,7 @@ public class MultipartUtility {
                     httpConn.getInputStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
+                System.out.println(line);
                 response.add(line);
             }
             reader.close();
@@ -148,5 +149,28 @@ public class MultipartUtility {
         }
 
         return response;
+    }
+
+    public MultipartUtility generateFilePart(String fieldName, String fileName){
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append(
+                "Content-Disposition: form-data; name=\"" + fieldName
+                        + "\"; filename=\"" + fileName + "\"")
+                .append(LINE_FEED);
+        writer.append(
+                "Content-Type: "
+                        + URLConnection.guessContentTypeFromName(fileName))
+                .append(LINE_FEED);
+        writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.flush();
+        return this;
+    }
+
+    public MultipartUtility finishFilePart() throws IOException{
+        outputStream.flush();
+        writer.append(LINE_FEED);
+        writer.flush();
+        return this;
     }
 }

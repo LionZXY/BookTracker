@@ -1,17 +1,15 @@
 package com.litrpg.booktracker;
 
-import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
-import com.lionzxy.vkapi.messages.MessageBuffer;
-import com.litrpg.booktracker.message.MessageListiner;
-import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
-import com.litrpg.booktracker.updaters.Updater;
+import com.litrpg.booktracker.updaters.SamLibUpdater;
 
-import java.util.TimeZone;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * com.litrpg.booktracker
@@ -30,8 +28,13 @@ public class BookTracker {
     public static VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
 
     public static void main(String... args) {
-
-        TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
+        //ToText.getAsFile(new SamLibParser("http://samlib.ru/g/gedeon/bard.shtml").parseBook());
+        try {
+            SamLibUpdater.getDaysFrom(new SimpleDateFormat("dd/MM/yyyy").parse("28/12/2015"),new Date());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        /*TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
         try {
             sync();
             while (!stop) {
@@ -48,7 +51,7 @@ public class BookTracker {
             }
         } catch (Exception e) {
             new CrashFileHelper(e);
-        }
+        }*/
     }
 
     static void sync() {

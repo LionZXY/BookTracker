@@ -5,7 +5,6 @@ import com.litrpg.booktracker.mysql.MySql;
 
 import java.util.Date;
 import java.util.EventObject;
-import java.util.GregorianCalendar;
 
 /**
  * com.litrpg.booktracker.updaters.event

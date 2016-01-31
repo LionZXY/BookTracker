@@ -50,14 +50,18 @@ public class VKUser implements IUser {
 
     @Override
     public IUser removeSub(IBook book) {
-        books.remove(book);
+        for (int i = 0; i < books.size(); i++)
+            if (books.get(i).getUrl().startsWith(book.getUrl()))
+                books.remove(i);
         BookTracker.DB.updateUser(this);
         return this;
     }
 
     @Override
     public IUser removeSub(Author author) {
-        authors.remove(author);
+        for (int i = 0; i < authors.size(); i++)
+            if (authors.get(i).getUrl().startsWith(author.getUrl()))
+                authors.remove(i);
         BookTracker.DB.updateUser(this);
         return this;
     }

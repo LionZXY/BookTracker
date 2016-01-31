@@ -40,7 +40,7 @@ public class URLHelper {
             try {
                 if (is != null) is.close();
             } catch (IOException ioe) {
-
+                ioe.printStackTrace();
             }
         }
         return stringBuilder.toString();

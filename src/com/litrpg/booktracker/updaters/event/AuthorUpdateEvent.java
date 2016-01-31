@@ -1,10 +1,8 @@
 package com.litrpg.booktracker.updaters.event;
 
 import com.litrpg.booktracker.authors.Author;
-import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.mysql.MySql;
-import com.litrpg.booktracker.updaters.LitEraUpdater;
 
 import java.util.Date;
 import java.util.EventObject;

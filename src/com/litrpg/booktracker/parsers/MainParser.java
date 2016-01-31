@@ -114,4 +114,10 @@ public abstract class MainParser {
                 return user;
         return null;
     }
+
+    public static String findWord(String parse, String startWith, String endWith) {
+        int first = parse.indexOf(startWith);
+        return parse.substring(first + startWith.length(), parse.indexOf(endWith, first));
+
+    }
 }

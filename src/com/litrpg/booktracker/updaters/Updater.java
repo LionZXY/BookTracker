@@ -46,6 +46,7 @@ public class Updater implements IBookUpdateListiner {
         switch (book.getType()) {
             case LITERA:
                 event = litera.checkUpdateBook(book);
+                break;
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + " от " + event.updateTime);

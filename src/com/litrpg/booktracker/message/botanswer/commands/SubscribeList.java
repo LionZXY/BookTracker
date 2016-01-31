@@ -27,7 +27,7 @@ public class SubscribeList extends ICommand {
                 sb.append(book.getAuthors().get(0)).append(" \"").append(book.getNameBook()).append("\"\n");
         }
         if (user.getSubsAuthor().size() != 0) {
-            sb.append("Так же Вы еще подписаны на ряд авторов:\n");
+            sb.append("Также Вы еще подписаны на ряд авторов:\n");
             for (Author author : user.getSubsAuthor())
                 sb.append(author.getName()).append("\n");
         }

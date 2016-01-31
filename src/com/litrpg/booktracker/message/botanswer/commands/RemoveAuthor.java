@@ -4,7 +4,6 @@ import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.messages.Message;
 import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.litrpg.booktracker.authors.Author;
-import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.user.IUser;
 

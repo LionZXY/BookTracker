@@ -27,6 +27,8 @@ public abstract class ICommand {
         new Stop();
         new SubscribeList();
         new Thank();
+        new RemoveAuthor();
+        new RemoveBook();
     }
 
     public ICommand(String command) {

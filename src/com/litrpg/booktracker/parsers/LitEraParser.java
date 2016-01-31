@@ -104,11 +104,7 @@ public class LitEraParser extends MainParser {
         return findWord(html, startWith, endWith);
     }
 
-    public static String findWord(String parse, String startWith, String endWith) {
-        int first = parse.indexOf(startWith);
-        return parse.substring(first + startWith.length(), parse.indexOf(endWith, first));
 
-    }
 
     public static String removeLastSpace(String str) {
         StringBuilder sb = new StringBuilder(str);

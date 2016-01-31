@@ -1,9 +1,7 @@
 package com.lionzxy.vkapi.messages;
 
 import com.lionzxy.vkapi.VKUser;
-import com.lionzxy.vkapi.messages.Message;
 import com.lionzxy.vkapi.users.User;
-import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.user.IUser;
 
 import java.util.ArrayList;

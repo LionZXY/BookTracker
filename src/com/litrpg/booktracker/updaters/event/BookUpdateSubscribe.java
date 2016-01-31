@@ -2,7 +2,6 @@ package com.litrpg.booktracker.updaters.event;
 
 import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
-import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 
 import java.util.ArrayList;

@@ -8,7 +8,7 @@ import com.sun.istack.internal.NotNull;
  * BookTracker
  */
 public enum TypeSite {
-    //SAMLIB("http://samlib.ru/", "samlib"),
+    SAMLIB("http://samlib.ru/", "samlib"),
     LITERA("https://lit-era.com/", "litera"),
     Unknown("UNKNOWN SITE","unknown");
     private String site, nameInDB;
