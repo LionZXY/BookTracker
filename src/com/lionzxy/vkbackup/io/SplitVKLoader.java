@@ -1,12 +1,21 @@
 package com.lionzxy.vkbackup.io;
 
+import com.lionzxy.core.crash.CrashFileHelper;
+import com.lionzxy.core.string.Split;
 import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.documents.VkFile;
+import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.messages.MessageBuffer;
+import com.lionzxy.vkapi.users.User;
 import com.lionzxy.vkapi.util.MultipartUtility;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,11 +28,13 @@ public class SplitVKLoader extends SplitFileOutput {
     MultipartUtility multipartUtility = null;
     VKUser vkUser = null;
     boolean split = true;
+    int userid;
 
-    public SplitVKLoader(File file, VKUser vkUser, boolean split) throws IOException {
+    public SplitVKLoader(File file, VKUser vkUser, int userid, boolean split) throws IOException {
         this.vkUser = vkUser;
         this.name = file.getName();
         this.path = "";
+        this.userid = userid;
         this.split = split;
         createNewOutputStream();
     }
@@ -58,10 +69,16 @@ public class SplitVKLoader extends SplitFileOutput {
         for (String tmp : multipartUtility.finish()) {
             answers.add(tmp);
         }
-    }
-
-    public List<String> getAnswers() {
-        return answers;
+        try {
+            JSONParser parser = new JSONParser();
+            for (String file : answers) {
+                String fileS = (String) ((JSONObject) parser.parse(new StringReader(file))).get("file");
+                MessageBuffer.addMessage(new Message("Файл от " + new Date()).addMedia(new VkFile(vkUser, fileS, Split.spilitToByte(fileS, (byte) 124)[7]).getAsVkMedia()), new User(userid));
+            }
+            MessageBuffer.flush(vkUser);
+        } catch (Exception e) {
+            new CrashFileHelper(e);
+        }
     }
 
 }

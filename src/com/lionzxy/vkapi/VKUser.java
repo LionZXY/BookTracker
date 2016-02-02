@@ -152,7 +152,7 @@ public class VKUser {
     public void getAccesToken() {
         try {
             String url = "https://oauth.vk.com/token?grant_type=password&client_id=2274003&client_secret=hHbZxrka2uZ6jB1inYsH&" +
-                    "username=" + login + "&password=" + password + "&scope=notify,friends,wall,groups,offline";
+                    "username=" + login + "&password=" + password + "&scope=docs,messages,notify,friends,wall,groups,offline";
             URL urlObj;
             InputStream is = null;
             BufferedReader br;

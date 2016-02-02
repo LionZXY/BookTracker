@@ -1,7 +1,9 @@
 package com.lionzxy.vkbackup;
 
+import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.util.Logger;
+import com.lionzxy.vkbackup.io.MultiOutput;
 import com.lionzxy.vkbackup.io.SplitVKLoader;
 
 import java.io.File;
@@ -20,26 +22,25 @@ import java.util.zip.ZipOutputStream;
 public class SplitZip implements Runnable {
     String name, path;
     public static Logger log = new Logger("[ZIPPING]");
-    public List<String> answer;
     int filesSize;
     long finishSize = 0;
     long currSize = 0;
     ZipOutputStream zipOutputStream = null;
     boolean end = false;
 
-    public SplitZip(File file, boolean split, VKUser vkUser) throws IOException {
+    public SplitZip(File file, boolean split, MultiOutput output) throws IOException {
         this.path = file.getPath();
         this.name = file.getName();
-        SplitVKLoader loader = new SplitVKLoader(file, vkUser, split);
-        zipOutputStream = new ZipOutputStream(loader);
+        zipOutputStream = new ZipOutputStream(output);
         List<File> fileList = new ArrayList<>();
+        log.print("Create file list for folder...");
         getAllFiles(file, fileList);
         filesSize = fileList.size();
+        log.print("Found " + finishSize + " files! Start tracking zipping system");
         new Thread(this).start();
         writeAll(fileList);
         end = true;
-        loader.close();
-        answer = loader.getAnswers();
+        output.close();
     }
 
     public void writeAll(List<File> fileList) throws IOException {
@@ -59,7 +60,7 @@ public class SplitZip implements Runnable {
                 else finishSize += file.length();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            new CrashFileHelper(e);
         }
     }
 
@@ -102,7 +103,7 @@ public class SplitZip implements Runnable {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            new CrashFileHelper(e);
             log.print("Ошибка в потоке отслеживания прогресса архивирования. Ждите или надейтесь на чудо.");
         }
     }

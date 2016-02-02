@@ -17,13 +17,14 @@ public class Logger {
 
     public Logger(String name) {
         this.name = name;
-        File logFile = new File(name + ".log");
+        File logFile = new File(System.getProperty("user.dir") + "/log/", name + ".log");
         try {
             byte[] buf = null;
             int av = 0;
-            if (!logFile.exists())
+            if (!logFile.exists()) {
+                logFile.getParentFile().mkdirs();
                 logFile.createNewFile();
-            else {
+            } else {
                 FileInputStream fis = new FileInputStream(logFile);
                 buf = new byte[fis.available()];
                 av = fis.read(buf);
