@@ -26,6 +26,7 @@ public class CrashFileHelper {
             pw.print("Time: \n" + new Date() +
                     "\nDescription: " + e.getLocalizedMessage() + "\n\n");
             e.printStackTrace(pw);
+            //e.printStackTrace();
             pw.flush();
             pw.close();
         } catch (Exception ex) {

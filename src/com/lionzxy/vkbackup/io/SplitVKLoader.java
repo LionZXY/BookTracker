@@ -7,6 +7,7 @@ import com.lionzxy.vkapi.documents.VkFile;
 import com.lionzxy.vkapi.messages.Message;
 import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.users.User;
+import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.MultipartUtility;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,15 +28,15 @@ public class SplitVKLoader extends SplitFileOutput {
     List<String> answers = new ArrayList<>();
     MultipartUtility multipartUtility = null;
     VKUser vkUser = null;
-    boolean split = true;
     int userid;
 
-    public SplitVKLoader(File file, VKUser vkUser, int userid, boolean split) throws IOException {
+    public SplitVKLoader(File file, VKUser vkUser, int userid) throws IOException {
         this.vkUser = vkUser;
         this.name = file.getName();
         this.path = "";
         this.userid = userid;
-        this.split = split;
+        this.maxSize = 199 * 1048576;
+        log = new Logger("[VKUPLOADER]");
         createNewOutputStream();
     }
 
@@ -46,10 +47,9 @@ public class SplitVKLoader extends SplitFileOutput {
             for (String tmp : multipartUtility.finish()) {
                 answers.add(tmp);
             }
+            log.print("File uploading!");
         }
-        String filename = name + format;
-        if (split)
-            filename += part + currentPart;
+        String filename = name + part + currentPart;
         log.print("Upload new file: " + filename);
         JSONObject obj1 = vkUser.getAnswer("docs.getUploadServer", null);
         JSONObject response = (JSONObject) obj1.get("response");

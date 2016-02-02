@@ -1,7 +1,6 @@
 package com.lionzxy.vkbackup.io;
 
 import com.lionzxy.vkapi.util.Logger;
-import com.lionzxy.vkbackup.Init;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,22 +15,23 @@ import java.io.OutputStream;
 public class SplitFileOutput extends OutputStream {
     static Logger log = new Logger("[SPLITTER]");
     String part = ".";
-    String format = ".7z";
     String name, path;
-    long maxSize = Init.maxSize;
+    long maxSize;
     long curSize = 0;
     int currentPart = 1;
     OutputStream fileOutputStream = null;
 
-    protected SplitFileOutput(String name, String path) throws IOException {
+    protected SplitFileOutput(String name, String path, long split) throws IOException {
         this.name = name;
         this.path = path;
+        this.maxSize = split;
         createNewOutputStream();
     }
 
-    public SplitFileOutput(File file) throws IOException {
+    public SplitFileOutput(File file, long split) throws IOException {
         this.name = file.getName();
         this.path = file.getPath();
+        this.maxSize = split;
         createNewOutputStream();
     }
 
@@ -65,8 +65,11 @@ public class SplitFileOutput extends OutputStream {
     public void createNewOutputStream() throws IOException {
         if (fileOutputStream != null)
             fileOutputStream.close();
-        log.print("Create new file: " + path + name + format + part + currentPart);
-        fileOutputStream = new FileOutputStream(new File(path, name + format + part + currentPart));
+        log.print("Create new file: " + name + part + currentPart);
+        File file = new File(path,name + part + currentPart);
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        fileOutputStream = new FileOutputStream(file);
         currentPart++;
         curSize = 0;
     }

@@ -139,7 +139,6 @@ public class MultipartUtility {
                     httpConn.getInputStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
                 response.add(line);
             }
             reader.close();
