@@ -64,13 +64,16 @@ public class Message {
 
         if (to != null && !isChat && !to.isFriend(from)) {
             if (from.messageSendNotFriend > 19) {
-                from.preLogin();
+                from.getAuth().relogging();
+                from.messageSendNotFriend = 0;
             } else from.messageSendNotFriend++;
         }
 
         if (message.length() > 4090) {
-            if (to != null && !isChat && !to.isFriend(from) && 20 - from.messageSendNotFriend < message.length() / 4090)
-                from.preLogin();
+            if (to != null && !isChat && !to.isFriend(from) && 20 - from.messageSendNotFriend < message.length() / 4090){
+                from.getAuth().relogging();
+                from.messageSendNotFriend = 0;
+            }
             VKUser.log.print("Send big message!" + message.length() + " Symbols");
             String newMessage = null;
             if (message.lastIndexOf(".", 4090) != -1)

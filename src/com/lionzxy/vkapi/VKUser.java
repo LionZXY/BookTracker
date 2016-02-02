@@ -1,5 +1,6 @@
 package com.lionzxy.vkapi;
 
+import com.lionzxy.vkapi.auth.IAuth;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
@@ -24,25 +25,17 @@ import static java.lang.Math.toIntExact;
  */
 public class VKUser {
 
-    String accesToken, login, password;
+    IAuth auth;
     public static Logger log = new Logger("[VKAPI]");
     public int nowOnAcc = 0, messageSendNotFriend = 0;
     public Stack<String> accounts = new Stack<>();
 
-    public VKUser(String login, String password) {
-        this.login = login;
-        this.password = password;
-        accounts.add(login + ' ' + password);
-        getAccesToken();
+    public VKUser(IAuth auth){
+        this.auth = auth;
     }
 
-    public VKUser(String logPsw) {
-        String[] pars = logPsw.split(" ");
-        login = pars[0];
-        password = pars[1];
-        messageSendNotFriend = 0;
-        accounts.add(logPsw);
-        getAccesToken();
+    public IAuth getAuth(){
+        return auth;
     }
 
     @Deprecated
@@ -66,7 +59,7 @@ public class VKUser {
                 try {
                     URL url;
                     if (vkUser != null)
-                        url = new URL("https://api.vk.com/method/" + method + "?access_token=" + vkUser.accesToken);
+                        url = new URL("https://api.vk.com/method/" + method + "?access_token=" + vkUser.auth.getAuthToken());
                     else {
                         url = new URL("https://api.vk.com/method/" + method + '?');
                     }
@@ -146,49 +139,6 @@ public class VKUser {
             Thread.sleep(sleepInMs);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void getAccesToken() {
-        try {
-            String url = "https://oauth.vk.com/token?grant_type=password&client_id=2274003&client_secret=hHbZxrka2uZ6jB1inYsH&" +
-                    "username=" + login + "&password=" + password + "&scope=docs,messages,notify,friends,wall,groups,offline";
-            URL urlObj;
-            InputStream is = null;
-            BufferedReader br;
-            String line;
-            urlObj = new URL(url);
-            is = urlObj.openStream();  // throws an IOException
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                JSONParser jsonParser = new JSONParser();
-                JSONObject jsonObj = (JSONObject) jsonParser.parse(line);
-                accesToken = jsonObj.get("access_token").toString();
-                log.print(accesToken);
-            }
-            if (is != null) is.close();
-        } catch (Exception e) {
-            getAccesToken();
-        }
-    }
-
-    public void preLogin() {
-        if (accounts.size() == 1)
-            return;
-        if (accounts.size() - 1 == nowOnAcc) {
-            nowOnAcc = 0;
-            String[] pars = accounts.get(nowOnAcc).split(" ");
-            login = pars[0];
-            password = pars[1];
-            messageSendNotFriend = 0;
-            getAccesToken();
-        } else {
-            nowOnAcc++;
-            String[] pars = accounts.get(nowOnAcc).split(" ");
-            login = pars[0];
-            password = pars[1];
-            messageSendNotFriend = 0;
-            getAccesToken();
         }
     }
 

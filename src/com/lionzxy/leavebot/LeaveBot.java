@@ -1,6 +1,7 @@
 package com.lionzxy.leavebot;
 
 import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.auth.MultiAuth;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.messages.Message;
 import com.lionzxy.vkapi.users.User;
@@ -49,11 +50,9 @@ public class LeaveBot {
 
     public static void init(int groupId, String bd, String message, String messageExit, int sendId, String[] args, String... lgnPsw) {
         Logger.getLogger().print("!!! Инициализированна новая сессия для группы #" + groupId + " !!!");
-        VKUser vk = new VKUser(lgnPsw[0]);
+        VKUser vk = new VKUser(new MultiAuth(lgnPsw,' '));
         MySql sql = new MySql(bd, "root", "root");
-        for (int i = 1; i < lgnPsw.length; i++) {
-            vk.accounts.add(lgnPsw[i]);
-        }
+
         List<Integer> inBD = sql.getFullTable(ListHelper.getStringList("userid"), "vkusers").stream().map(row -> (Integer) row.get("userid")).collect(Collectors.toList());
 
         if (inBD.size() < 10)

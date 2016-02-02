@@ -114,7 +114,7 @@ public class VKException extends RuntimeException {
             case 20:
             case 21:
                 if (vk != null) {
-                    vk.getAccesToken();
+                    vk.getAuth().relogging();
                     return true;
                 }
             default:

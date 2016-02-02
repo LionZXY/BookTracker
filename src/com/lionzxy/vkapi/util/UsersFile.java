@@ -18,11 +18,8 @@ public class UsersFile {
         BufferedReader br = null;
 
         try {
-
             String sCurrentLine;
-
             br = new BufferedReader(new FileReader(path));
-
             while ((sCurrentLine = br.readLine()) != null) {
                 if (sCurrentLine.contains(" "))
                     usrs.add(sCurrentLine);

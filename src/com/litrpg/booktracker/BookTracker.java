@@ -1,6 +1,7 @@
 package com.litrpg.booktracker;
 
 import com.lionzxy.vkapi.VKUser;
+import com.lionzxy.vkapi.auth.LoginPaswordAuth;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
 import com.litrpg.booktracker.mysql.MySql;
@@ -25,7 +26,7 @@ public class BookTracker {
     }
 
     public static MySql DB = new MySql("book_updater", "root", "root");
-    public static VKUser vk = new VKUser(UsersFile.getUsers("LeaveBot.usrs")[0]);
+    public static VKUser vk = new VKUser(new LoginPaswordAuth(UsersFile.getUsers("LeaveBot.usrs")[0],' '));
 
     public static void main(String... args) {
         //ToText.getAsFile(new SamLibParser("http://samlib.ru/g/gedeon/bard.shtml").parseBook());
