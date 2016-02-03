@@ -23,6 +23,8 @@ public abstract class MainParser {
         IBook book = findBook(url);
         if (book == null)
             switch (TypeSite.getTypeFromUrl(url)) {
+                case SAMLIB:
+                    return new SamLibParser(url).parseBook();
                 case LITERA:
                     return new LitEraParser(url).parseBook();
             }
@@ -33,6 +35,8 @@ public abstract class MainParser {
         Author author = findAuthor(url);
         if(author == null)
             switch (TypeSite.getTypeFromUrl(url)) {
+                case SAMLIB:
+                    return new SamLibParser(url).getAuthor();
                 case LITERA:
                     return new LitEraParser(url).getAuthor();
             }

@@ -24,10 +24,15 @@ import java.util.List;
  */
 public class SamLibUpdater {
     String[][] updateList;
+    Date date;
     //12
 
     public SamLibUpdater(Date date) {
+        this.date = date;
+        update();
+    }
 
+    public void update() {
         String[] tmp = URLHelper.getSiteAsString(getLink(date), "Windows-1251").split("\n");
         updateList = new String[tmp.length][12];
         for (int i = 0; i < tmp.length; i++) {
@@ -35,11 +40,11 @@ public class SamLibUpdater {
         }
     }
 
-    public BookUpdateEvent checkUpdateBook(IBook book){
-        String updUrl = book.getUrl().substring(0,book.getUrl().lastIndexOf(".shtml"));
-        for(String[] update : updateList){
-            if(update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()){
-                BookUpdateEvent e = Updater.subscribe.getBookEvent(book,Integer.parseInt(update[11])*1000 - book.getSize(),Timestamp.valueOf(update[2]));
+    public BookUpdateEvent checkUpdateBook(IBook book) {
+        String updUrl = book.getUrl().substring(0, book.getUrl().lastIndexOf(".shtml"));
+        for (String[] update : updateList) {
+            if (update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()) {
+                BookUpdateEvent e = Updater.subscribe.getBookEvent(book, Integer.parseInt(update[11]) * 1000 - book.getSize(), Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
                 return e;
             }
@@ -48,10 +53,10 @@ public class SamLibUpdater {
         return null;
     }
 
-    public AuthorUpdateEvent chackAuthor(Author author){
-        for(String[] update : updateList){
-            if(update[0].startsWith(author.getUrl()) && Timestamp.valueOf(update[2]).getTime() > author.getLastUpdate().getTime()){
-                AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook(update[0] + ".shtml"),Timestamp.valueOf(update[2]));
+    public AuthorUpdateEvent chackUpdateAuthor(Author author) {
+        for (String[] update : updateList) {
+            if (update[0].startsWith(author.getUrl()) && Timestamp.valueOf(update[2]).getTime() > author.getLastUpdate().getTime()) {
+                AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook(update[0] + ".shtml"), Timestamp.valueOf(update[2]));
                 author.setLastUpdate(Timestamp.valueOf(update[2]));
                 return e;
             }
@@ -67,16 +72,16 @@ public class SamLibUpdater {
         return dates;
     }
 
-    public static String getLink(Date date){
+    public static String getLink(Date date) {
         CalendarDate calendarDate = BaseCalendar.getGregorianCalendar().getCalendarDate(date.getTime());
         String mouth;
         int m = calendarDate.getMonth();
-        if(m < 10)
+        if (m < 10)
             mouth = "0" + m;
         else mouth = String.valueOf(m);
         String day;
         int d = calendarDate.getDayOfMonth();
-        if(d < 10)
+        if (d < 10)
             day = "0" + d;
         else day = String.valueOf(d);
         return "http://samlib.ru/logs/" + calendarDate.getYear() + "/" + mouth + "-" + day + ".log";

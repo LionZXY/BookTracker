@@ -27,6 +27,7 @@ public class AddBook extends ICommand {
             MessageBuffer.addMessage(Error.withoutProc, user);
         else if (UserBot.isGroupFollower(user))
             switch (TypeSite.getTypeFromUrl(arg)) {
+                case SAMLIB:
                 case LITERA: {
                     try {
                         user.addSub(MainParser.getBook(arg));

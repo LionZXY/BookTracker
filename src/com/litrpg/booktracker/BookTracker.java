@@ -1,16 +1,22 @@
 package com.litrpg.booktracker;
 
+import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.auth.LoginPaswordAuth;
+import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
+import com.litrpg.booktracker.message.MessageListiner;
+import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.SamLibUpdater;
+import com.litrpg.booktracker.updaters.Updater;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * com.litrpg.booktracker
@@ -29,9 +35,7 @@ public class BookTracker {
     public static VKUser vk = new VKUser(new LoginPaswordAuth(UsersFile.getUsers("LeaveBot.usrs")[0],' '));
 
     public static void main(String... args) {
-        //ToText.getAsFile(new SamLibParser("http://samlib.ru/g/gedeon/bard.shtml").parseBook());
-        new SamLibUpdater(new Date());
-        /*TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
         try {
             sync();
             while (!stop) {
@@ -41,6 +45,7 @@ public class BookTracker {
                     Logger.getLogger().print("Проверка сообщений...");
                     MessageListiner.sme.checkMessage(vk);
                     MessageBuffer.flush(vk);
+                    Logger.getLogger().print("Проверка сообщений завершена!");
                     VKUser.sleep(1000 * 60);
                 }
                 Updater.checkAllBooks();
@@ -48,7 +53,7 @@ public class BookTracker {
             }
         } catch (Exception e) {
             new CrashFileHelper(e);
-        }*/
+        }
     }
 
     static void sync() {

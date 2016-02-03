@@ -104,6 +104,8 @@ public class Author implements IUpdateObject{
 
     @Override
     public Date getLastUpdate() {
+        if(lastUpdate == null)
+            return getLastCheck();
         return lastUpdate;
     }
 

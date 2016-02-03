@@ -11,6 +11,9 @@ import com.litrpg.booktracker.updaters.event.BookUpdateSubscribe;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 import com.litrpg.booktracker.user.Users;
 
+import java.util.Date;
+import java.util.HashMap;
+
 /**
  * com.litrpg.booktracker.updaters.event
  * Created by LionZXY on 22.01.2016.
@@ -22,14 +25,19 @@ public class Updater implements IBookUpdateListiner {
 
     public static BookUpdateSubscribe subscribe = new BookUpdateSubscribe();
     public static LitEraUpdater litera = new LitEraUpdater();
+    public static HashMap<Date, SamLibUpdater> samlib = new HashMap<>();
 
     static {
         subscribe.subscribe(new Updater());
         subscribe.subscribe(new Users());
+        long t = System.currentTimeMillis();
+        Date tmp = new Date(t - t % 86400000);
+        samlib.put(tmp, new SamLibUpdater(tmp));
     }
 
     public static void checkAllBooks() {
         litera = new LitEraUpdater();
+        getSamlib(new Date()).update();
         Logger.getLogger().print("Проверка книг началась. На очереди " + MainParser.books.size() + " книг");
         MainParser.books.forEach(Updater::checkBook);
         Logger.getLogger().print("Всё книги проверенны!");
@@ -47,6 +55,13 @@ public class Updater implements IBookUpdateListiner {
             case LITERA:
                 event = litera.checkUpdateBook(book);
                 break;
+            case SAMLIB:
+                for (Date d : SamLibUpdater.getDaysFrom(book.getLastCheck(), new Date())) {
+                    event = getSamlib(d).checkUpdateBook(book);
+                    if (event != null)
+                        break;
+                }
+                event = getSamlib(new Date()).checkUpdateBook(book);
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + " от " + event.updateTime);
@@ -59,6 +74,14 @@ public class Updater implements IBookUpdateListiner {
         switch (author.getTypeSite()) {
             case LITERA:
                 event = litera.checkUpdateAuthor(author);
+                break;
+            case SAMLIB:
+                for (Date d : SamLibUpdater.getDaysFrom(author.getLastCheck(), new Date())) {
+                    event = getSamlib(d).chackUpdateAuthor(author);
+                    if (event != null)
+                        break;
+                }
+                event = getSamlib(new Date()).chackUpdateAuthor(author);
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + " от " + event.getUpdateTime());
@@ -81,5 +104,15 @@ public class Updater implements IBookUpdateListiner {
     @Override
     public void authorUpdate(AuthorUpdateEvent e) {
         e.getAuthor().setLastUpdate(e.getUpdateTime());
+    }
+
+    public static SamLibUpdater getSamlib(Date date) {
+        Date day = new Date(date.getTime() - date.getTime() % 86400000);
+        SamLibUpdater samLibUpdater = samlib.get(day);
+        if (samLibUpdater == null) {
+            samlib.put(day, new SamLibUpdater(day));
+            return getSamlib(day);
+        }
+        return samLibUpdater;
     }
 }

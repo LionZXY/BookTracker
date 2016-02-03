@@ -46,6 +46,11 @@ public class SamLibParser extends MainParser {
         return findWord(html, "<ul><small><li></small><b>Аннотация:</b><br><font color=\"#555555\"><i>", "</i></font></ul>");
     }
 
+    public Author getAuthor() {
+        String tmp = findWord(html, "<h3>", "<br>");
+        return new Author(tmp.substring(0, tmp.length() - 1),url);
+    }
+
     public List<Author> getAuthors() {
         int first = html.indexOf("<li>&copy; Copyright <a href=") + 29;
         String url = "http://samlib.ru/" + html.substring(first, html.indexOf(">", first));

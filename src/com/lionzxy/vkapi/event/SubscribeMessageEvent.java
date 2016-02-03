@@ -59,7 +59,7 @@ public class SubscribeMessageEvent {
                     msgObjs.add((JSONObject) obj);
         }
 
-        for (JSONObject jsonObject : msgObjs)
-            sendMSG(jsonObject, vkUser);
+        for (int i = msgObjs.size(); i > 0; i--)
+            sendMSG(msgObjs.get(i), vkUser);
     }
 }

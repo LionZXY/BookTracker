@@ -27,10 +27,11 @@ public class AddAuthor extends ICommand {
             MessageBuffer.addMessage(Error.withoutProc, user);
         else if (UserBot.isGroupFollower(user))
             switch (TypeSite.getTypeFromUrl(arg)) {
+                case SAMLIB:
                 case LITERA: {
                     try {
                         user.addSub(MainParser.getAuthor(arg));
-                        MessageBuffer.addMessage(new Message("Автор \"" + MainParser.findAuthor(arg).getName() + "\" успешно добавлен к Вам в обновления. Как только он обновится, мы дадим Вам знать!").addMedia("photo286477373_399676422"), new User(user.getTypeID()));
+                        MessageBuffer.addMessage(new Message("Автор \"" + MainParser.getAuthor(arg).getName() + "\" успешно добавлен к Вам в обновления. Как только он обновится, мы дадим Вам знать!").addMedia("photo286477373_399676422"), new User(user.getTypeID()));
                     } catch (Exception e) {
                         new CrashFileHelper(e);
                         MessageBuffer.addMessage(Error.errLink, user);
