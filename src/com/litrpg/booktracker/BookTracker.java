@@ -30,11 +30,7 @@ public class BookTracker {
 
     public static void main(String... args) {
         //ToText.getAsFile(new SamLibParser("http://samlib.ru/g/gedeon/bard.shtml").parseBook());
-        try {
-            SamLibUpdater.getDaysFrom(new SimpleDateFormat("dd/MM/yyyy").parse("28/12/2015"),new Date());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        new SamLibUpdater(new Date());
         /*TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
         try {
             sync();
