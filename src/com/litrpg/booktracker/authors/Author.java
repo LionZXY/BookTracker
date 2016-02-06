@@ -17,6 +17,7 @@ import java.util.List;
 public class Author implements IUpdateObject{
     private String name, url = "";
     private TypeSite typeSite;
+    public String photoUrl = null;
     Date lastCheck = null;
     Date lastUpdate = null;
     List<IBook> books = new ArrayList<>();

@@ -3,7 +3,6 @@ package com.litrpg.booktracker;
 import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.auth.LoginPaswordAuth;
-import com.lionzxy.vkapi.documents.VkPhotoMessage;
 import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
@@ -11,12 +10,8 @@ import com.litrpg.booktracker.message.MessageListiner;
 import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
-import com.litrpg.booktracker.updaters.SamLibUpdater;
 import com.litrpg.booktracker.updaters.Updater;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.TimeZone;
 
 /**

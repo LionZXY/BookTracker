@@ -63,6 +63,7 @@ public class MySql implements IBookUpdateListiner {
         column.put("lastChecked", dateToString(book.getLastCheck()));
         column.put("genres", ListHelper.getAsStringGenr(book.getGenres()));
         column.put("size", String.valueOf(book.getSize()));
+        column.put("photo", book.getPhotoUrl());
         addInTable("books", column);
         getIdBook(book);
         Logger.getLogger().print("Добавленна книга \"" + book.getNameBook() + "\"");
@@ -75,6 +76,7 @@ public class MySql implements IBookUpdateListiner {
         column.put("books", author.getBooks());
         column.put("lastUpdate", dateToString(author.getLastUpdate()));
         column.put("lastCheck", dateToString(author.getLastCheck()));
+        column.put("photo", author.photoUrl);
         addInTable("authors", column);
         getIdAuthor(author);
     }
@@ -92,7 +94,7 @@ public class MySql implements IBookUpdateListiner {
         List<IBook> books = new ArrayList<>();
         for (HashMap<String, Object> row :
                 getFullTable(ListHelper.getStringList("name", "id", "authors", "annotation",
-                        "url", "lastUpdate", "lastChecked", "genres", "size"), "books")) {
+                        "url", "lastUpdate", "lastChecked", "genres", "size", "photo"), "books")) {
             Book book = new Book(TypeSite.getTypeFromUrl((String) row.get("url")),
                     (String) row.get("name"),
                     (String) row.get("annotation"),
@@ -101,7 +103,7 @@ public class MySql implements IBookUpdateListiner {
                     (Timestamp) row.get("lastUpdate"),
                     Genres.getGenrFromString((String) row.get("genres")),
                     (Integer) row.get("size")
-            );
+            ).setPhotoUrl((String) row.get("photo"));
             for (Author author : book.getAuthors())
                 author.addBook(book);
             books.add(book);
@@ -128,8 +130,10 @@ public class MySql implements IBookUpdateListiner {
 
     public List<Author> getAuthorsFromTable() {
         List<Author> authors = new ArrayList<>();
-        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "name", "url", "books", "lastUpdate", "lastCheck"), "authors")) {
-            authors.add(new Author((String) row.get("name"), (String) row.get("url")).setIdDB((Integer) row.get("id")).setLastCheck((Timestamp) row.get("lastCheck")).setLastUpdate((Timestamp) row.get("lastUpdate")));
+        for (HashMap<String, Object> row : getFullTable(ListHelper.getStringList("id", "name", "url", "books", "lastUpdate", "lastCheck", "photo"), "authors")) {
+            Author a = new Author((String) row.get("name"), (String) row.get("url")).setIdDB((Integer) row.get("id")).setLastCheck((Timestamp) row.get("lastCheck")).setLastUpdate((Timestamp) row.get("lastUpdate"));
+            a.photoUrl = (String) row.get("photo");
+            authors.add(a);
         }
         return authors;
     }

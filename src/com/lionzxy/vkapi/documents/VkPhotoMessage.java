@@ -2,7 +2,6 @@ package com.lionzxy.vkapi.documents;
 
 import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
-import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.MultipartUtility;
 import org.json.simple.JSONArray;
@@ -10,7 +9,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 

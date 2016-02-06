@@ -4,7 +4,6 @@ import com.lionzxy.core.string.Split;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.helper.URLHelper;
-import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
@@ -13,7 +12,6 @@ import sun.util.calendar.CalendarDate;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

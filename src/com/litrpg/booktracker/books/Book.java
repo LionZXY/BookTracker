@@ -23,6 +23,7 @@ public class Book implements IBook, IUpdateObject{
     TypeSite typeSite;
     String nameBook;
     String annotation;
+    String photoUrl = null;
     String url;
     List<Author> authors;
     Date lastUpdate;
@@ -57,6 +58,12 @@ public class Book implements IBook, IUpdateObject{
     }
 
     @Override
+    public Book setPhotoUrl(String url) {
+        photoUrl = url;
+        return this;
+    }
+
+    @Override
     public String getAnnotation() {
         return annotation;
     }
@@ -64,6 +71,11 @@ public class Book implements IBook, IUpdateObject{
     @Override
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
 
