@@ -3,6 +3,7 @@ package com.litrpg.booktracker;
 import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.auth.LoginPaswordAuth;
+import com.lionzxy.vkapi.documents.VkPhotoMessage;
 import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
@@ -32,7 +33,7 @@ public class BookTracker {
     }
 
     public static MySql DB = new MySql("book_updater", "root", "root");
-    public static VKUser vk = new VKUser(new LoginPaswordAuth(UsersFile.getUsers("LeaveBot.usrs")[0],' '));
+    public static VKUser vk = new VKUser(new LoginPaswordAuth(UsersFile.getUsers("LeaveBot.usrs")[0], ' '));
 
     public static void main(String... args) {
         TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));

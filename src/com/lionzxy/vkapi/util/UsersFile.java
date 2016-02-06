@@ -45,12 +45,13 @@ public class UsersFile {
     }
 
     public static File getLinkAsFile(String url) {
-        File outputFile = new File("tmpFile" + url.substring(url.lastIndexOf(".")));
+        File outputFile = new File("tmp","tmpFile" + url.substring(url.lastIndexOf(".")));
         URL urlObj;
         InputStream is = null;
         BufferedReader br;
         String line;
         try {
+            outputFile.getParentFile().mkdirs();
             outputFile.createNewFile();
             urlObj = new URL(url);
             is = urlObj.openStream();  // throws an IOExceptio

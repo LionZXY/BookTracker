@@ -1,10 +1,14 @@
 package com.lionzxy.vkapi.util;
 
+import com.lionzxy.vkapi.VKUser;
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -150,7 +154,7 @@ public class MultipartUtility {
         return response;
     }
 
-    public MultipartUtility generateFilePart(String fieldName, String fileName){
+    public MultipartUtility generateFilePart(String fieldName, String fileName) {
         writer.append("--" + boundary).append(LINE_FEED);
         writer.append(
                 "Content-Disposition: form-data; name=\"" + fieldName
@@ -166,10 +170,15 @@ public class MultipartUtility {
         return this;
     }
 
-    public MultipartUtility finishFilePart() throws IOException{
+    public MultipartUtility finishFilePart() throws IOException {
         outputStream.flush();
         writer.append(LINE_FEED);
         writer.flush();
         return this;
+    }
+
+    public static MultipartUtility getURLAndUpload(String vkMethod, VKUser vkUser) throws IOException {
+        String url = ((JSONObject) vkUser.getAnswer(vkMethod, null).get("response")).get("upload_url").toString();
+        return new MultipartUtility(url, "UTF-8");
     }
 }

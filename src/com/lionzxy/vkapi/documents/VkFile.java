@@ -38,7 +38,7 @@ public class VkFile {
     public static String getFile(VKUser vkUser, File file) {
         try {
             return (String) ((JSONObject) new JSONParser().parse(
-                    new StringReader(new MultipartUtility(((JSONObject) vkUser.getAnswer("docs.getUploadServer", null).get("response")).get("upload_url").toString(), "UTF-8").addFilePart("file", file).finish().get(0)))).get("file");
+                    new StringReader(MultipartUtility.getURLAndUpload("docs.getUploadServer", vkUser).addFilePart("file", file).finish().get(0)))).get("file");
         } catch (Exception e) {
             e.printStackTrace();
             return "";

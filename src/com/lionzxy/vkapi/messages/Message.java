@@ -2,9 +2,11 @@ package com.lionzxy.vkapi.messages;
 
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.documents.VkFile;
+import com.lionzxy.vkapi.documents.VkPhotoMessage;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.users.User;
 import com.lionzxy.vkapi.util.Logger;
+import com.lionzxy.vkapi.util.UsersFile;
 import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONObject;
 
@@ -70,7 +72,7 @@ public class Message {
         }
 
         if (message.length() > 4090) {
-            if (to != null && !isChat && !to.isFriend(from) && 20 - from.messageSendNotFriend < message.length() / 4090){
+            if (to != null && !isChat && !to.isFriend(from) && 20 - from.messageSendNotFriend < message.length() / 4090) {
                 from.getAuth().relogging();
                 from.messageSendNotFriend = 0;
             }
@@ -172,5 +174,9 @@ public class Message {
     public void addMessage(Message msg) {
         message += "\n===================\n" + msg.message;
         addMedia(msg.getMedia());
+    }
+
+    public void addPhoto(String url, VKUser vkUser) {
+        addMedia(new VkPhotoMessage(UsersFile.getLinkAsFile(url), vkUser).getId());
     }
 }
