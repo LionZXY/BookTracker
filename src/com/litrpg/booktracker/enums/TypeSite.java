@@ -8,14 +8,15 @@ import com.sun.istack.internal.NotNull;
  * BookTracker
  */
 public enum TypeSite {
-    SAMLIB("http://samlib.ru/", "samlib"),
-    LITERA("https://lit-era.com/", "litera"),
-    Unknown("UNKNOWN SITE","unknown");
-    private String site, nameInDB;
+    SAMLIB("http://samlib.ru/", "samlib", "Самиздат"),
+    LITERA("https://lit-era.com/", "litera", "Лит-Эра"),
+    Unknown("UNKNOWN SITE", "unknown", "Неизвестно");
+    private String site, nameInDB,russ;
 
-    TypeSite(String site, @NotNull String nameInDB) {
+    TypeSite(String site, @NotNull String nameInDB, String russ) {
         this.site = site;
         this.nameInDB = nameInDB;
+        this.russ = russ;
     }
 
     public static TypeSite getTypeFromNameInDB(String nameInDB) {
@@ -25,7 +26,7 @@ public enum TypeSite {
         return Unknown;
     }
 
-    public static TypeSite getTypeFromUrl(String url){
+    public static TypeSite getTypeFromUrl(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (TypeSite book : TypeSite.values())
@@ -41,6 +42,8 @@ public enum TypeSite {
     public String getNameInBD() {
         return nameInDB;
     }
+
+    public String getRuss(){return russ;}
 
     @Override
     public String toString() {

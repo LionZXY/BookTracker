@@ -38,6 +38,7 @@ public class LoginPaswordAuth implements IAuth {
 
     @Override
     public void relogging() {
+        VKUser.log.print("Get authtoken...");
         try {
             String url = "https://oauth.vk.com/token?grant_type=password&client_id=2274003&client_secret=hHbZxrka2uZ6jB1inYsH&" +
                     "username=" + login + "&password=" + paswd+ "&scope=docs,messages,notify,friends,wall,groups,offline";

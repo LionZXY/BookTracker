@@ -6,7 +6,12 @@ import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.users.User;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
+import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.user.IUser;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * com.litrpg.booktracker.message.botanswer.commands
@@ -23,13 +28,27 @@ public class SubscribeList extends ICommand {
         StringBuilder sb = new StringBuilder();
         if (user.getSubsBook().size() != 0) {
             sb.append("На данный момент Вы подписаны на следующие книги:\n");
-            for (IBook book : user.getSubsBook())
-                sb.append(book.getAuthors().get(0)).append(" \"").append(book.getNameBook()).append("\"\n");
+            HashMap<TypeSite, List<IBook>> books = new HashMap<>();
+
+            for (IBook book : user.getSubsBook()) {
+                if (books.get(book.getType()) == null)
+                    books.put(book.getType(), new ArrayList<>());
+                books.get(book.getType()).add(book);
+            }
+
+            for (TypeSite type : books.keySet()) {
+                sb.append(type.getRuss()).append(":\n");
+                for (IBook book : books.get(type)) {
+                    sb.append("- ").append(book.getAuthors().get(0)).append(" \"").append(book.getNameBook()).append("\"\n");
+                }
+                sb.append("\n");
+            }
+            //sb.append(book.getAuthors().get(0)).append(" \"").append(book.getNameBook()).append("\"\n");
         }
         if (user.getSubsAuthor().size() != 0) {
-            sb.append("Также Вы еще подписаны на ряд авторов:\n");
+            sb.append("\nТакже Вы еще подписаны на ряд авторов:\n");
             for (Author author : user.getSubsAuthor())
-                sb.append(author.getName()).append("\n");
+                sb.append("- ").append(author.getName()).append("\n");
         }
         if (sb.length() == 0)
             sb.append("Хм... Вижу, вы не подписаны ни на одну из книг. Напишите \"!добавитьКнигу %ссылка%\" и сможете следить за обновлениями.");
