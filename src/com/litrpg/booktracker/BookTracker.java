@@ -20,7 +20,7 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.3F;
+    public static float VERSION = 1.4F;
     public static boolean stop = false;
 
     static {
@@ -37,11 +37,13 @@ public class BookTracker {
             while (!stop) {
                 UserBot.fantasySubscr = vk.getUserList(98762647);
                 UserBot.litrpgSubscr = vk.getUserList(48785893);
+                vk.getAnswer("account.setOnline",null);
                 for (int i = 0; i < 15; i++) {
                     Logger.getLogger().print("[" + i + "/" + 15 + "] Проверка сообщений...");
                     MessageListiner.sme.checkMessage(vk);
                     MessageBuffer.flush(vk);
                     Logger.getLogger().print("Проверка сообщений завершена!");
+                    vk.applyFriendRequest();
                     VKUser.sleep(1000 * 60);
                 }
                 Updater.checkAllBooks();

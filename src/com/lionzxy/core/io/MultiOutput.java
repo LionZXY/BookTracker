@@ -1,4 +1,4 @@
-package com.lionzxy.vkbackup.io;
+package com.lionzxy.core.io;
 
 import java.io.IOException;
 import java.io.OutputStream;

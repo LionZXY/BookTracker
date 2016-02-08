@@ -39,7 +39,7 @@ public class AddBook extends ICommand {
                     return;
                 }
                 default:
-                    MessageBuffer.addMessage(new Message("Сейчас поддерживаются только книги с Lit-Era"), user);
+                    MessageBuffer.addMessage(new Message("Сейчас поддерживаются только книги с Lit-Era и с SamLib"), user);
             }
         else MessageBuffer.addMessage(Error.notInGroup, user);
 

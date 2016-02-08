@@ -175,4 +175,12 @@ public class VKUser {
         }
         return os;
     }
+
+    public void applyFriendRequest(){
+        JSONArray arr = (JSONArray) getAnswer("friends.getRequests",ListHelper.getHashMap("need_viewed","1")).get("response");
+        for(Object obj : arr){
+            getAnswer("friends.add",ListHelper.getHashMap("user_id",obj.toString()));
+            log.print("Пользователь " + obj + " добавлен в друзья");
+        }
+    }
 }

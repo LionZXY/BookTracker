@@ -5,7 +5,7 @@ import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.auth.LoginPaswordAuth;
 import com.lionzxy.vkapi.auth.TokenAuth;
 import com.lionzxy.vkapi.util.Logger;
-import com.lionzxy.vkbackup.io.MultiOutput;
+import com.lionzxy.core.io.MultiOutput;
 import com.lionzxy.vkbackup.io.SplitFileOutput;
 import com.lionzxy.vkbackup.io.SplitVKLoader;
 import org.json.simple.JSONObject;

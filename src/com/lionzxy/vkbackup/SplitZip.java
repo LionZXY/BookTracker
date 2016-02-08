@@ -2,7 +2,7 @@ package com.lionzxy.vkbackup;
 
 import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.util.Logger;
-import com.lionzxy.vkbackup.io.MultiOutput;
+import com.lionzxy.core.io.MultiOutput;
 
 import java.io.File;
 import java.io.FileInputStream;

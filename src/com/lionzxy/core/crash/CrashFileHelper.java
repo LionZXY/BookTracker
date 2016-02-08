@@ -1,12 +1,16 @@
 package com.lionzxy.core.crash;
 
+import com.lionzxy.core.io.MultiWritter;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * com.lionzxy.core.crash
@@ -21,7 +25,10 @@ public class CrashFileHelper {
             System.out.println(crashFile.getPath());
             crashFile.getParentFile().mkdirs();
             crashFile.createNewFile();
-            PrintWriter pw = new PrintWriter(new FileWriter(crashFile));
+            List<Writer> writers = new ArrayList<>();
+            writers.add(new FileWriter(crashFile));
+            writers.add(new PrintWriter(System.out));
+            PrintWriter pw = new PrintWriter(new MultiWritter(writers));
             pw.print("---- Crash Report ----\n\n\n");
             pw.print("Time: \n" + new Date() +
                     "\nDescription: " + e.getLocalizedMessage() + "\n\n");
