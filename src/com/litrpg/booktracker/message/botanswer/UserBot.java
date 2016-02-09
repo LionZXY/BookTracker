@@ -27,6 +27,7 @@ public class UserBot implements IAnswer {
     @Override
     public void onMessage(Message msg, VKUser vkUser) {
         if (msg.toString().startsWith("!")) {
+            Logger.getLogger().print("Обработка сообщения " + msg);
             IUser user = MainParser.getUserByVkId(msg.getUser().getId());
             if (user == null)
                 user = MainParser.addUser(new com.litrpg.booktracker.user.VKUser(msg.getUser()));
@@ -34,8 +35,7 @@ public class UserBot implements IAnswer {
                 if (!ICommand.onMessage(user, vkUser, msg))
                     MessageBuffer.addMessage(new Message("Хм... Команды \"" + msg.toString() + "\" у бота нет. Ты уверен, что всё правильно ввел? Попробуй посмотреть доступные комманды \"!инфо\" ").addMedia("photo286477373_399674456"), new User(user.getTypeID()));
             } catch (Exception e) {
-                new CrashFileHelper(e);
-                e.printStackTrace();
+                new CrashFileHelper(e, msg);
                 Logger.getLogger().print("Ошибка при обработке комманды " + msg.toString());
                 MessageBuffer.addMessage(Error.errorMsg, user);
             }

@@ -2,6 +2,7 @@ package com.litrpg.booktracker.message.botanswer;
 
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.messages.MessageBuffer;
 
 /**
  * com.litrpg.booktracker.message.botanswer
@@ -20,6 +21,6 @@ public class SimplyAnswer implements IAnswer {
     public void onMessage(Message msg, VKUser vkUser) {
         if (msg.toString().length() > quest.length() &&
                 msg.toString().substring(0, quest.length()).equalsIgnoreCase(quest))
-            new Message(answr).sendMessage(vkUser, msg.getUser());
+            MessageBuffer.addMessage(new Message(answr), msg.getUser());
     }
 }

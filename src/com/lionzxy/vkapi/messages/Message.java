@@ -31,16 +31,22 @@ public class Message {
     }
 
     public Message(JSONObject msg) {
-        idMess = Integer.parseInt(msg.get("mid").toString());
-        user = new User(Integer.parseInt(msg.get("uid").toString()));
-        date = new Date(Long.parseLong(msg.get("date").toString()));
-        read_state = Byte.parseByte(msg.get("read_state").toString()) == 1;
-        isOut = Byte.parseByte(msg.get("out").toString()) == 1;
-        message = msg.get("body").toString();
-        media.append(msg.get("attachments"));
-        if (msg.get("chat_id") != null) {
-            isChat = true;
-            idChat = Math.toIntExact((Long) msg.get("chat_id"));
+        try {
+            idMess = Integer.parseInt(msg.get("mid").toString());
+            user = new User(Integer.parseInt(msg.get("uid").toString()));
+            date = new Date(Long.parseLong(msg.get("date").toString()));
+            read_state = Byte.parseByte(msg.get("read_state").toString()) == 1;
+            isOut = Byte.parseByte(msg.get("out").toString()) == 1;
+            message = msg.get("body").toString();
+            media.append(msg.get("attachments"));
+            if (msg.get("chat_id") != null) {
+                isChat = true;
+                idChat = Math.toIntExact((Long) msg.get("chat_id"));
+            }
+        } catch (Exception e) {
+            user = new User(Integer.parseInt(msg.get("uid").toString()));
+            message = msg.get("body").toString();
+            date = new Date(Long.parseLong(msg.get("date").toString()));
         }
     }
 
@@ -62,7 +68,7 @@ public class Message {
     }
 
 
-    public boolean sendMessage(VKUser from, @Nullable User to) {
+    public boolean sendMessage(VKUser from, @Nullable User to) throws Exception {
 
         if (to != null && !isChat && !to.isFriend(from)) {
             if (from.messageSendNotFriend > 19) {
@@ -105,7 +111,7 @@ public class Message {
         request.put("message", replaceMessageForUser(to));
         if (media.capacity() > 1)
             request.put("attachment", media.toString());
-        JSONObject obj = from.getAnswer("messages.send", request);
+        JSONObject obj = VKUser.getAnswerWithThrow("messages.send", request, from);
         if (obj != null && obj.get("error") == null)
             VKUser.log.print("Send successful");
         else {
@@ -117,7 +123,7 @@ public class Message {
         return true;
     }
 
-    public boolean sendMessage(VKUser from, int userId) {
+    public boolean sendMessage(VKUser from, int userId) throws Exception {
         return sendMessage(from, new User(userId));
     }
 

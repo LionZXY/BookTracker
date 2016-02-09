@@ -104,6 +104,7 @@ public class MySql implements IBookUpdateListiner {
                     Genres.getGenrFromString((String) row.get("genres")),
                     (Integer) row.get("size")
             ).setPhotoUrl((String) row.get("photo"));
+            book.setLastCheck((Timestamp) row.get("lastChecked"));
             for (Author author : book.getAuthors())
                 author.addBook(book);
             books.add(book);
@@ -241,6 +242,23 @@ public class MySql implements IBookUpdateListiner {
     public void updateAuthorBook(Author author) {
         try {
             statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\", lastCheck = \"" + dateToString(author.getLastCheck()) + "\", lastUpdate = \"" + dateToString(author.getLastUpdate()) + "\" WHERE id = " + author.getInDB() + ";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkNowBook(){
+        try {
+            statement.execute("UPDATE books SET lastChecked = \"" + dateToString(new Date()) + "\";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void checkNowAuthor(){
+        try {
+            statement.execute("UPDATE authors SET lastCheck = \"" + dateToString(new Date()) + "\";");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,7 @@ import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
+import com.litrpg.booktracker.exception.PageNotFound;
 import com.litrpg.booktracker.helper.URLHelper;
 
 import java.text.ParseException;
@@ -22,7 +23,7 @@ public class SamLibParser extends MainParser {
     public String html;
     public String url;
 
-    public SamLibParser(String url) {
+    public SamLibParser(String url) throws PageNotFound {
         this.url = url;
         if (TypeSite.getTypeFromUrl(url) == TypeSite.SAMLIB) {
             html = URLHelper.getSiteAsString(url, "Windows-1251");
@@ -33,6 +34,7 @@ public class SamLibParser extends MainParser {
         IBook book = MainParser.findBook(url);
         if (book == null) {
             book = new Book(TypeSite.SAMLIB, getName(), getAnnotation(), url, getAuthors(), getDateEdit(), getGenres(), getBookSize());
+            book.setLastCheck(new Date());
             MainParser.addBook(book);
         }
         return book;
@@ -43,12 +45,20 @@ public class SamLibParser extends MainParser {
     }
 
     public String getAnnotation() {
-        return findWord(html, "<ul><small><li></small><b>Аннотация:</b><br><font color=\"#555555\"><i>", "</i></font></ul>");
+        try {
+            return findWord(html, "<ul><small><li></small><b>Аннотация:</b><br><font color=\"#555555\"><i>", "</i></font></ul>");
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public Author getAuthor() {
         String tmp = findWord(html, "<h3>", "<br>");
-        return new Author(tmp.substring(0, tmp.length() - 1),url);
+        Author author = new Author(tmp.substring(0, tmp.length() - 1), url);
+        author.setLastCheck(new Date());
+        author.setLastUpdate(new Date());
+        MainParser.addAuthor(author);
+        return author;
     }
 
     public List<Author> getAuthors() {

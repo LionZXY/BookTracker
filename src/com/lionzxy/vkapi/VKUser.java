@@ -1,5 +1,6 @@
 package com.lionzxy.vkapi;
 
+import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.auth.IAuth;
 import com.lionzxy.vkapi.exceptions.VKException;
 import com.lionzxy.vkapi.util.ListHelper;
@@ -30,11 +31,11 @@ public class VKUser {
     public int nowOnAcc = 0, messageSendNotFriend = 0;
     public Stack<String> accounts = new Stack<>();
 
-    public VKUser(IAuth auth){
+    public VKUser(IAuth auth) {
         this.auth = auth;
     }
 
-    public IAuth getAuth(){
+    public IAuth getAuth() {
         return auth;
     }
 
@@ -53,64 +54,72 @@ public class VKUser {
     }
 
     public static JSONObject getAnswer(String method, HashMap<String, String> params, @Nullable VKUser vkUser) {
-
         try {
             try {
                 try {
-                    URL url;
-                    if (vkUser != null)
-                        url = new URL("https://api.vk.com/method/" + method + "?access_token=" + vkUser.auth.getAuthToken());
-                    else {
-                        url = new URL("https://api.vk.com/method/" + method + '?');
+                    try {
+                        return getAnswerWithThrow(method, params, vkUser);
+                    } catch (ParseException e) {
+                        new CrashFileHelper(e);
+                        return null;
                     }
-                    StringBuilder postData = new StringBuilder();
-                    if (params != null)
-                        for (Map.Entry<String, String> param : params.entrySet()) {
-                            if (postData.length() != 0) postData.append('&');
-                            postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
-                            postData.append('=');
-                            postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
-                        }
-                    byte[] postDataBytes = postData.toString().getBytes("UTF-8");
-
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                    conn.setDoOutput(true);
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    conn.setRequestProperty("charset", "UTF-8");
-                    conn.setRequestProperty("Content-Length", Integer.toString(postDataBytes.length));
-                    DataOutputStream wr;
-                    wr = openConn(conn);
-                    wr.write(postDataBytes);
-                    wr.flush();
-                    wr.close();
-
-
-                    DataInputStream is = new DataInputStream(conn.getInputStream());
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                    String answer = br.readLine();
-                    JSONObject exit = (JSONObject) new JSONParser().parse(new StringReader(answer));
-                    if (VKException.isException(answer))
-                        throw new VKException(answer, vkUser);
-                    br.close();
-                    sleep(1000);
-                    return exit;
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    return null;
+                } catch (IOException e) {
+                    sleep(60000);
+                    new CrashFileHelper(e);
+                    getAnswer(method, params, vkUser);
                 }
-            } catch (IOException e) {
-                sleep(60000);
-                e.printStackTrace();
-                getAnswer(method, params, vkUser);
+            } catch (VKException e) {
+                new CrashFileHelper(e);
+                if (e.isFix)
+                    getAnswer(method, params, vkUser);
             }
-        } catch (VKException e) {
-            e.printStackTrace();
-            if (e.isFix)
-                getAnswer(method, params, vkUser);
+        } catch (Exception e) {
+            new CrashFileHelper(e);
+            log.print("Не удалось получить ответ на запрос");
         }
         return null;
+    }
+
+    public static JSONObject getAnswerWithThrow(String method, HashMap<String, String> params, @Nullable VKUser vkUser) throws Exception {
+        URL url;
+        if (vkUser != null)
+            url = new URL("https://api.vk.com/method/" + method + "?access_token=" + vkUser.auth.getAuthToken());
+        else {
+            url = new URL("https://api.vk.com/method/" + method + '?');
+        }
+        StringBuilder postData = new StringBuilder();
+        if (params != null)
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                if (postData.length() != 0) postData.append('&');
+                postData.append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                postData.append('=');
+                postData.append(URLEncoder.encode(String.valueOf(param.getValue()), "UTF-8"));
+            }
+        byte[] postDataBytes = postData.toString().getBytes("UTF-8");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        conn.setRequestProperty("charset", "UTF-8");
+        conn.setRequestProperty("Content-Length", Integer.toString(postDataBytes.length));
+        DataOutputStream wr;
+        wr = openConn(conn);
+        wr.write(postDataBytes);
+        wr.flush();
+        wr.close();
+
+
+        DataInputStream is = new DataInputStream(conn.getInputStream());
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String answer = br.readLine();
+        JSONObject exit = (JSONObject) new JSONParser().parse(new StringReader(answer));
+        if (VKException.isException(answer))
+            throw new VKException(answer, vkUser);
+        br.close();
+        sleep(1000);
+        return exit;
     }
 
     public List<Integer> getUserList(int groupId) {
@@ -176,10 +185,10 @@ public class VKUser {
         return os;
     }
 
-    public void applyFriendRequest(){
-        JSONArray arr = (JSONArray) getAnswer("friends.getRequests",ListHelper.getHashMap("need_viewed","1")).get("response");
-        for(Object obj : arr){
-            getAnswer("friends.add",ListHelper.getHashMap("user_id",obj.toString()));
+    public void applyFriendRequest() {
+        JSONArray arr = (JSONArray) getAnswer("friends.getRequests", ListHelper.getHashMap("need_viewed", "1")).get("response");
+        for (Object obj : arr) {
+            getAnswer("friends.add", ListHelper.getHashMap("user_id", obj.toString()));
             log.print("Пользователь " + obj + " добавлен в друзья");
         }
     }

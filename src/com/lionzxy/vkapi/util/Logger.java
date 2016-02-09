@@ -40,6 +40,8 @@ public class Logger {
     }
 
     public void print(String log) {
+        if (log != null)
+            log = log.replaceAll("\n", '\n' + name + ' ');
         System.out.print(name + ' ' + log + '\n');
         if (this.log != null)
             try {

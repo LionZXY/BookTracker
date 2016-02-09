@@ -41,7 +41,7 @@ public class SamLibUpdater {
     public BookUpdateEvent checkUpdateBook(IBook book) {
         String updUrl = book.getUrl().substring(0, book.getUrl().lastIndexOf(".shtml"));
         for (String[] update : updateList) {
-            if (update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()) {
+            if (update.length == 12 && update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()) {
                 BookUpdateEvent e = Updater.subscribe.getBookEvent(book, Integer.parseInt(update[11]) * 1000 - book.getSize(), Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
                 return e;
@@ -51,7 +51,7 @@ public class SamLibUpdater {
         return null;
     }
 
-    public AuthorUpdateEvent chackUpdateAuthor(Author author) {
+    public AuthorUpdateEvent checkUpdateAuthor(Author author) {
         for (String[] update : updateList) {
             if (update[0].startsWith(author.getUrl()) && Timestamp.valueOf(update[2]).getTime() > author.getLastUpdate().getTime()) {
                 AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook(update[0] + ".shtml"), Timestamp.valueOf(update[2]));

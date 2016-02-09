@@ -1,9 +1,12 @@
 package com.litrpg.booktracker.parsers;
 
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
+import com.litrpg.booktracker.exception.PageNotFound;
+import com.litrpg.booktracker.helper.URLHelper;
 import com.litrpg.booktracker.user.IUser;
 
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ public abstract class MainParser {
     public static List<Author> authors = new ArrayList<>();
     public static List<IUser> users = new ArrayList<>();
 
-    public static IBook getBook(String url) {
+    public static IBook getBook(String url) throws PageNotFound{
         IBook book = findBook(url);
         if (book == null)
             switch (TypeSite.getTypeFromUrl(url)) {
@@ -31,9 +34,13 @@ public abstract class MainParser {
         return book;
     }
 
-    public static Author getAuthor(String url){
+    public static Author getAuthor(String url) throws PageNotFound{
         Author author = findAuthor(url);
-        if(author == null)
+        if (URLHelper.isBook(url)) {
+            Logger.getLogger().print("Попытка добавить произведение как автора " + url);
+            return getBook(url).getAuthors().get(0);
+        }
+        if (author == null)
             switch (TypeSite.getTypeFromUrl(url)) {
                 case SAMLIB:
                     return new SamLibParser(url).getAuthor();
@@ -91,9 +98,10 @@ public abstract class MainParser {
 
     public static List<Author> getAllAuthorById(List<Integer> arr) {
         List<Author> authorsL = new ArrayList<>();
-        for (Author author : authors){
+        for (Author author : authors) {
             if (arr.contains(author.getInDB()))
-                authorsL.add(author);}
+                authorsL.add(author);
+        }
         return authorsL;
     }
 

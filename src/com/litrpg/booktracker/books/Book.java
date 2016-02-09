@@ -8,6 +8,7 @@ import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
+import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.other.ToText;
 import com.litrpg.booktracker.updaters.IUpdateObject;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * Created by LionZXY on 12.01.2016.
  * BookTracker
  */
-public class Book implements IBook, IUpdateObject{
+public class Book implements IBook, IUpdateObject {
     TypeSite typeSite;
     String nameBook;
     String annotation;

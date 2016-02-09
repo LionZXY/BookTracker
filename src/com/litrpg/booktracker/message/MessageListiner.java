@@ -4,6 +4,8 @@ import com.lionzxy.vkapi.event.IMessageListener;
 import com.lionzxy.vkapi.event.NewMessageEvent;
 import com.lionzxy.vkapi.event.SubscribeMessageEvent;
 import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.messages.MessageBuffer;
+import com.lionzxy.vkapi.users.User;
 import com.litrpg.booktracker.message.botanswer.IAnswer;
 import com.litrpg.booktracker.message.botanswer.SimplyAnswer;
 import com.litrpg.booktracker.message.botanswer.UserBot;
@@ -36,8 +38,8 @@ public class MessageListiner implements IMessageListener {
     @Override
     public void onNewMessageInMultiDialog(NewMessageEvent e) {
         if (e.getVkUser().inChat(e.getMsg().getIdChat())) {
-            new Message("Данный бот работает только с личными сообщениями. " +
-                    "Если вам по какой-либо причине требуется использовать данного бота в конференции, обратитесь к администрации.").setChat(e.getMsg().getIdChat()).sendMessage(e.getVkUser(), null);
+            MessageBuffer.addMessage(new Message("Данный бот работает только с личными сообщениями. " +
+                    "Если вам по какой-либо причине требуется использовать данного бота в конференции, обратитесь к администрации.").setChat(e.getMsg().getIdChat()), (User) null);
             HashMap<String, String> req = new HashMap<>();
             req.put("chat_id", String.valueOf(e.getMsg().getIdChat()));
             req.put("user_id", String.valueOf(e.getVkUser().getVkID()));

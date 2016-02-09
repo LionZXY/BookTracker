@@ -14,6 +14,7 @@ import java.util.HashMap;
  */
 public class VKException extends RuntimeException {
     private int error_code;
+    String errorReason;
 
     public boolean isFix = false;
 
@@ -48,7 +49,7 @@ public class VKException extends RuntimeException {
 
     public VKException(String answer, @Nullable VKUser vkUser) {
         error_code = getIdException(answer);
-        String errorReason = error.get(error_code);
+        errorReason = error.get(error_code);
         try {
             errorReason = (String) ((JSONObject) ((JSONObject) new JSONParser().parse(new StringReader(answer))).get("error")).get("error_msg");
         } catch (Exception e) {
@@ -90,13 +91,13 @@ public class VKException extends RuntimeException {
                 VKUser.sleep(60000);
                 return true;
             case 9:
-                VKUser.sleep(60000 * 15);
-                return true;
+                //VKUser.sleep(60000 * 5);
+                return false;
             case 6:
                 VKUser.sleep(1000);
                 return true;
             case 14:
-                VKUser.sleep(60000 * 15);
+                VKUser.sleep(60000 * 5);
                 return true;
             default:
                 printStackTrace();
@@ -120,5 +121,10 @@ public class VKException extends RuntimeException {
             default:
                 return tryFixError();
         }
+    }
+
+
+    public String getMessage() {
+        return errorReason;
     }
 }

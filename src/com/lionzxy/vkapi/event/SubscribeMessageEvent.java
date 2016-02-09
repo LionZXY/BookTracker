@@ -39,6 +39,12 @@ public class SubscribeMessageEvent {
     public void sendMSG(JSONObject msgJsonObj, VKUser vkUser) {
         if (Integer.parseInt(msgJsonObj.get("read_state").toString()) == 0) {
             boolean inChat = msgJsonObj.get("chat_id") != null;
+            if (msgJsonObj.get("fwd_messages") != null) {
+                for (Object obj : (JSONArray) msgJsonObj.get("fwd_messages")) {
+                    for (IMessageListener messageListener : list)
+                        messageListener.onNewMessageInPrivate(new NewMessageEvent(this, new Message((JSONObject) obj), vkUser));
+                }
+            }
             if (inChat)
                 for (IMessageListener messageListener : list)
                     messageListener.onNewMessageInMultiDialog(new NewMessageEvent(this, new Message(msgJsonObj), vkUser));

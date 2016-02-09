@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.updaters;
 
 import com.lionzxy.vkapi.util.Logger;
+import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.parsers.LitEraParser;
@@ -40,17 +41,20 @@ public class Updater implements IBookUpdateListiner {
         getSamlib(new Date()).update();
         Logger.getLogger().print("Проверка книг началась. На очереди " + MainParser.books.size() + " книг");
         MainParser.books.forEach(Updater::checkBook);
+        BookTracker.DB.checkNowBook();
         Logger.getLogger().print("Всё книги проверенны!");
     }
 
     public static void checkAllAuthor() {
         Logger.getLogger().print("Проверка авторов началась. На очереди " + MainParser.authors.size() + " книг");
         MainParser.authors.forEach(Updater::checkAuthor);
+        BookTracker.DB.checkNowAuthor();
         Logger.getLogger().print("Всё авторы проверенны!");
     }
 
     public static void checkBook(IBook book) {
         BookUpdateEvent event = null;
+        Logger.getLogger().print("Проверка на обновление книги " + book.getNameBook());
         switch (book.getType()) {
             case LITERA:
                 event = litera.checkUpdateBook(book);
@@ -77,11 +81,11 @@ public class Updater implements IBookUpdateListiner {
                 break;
             case SAMLIB:
                 for (Date d : SamLibUpdater.getDaysFrom(author.getLastCheck(), new Date())) {
-                    event = getSamlib(d).chackUpdateAuthor(author);
+                    event = getSamlib(d).checkUpdateAuthor(author);
                     if (event != null)
                         break;
                 }
-                event = getSamlib(new Date()).chackUpdateAuthor(author);
+                event = getSamlib(new Date()).checkUpdateAuthor(author);
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + " от " + event.getUpdateTime());

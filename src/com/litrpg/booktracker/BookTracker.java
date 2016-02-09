@@ -12,6 +12,7 @@ import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.Updater;
 
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -20,35 +21,48 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.4F;
+    public static float VERSION = 1.5F;
     public static boolean stop = false;
 
     static {
         Logger.setDefaultLogger("[BookTracker]");
     }
 
+    /*
+    Исправленн флуд
+    Улучшенна система отлова ошибок
+    Исправленна ошибка при попытке получить книгу без аннотации
+    Исправлена проверка обновлений на самиздате
+    Добавлена поддержка пересылаемых сообщений
+     */
     public static MySql DB = new MySql("book_updater", "root", "root");
     public static VKUser vk = new VKUser(new LoginPaswordAuth(UsersFile.getUsers("LeaveBot.usrs")[0], ' '));
 
     public static void main(String... args) {
-        TimeZone.setDefault(TimeZone.getTimeZone("Russia/Moscow"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"));
+        Logger.getLogger().print("Бот версии " + VERSION + " запущен! Текущее время " + new Date());
+        Logger.getLogger().print("Время " + MySql.dateToString(new Date()));
+        Logger.getLogger().print("Время в мс " + new Date().getTime());
         try {
             sync();
             while (!stop) {
+                Updater.checkAllBooks();
+                Updater.checkAllAuthor();
                 UserBot.fantasySubscr = vk.getUserList(98762647);
                 UserBot.litrpgSubscr = vk.getUserList(48785893);
-                vk.getAnswer("account.setOnline",null);
+                vk.getAnswer("account.setOnline", null);
                 for (int i = 0; i < 15; i++) {
                     Logger.getLogger().print("[" + i + "/" + 15 + "] Проверка сообщений...");
                     MessageListiner.sme.checkMessage(vk);
                     MessageBuffer.flush(vk);
                     Logger.getLogger().print("Проверка сообщений завершена!");
                     vk.applyFriendRequest();
+                    if (stop)
+                        return;
                     VKUser.sleep(1000 * 60);
                 }
-                Updater.checkAllBooks();
-                Updater.checkAllAuthor();
             }
+
         } catch (Exception e) {
             new CrashFileHelper(e);
         }

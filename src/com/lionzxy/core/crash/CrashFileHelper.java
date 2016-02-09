@@ -1,6 +1,8 @@
 package com.lionzxy.core.crash;
 
 import com.lionzxy.core.io.MultiWritter;
+import com.lionzxy.core.io.PrintErrWritter;
+import com.lionzxy.vkapi.messages.Message;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 
@@ -27,13 +29,40 @@ public class CrashFileHelper {
             crashFile.createNewFile();
             List<Writer> writers = new ArrayList<>();
             writers.add(new FileWriter(crashFile));
-            writers.add(new PrintWriter(System.out));
+            writers.add(new PrintErrWritter());
             PrintWriter pw = new PrintWriter(new MultiWritter(writers));
             pw.print("---- Crash Report ----\n\n\n");
             pw.print("Time: \n" + new Date() +
                     "\nDescription: " + e.getLocalizedMessage() + "\n\n");
             e.printStackTrace(pw);
-            //e.printStackTrace();
+            e.printStackTrace();
+            pw.flush();
+            pw.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public CrashFileHelper(Exception e, Message msg) {
+        try {
+            File crashFile = new File(System.getProperty("user.dir") + "/crash/" + dateToString(new Date()) + "-crash.log");
+            System.out.println(crashFile.getPath());
+            crashFile.getParentFile().mkdirs();
+            crashFile.createNewFile();
+            List<Writer> writers = new ArrayList<>();
+            writers.add(new FileWriter(crashFile));
+            writers.add(new PrintErrWritter());
+            PrintWriter pw = new PrintWriter(new MultiWritter(writers));
+            pw.print("---- Crash Report ----\n\n\n");
+            pw.print("Time: \n" + new Date() + "\nOn message");
+            if (msg.getUser() != null)
+                pw.print(" from " + msg.getUser().getId());
+            else if (msg.getToUser() != null)
+                pw.print(" to " + msg.getToUser().getId());
+            pw.print(":\n" + msg.toString() +
+                    "\n\nDescription: " + e.getLocalizedMessage() + "\n\n");
+            e.printStackTrace(pw);
+            e.printStackTrace();
             pw.flush();
             pw.close();
         } catch (Exception ex) {

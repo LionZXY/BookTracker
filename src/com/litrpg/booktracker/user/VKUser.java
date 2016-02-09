@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.user;
 
 import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.users.User;
 import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
@@ -161,14 +162,14 @@ public class VKUser implements IUser {
     @Override
     public void onUpdateBook(BookUpdateEvent e) {
         if (e.sizeUp > sizeUpdate) {
-            new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
+            MessageBuffer.addMessage(new Message(e.toString()).addMedia("photo286477373_399669155"), new User(idInVk));
             Logger.getLogger().print("Отправленно сообщение об обновлении книги \"" + e.book.getNameBook() + "\" пользователю vk с id" + idInVk);
         }
     }
 
     @Override
     public void onUpdateAuthor(AuthorUpdateEvent e) {
-        new Message(e.toString()).addMedia("photo286477373_399669155").sendMessage(BookTracker.vk, idInVk);
+        MessageBuffer.addMessage(new Message(e.toString()).addMedia("photo286477373_399669155"), new User(idInVk));
         Logger.getLogger().print("Отправленно сообщение об обновлении автора \"" + e.getAuthor() + "\" пользователю vk с id" + idInVk);
     }
 
