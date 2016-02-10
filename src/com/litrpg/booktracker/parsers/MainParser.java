@@ -5,10 +5,10 @@ import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.exception.PageNotFound;
 import com.litrpg.booktracker.helper.URLHelper;
 import com.litrpg.booktracker.user.IUser;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,19 +22,21 @@ public abstract class MainParser {
     public static List<Author> authors = new ArrayList<>();
     public static List<IUser> users = new ArrayList<>();
 
-    public static IBook getBook(String url) throws PageNotFound{
+    public static IBook getBook(String url) throws FileNotFoundException {
         IBook book = findBook(url);
         if (book == null)
             switch (TypeSite.getTypeFromUrl(url)) {
                 case SAMLIB:
-                    return new SamLibParser(url).parseBook();
+                    SamLibParser p = new SamLibParser(url);
+                    return p.parseBook();
                 case LITERA:
-                    return new LitEraParser(url).parseBook();
+                    LitEraParser p2 = new LitEraParser(url);
+                    return p2.parseBook();
             }
         return book;
     }
 
-    public static Author getAuthor(String url) throws PageNotFound{
+    public static Author getAuthor(String url) throws FileNotFoundException {
         Author author = findAuthor(url);
         if (URLHelper.isBook(url)) {
             Logger.getLogger().print("Попытка добавить произведение как автора " + url);

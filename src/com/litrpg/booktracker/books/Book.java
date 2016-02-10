@@ -8,7 +8,6 @@ import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.other.ToText;
 import com.litrpg.booktracker.updaters.IUpdateObject;
 

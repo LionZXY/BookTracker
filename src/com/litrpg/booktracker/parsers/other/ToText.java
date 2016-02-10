@@ -1,5 +1,7 @@
 package com.litrpg.booktracker.parsers.other;
 
+import com.lionzxy.core.crash.CrashFileHelper;
+import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
@@ -11,6 +13,7 @@ import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.parsers.SamLibParser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
@@ -22,46 +25,51 @@ import java.util.LinkedHashMap;
 public class ToText {
 
     public static File getAsFile(IBook book) {
-        StringBuilder bookText = new StringBuilder();
-        addFB2Info(bookText, book);
-        if (book.getType().equals(TypeSite.LITERA)) {
-            LinkedHashMap<Integer, String> partValue = new LinkedHashMap<>();
-            for (String part : new LitEraParser(book.getUrl()).findWord("<option value=\"\">Содержание</option>", "</select>").replaceFirst("                                                                                                            ", "").split("                                                                                                                                                "))
-                if (part.length() > 10 && part.contains("<option value=\""))
-                    partValue.put(Integer.parseInt(LitEraParser.findWord(part, "<option value=\"", "\">")), LitEraParser.findWord(part, ">", "<"));
-            for (Integer part : partValue.keySet()) {
-                bookText.append("\n<section>\n").append("<title><p>" + partValue.get(part) + "</p></title>\n");
-                String html = URLHelper.getSiteAsString(book.getUrl().replaceFirst("https://lit-era.com/book/", "https://lit-era.com/reader/") + "?c=" + part, "utf8");
-                if (!html.contains("Эта книга находится в платной подписке. Чтобы продолжить чтение, пожалуйста, оплатите доступ.")) {
-                    String workOnText = temlareText(LitEraParser.findWord(html, "<div class=\"reader-text font-size-medium\"", "</div>"));
-                    workOnText = workOnText.substring(workOnText.indexOf("</h2>") + "</h2>".length() + 1)
-                            .replaceAll("&mdash;", "-")
-                            .replaceAll("&nbsp;", "")
-                            .replaceAll("&hellip;", "...")
-                            .replaceAll("&ndash;", "-");
-                    bookText.append(workOnText);
-                } else
-                    bookText.append("<p>Эта книга находится в платной подписке. Чтобы продолжить чтение, пожалуйста, оплатите доступ.</p>");
-                bookText.append("</section>");
+        try {
+            StringBuilder bookText = new StringBuilder();
+            addFB2Info(bookText, book);
+            if (book.getType().equals(TypeSite.LITERA)) {
+                LinkedHashMap<Integer, String> partValue = new LinkedHashMap<>();
+                for (String part : new LitEraParser(book.getUrl()).findWord("<option value=\"\">Содержание</option>", "</select>").replaceFirst("                                                                                                            ", "").split("                                                                                                                                                "))
+                    if (part.length() > 10 && part.contains("<option value=\""))
+                        partValue.put(Integer.parseInt(LitEraParser.findWord(part, "<option value=\"", "\">")), LitEraParser.findWord(part, ">", "<"));
+                for (Integer part : partValue.keySet()) {
+                    bookText.append("\n<section>\n").append("<title><p>" + partValue.get(part) + "</p></title>\n");
+                    String html = URLHelper.getSiteAsString(book.getUrl().replaceFirst("https://lit-era.com/book/", "https://lit-era.com/reader/") + "?c=" + part, "utf8");
+                    if (!html.contains("Эта книга находится в платной подписке. Чтобы продолжить чтение, пожалуйста, оплатите доступ.")) {
+                        String workOnText = temlareText(LitEraParser.findWord(html, "<div class=\"reader-text font-size-medium\"", "</div>"));
+                        workOnText = workOnText.substring(workOnText.indexOf("</h2>") + "</h2>".length() + 1)
+                                .replaceAll("&mdash;", "-")
+                                .replaceAll("&nbsp;", "")
+                                .replaceAll("&hellip;", "...")
+                                .replaceAll("&ndash;", "-");
+                        bookText.append(workOnText);
+                    } else
+                        bookText.append("<p>Эта книга находится в платной подписке. Чтобы продолжить чтение, пожалуйста, оплатите доступ.</p>");
+                    bookText.append("</section>");
+                }
+            } else if (book.getType() == TypeSite.SAMLIB) {
+                SamLibParser parser = new SamLibParser(book.getUrl());
+                bookText.append("<section><title><p>");
+                bookText.append(book.getNameBook());
+                bookText.append("</p></title><p>");
+                bookText.append(MainParser.findWord(parser.html, "<!----------- Собственно произведение --------------->", "<!--------------------------------------------------->").replaceAll("&mdash;", "-")
+                        .replaceAll("&nbsp;", "")
+                        .replaceAll("&hellip;", "...")
+                        .replaceAll("&ndash;", "-")
+                        .replaceAll("<center>", "")
+                        .replaceAll("</center>", "")
+                        .replaceFirst("<dd>", "<p>")
+                        .replaceAll("<dd>", "</p><p>"));
+                bookText.append("</p></section>");
             }
-        } else if (book.getType() == TypeSite.SAMLIB) {
-            SamLibParser parser = new SamLibParser(book.getUrl());
-            bookText.append("<section><title><p>");
-            bookText.append(book.getNameBook());
-            bookText.append("</p></title><p>");
-            bookText.append(MainParser.findWord(parser.html, "<!----------- Собственно произведение --------------->", "<!--------------------------------------------------->").replaceAll("&mdash;", "-")
-                    .replaceAll("&nbsp;", "")
-                    .replaceAll("&hellip;", "...")
-                    .replaceAll("&ndash;", "-")
-                    .replaceAll("<center>", "")
-                    .replaceAll("</center>", "")
-                    .replaceFirst("<dd>","<p>")
-                    .replaceAll("<dd>", "</p><p>"));
-            bookText.append("</p></section>");
+            bookText.append("</body>").append("</FictionBook>");
+            return UsersFile.save(bookText.toString(), book.getUrl().replace(book.getType().getSite(), "").replace("/", "-").replace("\\", "-").replace(" ", "").replace(".", "").replace(":", "") + ".fb2");
+        } catch (FileNotFoundException e) {
+            new CrashFileHelper(e);
+            Logger.getLogger().print("Файл не найден");
+            return null;
         }
-        bookText.append("</body>").append("</FictionBook>");
-        return UsersFile.save(bookText.toString(), book.getUrl().replace(book.getType().getSite(), "").replace("/", "-").replace("\\", "-").replace(" ", "").replace(".", "").replace(":", "") + ".fb2");
-
     }
 
     public static String temlareText(String s) {

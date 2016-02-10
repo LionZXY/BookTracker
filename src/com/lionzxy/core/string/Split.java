@@ -18,6 +18,7 @@ public class Split {
                 toExit.add(sb.toString());
                 sb = new StringBuilder();
             } else sb.append(str.charAt(i));
+        toExit.add(sb.toString());
         return toExit.toArray(new String[toExit.size()]);
     }
 }

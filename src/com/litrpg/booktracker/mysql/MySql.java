@@ -264,6 +264,14 @@ public class MySql implements IBookUpdateListiner {
         }
     }
 
+    public void updateBook(Book book) {
+        try {
+            statement.execute("UPDATE books SET lastCheck = \"" + dateToString(book.getLastCheck()) + "\", lastUpdate = \"" + dateToString(book.getLastUpdate()) + "\" WHERE id = " + book.getIdInDB() + ";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateUser(IUser user) {
         try {
             statement.execute("UPDATE users SET subscribes = \"" + user.getSubAsString() + "\", permission = \"" + user.getPerm() + "\", sizeUpdate = \"" + user.getSizeUpdate() + "\" WHERE id = " + user.getDBId() + ";");
@@ -273,13 +281,14 @@ public class MySql implements IBookUpdateListiner {
     }
 
     public static String dateToString(java.util.Date date) {
+        return new Timestamp(date.getTime()).toString();
         //YYYY-MM-DD HH:MM:SS
-        if (date == null)
+        /*if (date == null)
             return dateToString(new Date());
         CalendarDate calendarDate = BaseCalendar.getGregorianCalendar().getCalendarDate(date.getTime());
         String dateStr = calendarDate.getYear() + "-" + calendarDate.getMonth() + "-" + calendarDate.getDayOfMonth();
         dateStr += " " + calendarDate.getHours() + ":" + calendarDate.getMinutes() + ":" + calendarDate.getSeconds();
-        return dateStr;
+        return dateStr;*/
     }
 
 

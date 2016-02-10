@@ -12,6 +12,7 @@ import com.litrpg.booktracker.updaters.event.BookUpdateSubscribe;
 import com.litrpg.booktracker.updaters.event.IBookUpdateListiner;
 import com.litrpg.booktracker.user.Users;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -46,8 +47,9 @@ public class Updater implements IBookUpdateListiner {
     }
 
     public static void checkAllAuthor() {
-        Logger.getLogger().print("Проверка авторов началась. На очереди " + MainParser.authors.size() + " книг");
-        MainParser.authors.forEach(Updater::checkAuthor);
+        Logger.getLogger().print("Проверка авторов началась. На очереди " + MainParser.authors.size() + " авторов");
+        for (int i = 0; i < MainParser.authors.size(); i++)
+            checkAuthor(MainParser.authors.get(i));
         BookTracker.DB.checkNowAuthor();
         Logger.getLogger().print("Всё авторы проверенны!");
     }
@@ -55,6 +57,7 @@ public class Updater implements IBookUpdateListiner {
     public static void checkBook(IBook book) {
         BookUpdateEvent event = null;
         Logger.getLogger().print("Проверка на обновление книги " + book.getNameBook());
+
         switch (book.getType()) {
             case LITERA:
                 event = litera.checkUpdateBook(book);
@@ -65,7 +68,8 @@ public class Updater implements IBookUpdateListiner {
                     if (event != null)
                         break;
                 }
-                event = getSamlib(new Date()).checkUpdateBook(book);
+                if (event == null)
+                    event = getSamlib(new Date()).checkUpdateBook(book);
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + " от " + event.updateTime);
@@ -85,7 +89,8 @@ public class Updater implements IBookUpdateListiner {
                     if (event != null)
                         break;
                 }
-                event = getSamlib(new Date()).checkUpdateAuthor(author);
+                if (event == null)
+                    event = getSamlib(new Date()).checkUpdateAuthor(author);
         }
         if (event != null) {
             Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + " от " + event.getUpdateTime());
@@ -98,8 +103,14 @@ public class Updater implements IBookUpdateListiner {
         String annotation = null;
         switch (e.book.getType()) {
             case LITERA:
-                annotation = new LitEraParser(e.book.getUrl()).getAnnotation();
-                e.book.setAnnotation(annotation).setLastUpdate(e.updateTime).setSize(e.sizeUp + e.book.getSize());
+                try {
+                    annotation = new LitEraParser(e.book.getUrl()).getAnnotation();
+                } catch (FileNotFoundException ex) {
+                    annotation = "Книга была удалена или временно недоступна";
+                }
+                e.book.setAnnotation(annotation).setLastUpdate(e.updateTime).setSize(e.sizeUp + e.book.getSize()).setLastCheck(new Date());
+            default:
+                break;
         }
 
         System.out.println(e);
@@ -107,7 +118,7 @@ public class Updater implements IBookUpdateListiner {
 
     @Override
     public void authorUpdate(AuthorUpdateEvent e) {
-        e.getAuthor().setLastUpdate(e.getUpdateTime());
+        e.getAuthor().setLastUpdate(e.getUpdateTime()).setLastCheck(new Date());
     }
 
     public static SamLibUpdater getSamlib(Date date) {

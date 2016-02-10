@@ -1,13 +1,9 @@
 package com.litrpg.booktracker.helper;
 
 import com.lionzxy.vkapi.messages.Message;
-import com.litrpg.booktracker.exception.PageNotFound;
 import com.litrpg.booktracker.message.messages.Error;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -18,7 +14,7 @@ import java.net.URL;
  */
 public class URLHelper {
 
-    public static String getSiteAsString(String url, String encode) throws PageNotFound {
+    public static String getSiteAsString(String url, String encode) throws FileNotFoundException {
         System.out.println("Получение файла " + url);
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -36,8 +32,8 @@ public class URLHelper {
             while ((line = br.readLine()) != null) {
                 stringBuilder.append(line).append("\n");
             }
-            if (br.toString().contains("<TITLE>404 Not Found</TITLE>"))
-                throw new PageNotFound();
+        } catch (FileNotFoundException ex) {
+            throw ex;
         } catch (MalformedURLException mue) {
             mue.printStackTrace();
         } catch (IOException ioe) {
@@ -52,15 +48,27 @@ public class URLHelper {
         return stringBuilder.toString();
     }
 
-    public static Message isValidLink(String link) {
+    public static Message isValidLinkForBook(String link) {
         if (link == null)
             return new Message("Эта команда требует ссылки!").addMedia("photo286477373_399671795");
         if (link.startsWith("%"))
             return Error.withoutProc;
-        if (!isAuthor(link) && !isBook(link))
-            return new Message("Неверная ссылка! Требуется указать ссылку на СТРАНИЧКУ книги/автора. Пример правильной ссылки:\n" +
+        if (!isBook(link))
+            return new Message("Неверная ссылка! Требуется указать ссылку на СТРАНИЧКУ книги. Пример правильной ссылки:\n" +
                     "https://lit-era.com/book/losa-deserta-pustynnye-zemli-svadebnye-tancy-b5482\n" +
-                    "На данный момент поддерживается только книги с Самиздата и книги с Лит-Эры.").addMedia("photo286477373_399685563");
+                    "На данный момент поддерживается только книги с Самиздата и книги с Лит-Эры.").addMedia("photo286477373_399671795");
+        return null;
+    }
+
+    public static Message isValidLinkForAuthor(String link) {
+        if (link == null)
+            return new Message("Эта команда требует ссылки!").addMedia("photo286477373_399671795");
+        if (link.startsWith("%"))
+            return Error.withoutProc;
+        if (!isAuthor(link))
+            return new Message("Неверная ссылка! Требуется указать ссылку на СТРАНИЧКУ автора. Пример правильной ссылки:\n" +
+                    "http://samlib.ru/editors/l/litrpg_w_g/\n" +
+                    "На данный момент поддерживается только книги с Самиздата и книги с Лит-Эры.").addMedia("photo286477373_399671795");
         return null;
     }
 

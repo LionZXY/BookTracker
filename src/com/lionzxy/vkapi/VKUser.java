@@ -66,12 +66,12 @@ public class VKUser {
                 } catch (IOException e) {
                     sleep(60000);
                     new CrashFileHelper(e);
-                    getAnswer(method, params, vkUser);
+                    return getAnswer(method, params, vkUser);
                 }
             } catch (VKException e) {
                 new CrashFileHelper(e);
                 if (e.isFix)
-                    getAnswer(method, params, vkUser);
+                    return getAnswer(method, params, vkUser);
             }
         } catch (Exception e) {
             new CrashFileHelper(e);

@@ -10,6 +10,8 @@ import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.parsers.other.ToText;
 import com.litrpg.booktracker.user.IUser;
 
+import java.io.FileNotFoundException;
+
 /**
  * com.litrpg.booktracker.message.botanswer.commands
  * Created by LionZXY on 29.01.2016.
@@ -22,10 +24,15 @@ public class Download extends ICommand {
 
     @Override
     public void onMessage(IUser user, VKUser vkUser, Message message, String arg) {
-        if (user.getPerm() >= 50)
-            MessageBuffer.addMessage(Command.download
-                    .addMedia(new VkFile(ToText.getAsFile(MainParser.getBook(arg)), vkUser).getAsVkMedia()), user);
-        else
-            MessageBuffer.addMessage(Error.permErr, user);
+        try {
+
+            if (user.getPerm() >= 50)
+                MessageBuffer.addMessage(Command.download
+                        .addMedia(new VkFile(ToText.getAsFile(MainParser.getBook(arg)), vkUser).getAsVkMedia()), user);
+            else
+                MessageBuffer.addMessage(Error.permErr, user);
+        } catch (FileNotFoundException e) {
+            MessageBuffer.addMessage(Error.error404, user);
+        }
     }
 }

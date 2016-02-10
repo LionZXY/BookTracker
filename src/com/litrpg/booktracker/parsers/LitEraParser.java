@@ -5,9 +5,9 @@ import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.exception.PageNotFound;
 import com.litrpg.booktracker.helper.URLHelper;
 
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class LitEraParser extends MainParser {
     String html = null;
     String url = null;
 
-    public LitEraParser(String url) throws PageNotFound {
+    public LitEraParser(String url) throws FileNotFoundException {
         this.url = url;
         if (!url.startsWith("https://"))
             url = "https://" + url;

@@ -20,7 +20,7 @@ public class RemoveAuthor extends ICommand {
     @Override
     public void onMessage(IUser user, VKUser vkUser, Message message, String arg) {
         if (arg.length() > 0) {
-            Author author = MainParser.getAuthor(arg);
+            Author author = MainParser.findAuthor(arg);
             user.removeSub(author);
             MessageBuffer.addMessage(new Message("Автор удален").addMedia("photo286477373_400693046"), user);
         } else MessageBuffer.addMessage("Для этой комманды нужна ссылка", user);

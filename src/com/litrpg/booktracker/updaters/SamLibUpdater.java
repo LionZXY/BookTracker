@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.updaters;
 
 import com.lionzxy.core.string.Split;
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.helper.URLHelper;
@@ -10,6 +11,7 @@ import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarDate;
 
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +33,13 @@ public class SamLibUpdater {
     }
 
     public void update() {
-        String[] tmp = URLHelper.getSiteAsString(getLink(date), "Windows-1251").split("\n");
+        String[] tmp = new String[0];
+        try {
+            tmp = URLHelper.getSiteAsString(getLink(date), "Windows-1251").split("\n");
+        } catch (FileNotFoundException e) {
+            this.update();
+        }
+
         updateList = new String[tmp.length][12];
         for (int i = 0; i < tmp.length; i++) {
             updateList[i] = Split.spilitToByte(tmp[i], (byte) 124);
@@ -39,10 +47,13 @@ public class SamLibUpdater {
     }
 
     public BookUpdateEvent checkUpdateBook(IBook book) {
-        String updUrl = book.getUrl().substring(0, book.getUrl().lastIndexOf(".shtml"));
+        String updUrl = book.getUrl().substring(0, book.getUrl().lastIndexOf(".shtml")).replaceFirst("http://samlib.ru", "");
         for (String[] update : updateList) {
-            if (update.length == 12 && update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()) {
-                BookUpdateEvent e = Updater.subscribe.getBookEvent(book, Integer.parseInt(update[11]) * 1000 - book.getSize(), Timestamp.valueOf(update[2]));
+            if (update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()) {
+                int size = 0;
+                if (update[11].length() > 2)
+                    size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
+                BookUpdateEvent e = Updater.subscribe.getBookEvent(book, size, Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
                 return e;
             }
@@ -52,12 +63,18 @@ public class SamLibUpdater {
     }
 
     public AuthorUpdateEvent checkUpdateAuthor(Author author) {
+        String updUrl = author.getUrl().replaceFirst("http://samlib.ru", "");
         for (String[] update : updateList) {
-            if (update[0].startsWith(author.getUrl()) && Timestamp.valueOf(update[2]).getTime() > author.getLastUpdate().getTime()) {
-                AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook(update[0] + ".shtml"), Timestamp.valueOf(update[2]));
-                author.setLastUpdate(Timestamp.valueOf(update[2]));
-                return e;
-            }
+            if (update[0].startsWith(updUrl))
+                if (Timestamp.valueOf(update[2]).getTime() > author.getLastUpdate().getTime()) {
+                    try {
+                        AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook("http://samlib.ru" + update[0] + ".shtml"), Timestamp.valueOf(update[2]));
+                        author.setLastUpdate(Timestamp.valueOf(update[2]));
+                        return e;
+                    } catch (FileNotFoundException e) {
+                        Logger.getLogger().print("Книга " + update[0] + " по видимому, была удалена.");
+                    }
+                }
         }
         author.setLastCheck(new Date());
         return null;

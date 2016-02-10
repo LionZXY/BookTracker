@@ -6,6 +6,7 @@ import com.lionzxy.vkapi.auth.LoginPaswordAuth;
 import com.lionzxy.vkapi.messages.MessageBuffer;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
+import com.litrpg.booktracker.helper.URLHelper;
 import com.litrpg.booktracker.message.MessageListiner;
 import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
@@ -21,7 +22,7 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.5F;
+    public static float VERSION = 1.51F;
     public static boolean stop = false;
 
     static {
@@ -29,16 +30,12 @@ public class BookTracker {
     }
 
     /*
-    Исправленн флуд
-    Улучшенна система отлова ошибок
-    Исправленна ошибка при попытке получить книгу без аннотации
-    Исправлена проверка обновлений на самиздате
-    Добавлена поддержка пересылаемых сообщений
+    Добавлена команда !добавить
      */
     public static MySql DB = new MySql("book_updater", "root", "root");
     public static VKUser vk = new VKUser(new LoginPaswordAuth(UsersFile.getUsers("LeaveBot.usrs")[0], ' '));
 
-    public static void main(String... args) {
+    public static void main(String... args) throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"));
         Logger.getLogger().print("Бот версии " + VERSION + " запущен! Текущее время " + new Date());
         Logger.getLogger().print("Время " + MySql.dateToString(new Date()));

@@ -5,9 +5,9 @@ import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
-import com.litrpg.booktracker.exception.PageNotFound;
 import com.litrpg.booktracker.helper.URLHelper;
 
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ public class SamLibParser extends MainParser {
     public String html;
     public String url;
 
-    public SamLibParser(String url) throws PageNotFound {
-        this.url = url;
+    public SamLibParser(String url) throws FileNotFoundException{
+        this.url = url.replaceAll("editors/", "");
         if (TypeSite.getTypeFromUrl(url) == TypeSite.SAMLIB) {
             html = URLHelper.getSiteAsString(url, "Windows-1251");
         }

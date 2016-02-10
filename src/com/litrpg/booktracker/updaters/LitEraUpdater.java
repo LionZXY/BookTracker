@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.updaters;
 
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.helper.URLHelper;
@@ -10,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,9 +53,13 @@ public class LitEraUpdater {
             if (updateJson instanceof JSONObject
                     && ((String) ((JSONObject) updateJson).get("author")).startsWith(author.getName())
                     && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() > author.getLastUpdate().getTime()) {
-                IBook book = MainParser.getBook((String) ((JSONObject) updateJson).get("url"));
-                if (book.getAuthors().contains(author))
-                    return Updater.subscribe.getAuthorEvent(author, book, stringToDate((String) ((JSONObject) updateJson).get("updated_at")));
+                try {
+                    IBook book = MainParser.getBook((String) ((JSONObject) updateJson).get("url"));
+                    if (book.getAuthors().contains(author))
+                        return Updater.subscribe.getAuthorEvent(author, book, stringToDate((String) ((JSONObject) updateJson).get("updated_at")));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger().print("Книга " + ((JSONObject) updateJson).get("url") + " по видимому, была удалена.");
+                }
             }
         }
         author.setLastCheck(new Date());

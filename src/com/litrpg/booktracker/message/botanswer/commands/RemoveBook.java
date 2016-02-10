@@ -20,7 +20,7 @@ public class RemoveBook extends ICommand {
     @Override
     public void onMessage(IUser user, VKUser vkUser, Message message, String arg) {
         if (arg.length() > 0) {
-            IBook book = MainParser.getBook(arg);
+            IBook book = MainParser.findBook(arg);
             user.removeSub(book);
             MessageBuffer.addMessage(new Message("Книга удалена").addMedia("photo286477373_400693046"), user);
         } else MessageBuffer.addMessage("Для этой комманды нужна ссылка", user);
