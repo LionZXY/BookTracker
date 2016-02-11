@@ -37,7 +37,7 @@ public class LitEraUpdater {
     public BookUpdateEvent checkUpdateBook(IBook book) {
         for (Object bookJson : jsonArray) {
             if (bookJson instanceof JSONObject && ((String) ((JSONObject) bookJson).get("url")).startsWith(book.getUrl())) {
-                if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() > book.getLastUpdate().getTime())
+                if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() > book.getLastCheck().getTime())
                     if (Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize() > Updater.minSizeUp) {
                         BookUpdateEvent bookUpdateEvent = Updater.subscribe.getBookEvent(book, Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize(), stringToDate((String) ((JSONObject) bookJson).get("updated_at")));
                         return bookUpdateEvent;
@@ -52,7 +52,7 @@ public class LitEraUpdater {
         for (Object updateJson : jsonArray) {
             if (updateJson instanceof JSONObject
                     && ((String) ((JSONObject) updateJson).get("author")).startsWith(author.getName())
-                    && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() > author.getLastUpdate().getTime()) {
+                    && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() > author.getLastCheck().getTime()) {
                 try {
                     IBook book = MainParser.getBook((String) ((JSONObject) updateJson).get("url"));
                     if (book.getAuthors().contains(author))

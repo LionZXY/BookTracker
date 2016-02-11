@@ -56,7 +56,7 @@ public class Updater implements IBookUpdateListiner {
 
     public static void checkBook(IBook book) {
         BookUpdateEvent event = null;
-        Logger.getLogger().print("Проверка на обновление книги " + book.getNameBook());
+        //Logger.getLogger().print("Проверка на обновление книги " + book.getNameBook());
 
         switch (book.getType()) {
             case LITERA:

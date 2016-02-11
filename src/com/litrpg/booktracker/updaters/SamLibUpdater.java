@@ -49,12 +49,13 @@ public class SamLibUpdater {
     public BookUpdateEvent checkUpdateBook(IBook book) {
         String updUrl = book.getUrl().substring(0, book.getUrl().lastIndexOf(".shtml")).replaceFirst("http://samlib.ru", "");
         for (String[] update : updateList) {
-            if (update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastUpdate().getTime()) {
+            if (update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastCheck().getTime()) {
                 int size = 0;
                 if (update[11].length() > 2)
                     size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
                 BookUpdateEvent e = Updater.subscribe.getBookEvent(book, size, Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
+                book.setLastUpdate(Timestamp.valueOf(update[2]));
                 return e;
             }
         }
@@ -66,9 +67,12 @@ public class SamLibUpdater {
         String updUrl = author.getUrl().replaceFirst("http://samlib.ru", "");
         for (String[] update : updateList) {
             if (update[0].startsWith(updUrl))
-                if (Timestamp.valueOf(update[2]).getTime() > author.getLastUpdate().getTime()) {
+                if (Timestamp.valueOf(update[2]).getTime() > author.getLastCheck().getTime()) {
                     try {
-                        AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook("http://samlib.ru" + update[0] + ".shtml"), Timestamp.valueOf(update[2]));
+                        int size = 0;
+                        if (update[11].length() > 2)
+                            size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
+                        AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook("http://samlib.ru" + update[0] + ".shtml"), Timestamp.valueOf(update[2]), size);
                         author.setLastUpdate(Timestamp.valueOf(update[2]));
                         return e;
                     } catch (FileNotFoundException e) {

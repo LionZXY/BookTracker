@@ -40,6 +40,7 @@ public class MessageListiner implements IMessageListener {
         if (e.getVkUser().inChat(e.getMsg().getIdChat())) {
             MessageBuffer.addMessage(new Message("Данный бот работает только с личными сообщениями. " +
                     "Если вам по какой-либо причине требуется использовать данного бота в конференции, обратитесь к администрации.").setChat(e.getMsg().getIdChat()), (User) null);
+            MessageBuffer.flush(e.getVkUser());
             HashMap<String, String> req = new HashMap<>();
             req.put("chat_id", String.valueOf(e.getMsg().getIdChat()));
             req.put("user_id", String.valueOf(e.getVkUser().getVkID()));

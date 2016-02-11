@@ -39,5 +39,9 @@ public class BookUpdateSubscribe {
     public AuthorUpdateEvent getAuthorEvent(Author author, IBook book, Date updateDate) {
         return new AuthorUpdateEvent(this, author, book, updateDate);
     }
+
+    public AuthorUpdateEvent getAuthorEvent(Author author, IBook book, Date updateDate, int size) {
+        return new AuthorUpdateEvent(this, author, book, updateDate, size);
+    }
 }
 

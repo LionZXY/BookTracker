@@ -12,10 +12,11 @@ import java.util.EventObject;
  * Created by LionZXY on 29.01.2016.
  * BookTracker
  */
-public class AuthorUpdateEvent extends EventObject{
+public class AuthorUpdateEvent extends EventObject {
     IBook book;
     Author author;
     Date updateTime;
+    int size = 0;
 
     /**
      * Constructs a prototypical Event.
@@ -30,20 +31,29 @@ public class AuthorUpdateEvent extends EventObject{
         this.updateTime = date;
     }
 
-    @Override
-    public String toString() {
-        return "Автор " + author.getName() + " обновился!\n Его книга \"" + book.getNameBook() + "\" обновилась от " + MySql.dateToString(updateTime);
+
+    public AuthorUpdateEvent(Object source, Author author, IBook book, Date date, int size) {
+        super(source);
+        this.author = author;
+        this.book = book;
+        this.updateTime = date;
+        this.size = size;
     }
 
-    public IBook getBook(){
+    @Override
+    public String toString() {
+        return "Автор " + author.getName() + " обновился!\n Его книга \"" + book.getNameBook() + "\" обновилась (+" + size + ") от " + MySql.dateToString(updateTime) + "\n\n" + author.getUrl();
+    }
+
+    public IBook getBook() {
         return book;
     }
 
-    public Author getAuthor(){
+    public Author getAuthor() {
         return author;
     }
 
-    public Date getUpdateTime(){
+    public Date getUpdateTime() {
         return updateTime;
     }
 }
