@@ -22,7 +22,7 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.51F;
+    public static float VERSION = 1.52F;
     public static boolean stop = false;
 
     static {
@@ -40,8 +40,8 @@ public class BookTracker {
         Logger.getLogger().print("Бот версии " + VERSION + " запущен! Текущее время " + new Date());
         Logger.getLogger().print("Время " + MySql.dateToString(new Date()));
         Logger.getLogger().print("Время в мс " + new Date().getTime());
+        sync();
         try {
-            sync();
             while (!stop) {
                 Updater.checkAllBooks();
                 Updater.checkAllAuthor();

@@ -1,10 +1,13 @@
 package com.lionzxy.vkapi.util;
 
+import com.lionzxy.core.crash.CrashFileHelper;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by LionZXY on 01.01.2016.
@@ -17,7 +20,7 @@ public class Logger {
 
     public Logger(String name) {
         this.name = name;
-        File logFile = new File(System.getProperty("user.dir") + "/log/", name + ".log");
+        File logFile = new File(System.getProperty("user.dir") + "/log/", name + CrashFileHelper.dateToString(new Date()) + ".log");
         try {
             byte[] buf = null;
             int av = 0;

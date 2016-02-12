@@ -67,7 +67,7 @@ public class URLHelper {
             return Error.withoutProc;
         if (!isAuthor(link))
             return new Message("Неверная ссылка! Требуется указать ссылку на СТРАНИЧКУ автора. Пример правильной ссылки:\n" +
-                    "http://samlib.ru/editors/l/litrpg_w_g/\n" +
+                    "http://samlib.ru/l/litrpg_w_g/\n" +
                     "На данный момент поддерживается только книги с Самиздата и книги с Лит-Эры.").addMedia("photo286477373_399671795");
         return null;
     }

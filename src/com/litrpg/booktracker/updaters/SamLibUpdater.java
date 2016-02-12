@@ -5,6 +5,7 @@ import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.helper.URLHelper;
+import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.MainParser;
 import com.litrpg.booktracker.updaters.event.AuthorUpdateEvent;
 import com.litrpg.booktracker.updaters.event.BookUpdateEvent;
@@ -53,6 +54,7 @@ public class SamLibUpdater {
                 int size = 0;
                 if (update[11].length() > 2)
                     size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
+                Logger.getLogger().print("Обнаруженно обновление книги. Последнее проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + update[2]);
                 BookUpdateEvent e = Updater.subscribe.getBookEvent(book, size, Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
                 book.setLastUpdate(Timestamp.valueOf(update[2]));
@@ -69,6 +71,7 @@ public class SamLibUpdater {
             if (update[0].startsWith(updUrl))
                 if (Timestamp.valueOf(update[2]).getTime() > author.getLastCheck().getTime()) {
                     try {
+                        Logger.getLogger().print("Обнаруженно обновление книги. Последнее проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + update[2]);
                         int size = 0;
                         if (update[11].length() > 2)
                             size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
