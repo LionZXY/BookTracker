@@ -22,7 +22,7 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.52F;
+    public static float VERSION = 1.53F;
     public static boolean stop = false;
 
     static {

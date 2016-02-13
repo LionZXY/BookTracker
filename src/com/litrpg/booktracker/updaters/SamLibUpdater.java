@@ -54,9 +54,10 @@ public class SamLibUpdater {
                 int size = 0;
                 if (update[11].length() > 2)
                     size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
-                Logger.getLogger().print("Обнаруженно обновление книги. Последнее проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + update[2]);
+                Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + ". Последняя проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + update[2]);
                 BookUpdateEvent e = Updater.subscribe.getBookEvent(book, size, Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
+                book.setLastCheck(new Date());
                 book.setLastUpdate(Timestamp.valueOf(update[2]));
                 return e;
             }
@@ -71,12 +72,13 @@ public class SamLibUpdater {
             if (update[0].startsWith(updUrl))
                 if (Timestamp.valueOf(update[2]).getTime() > author.getLastCheck().getTime()) {
                     try {
-                        Logger.getLogger().print("Обнаруженно обновление книги. Последнее проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + update[2]);
+                        Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + ". Последняя проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + update[2]);
                         int size = 0;
                         if (update[11].length() > 2)
                             size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
                         AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook("http://samlib.ru" + update[0] + ".shtml"), Timestamp.valueOf(update[2]), size);
                         author.setLastUpdate(Timestamp.valueOf(update[2]));
+                        author.setLastCheck(new Date());
                         return e;
                     } catch (FileNotFoundException e) {
                         Logger.getLogger().print("Книга " + update[0] + " по видимому, была удалена.");

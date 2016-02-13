@@ -40,8 +40,9 @@ public class LitEraUpdater {
             if (bookJson instanceof JSONObject && ((String) ((JSONObject) bookJson).get("url")).startsWith(book.getUrl())) {
                 if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() > book.getLastCheck().getTime())
                     if (Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize() > Updater.minSizeUp) {
-                        Logger.getLogger().print("Обнаруженно обновление книги. Последнее проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + ((JSONObject) bookJson).get("updated_at"));
+                        Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + ". Последняя проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + ((JSONObject) bookJson).get("updated_at"));
                         BookUpdateEvent bookUpdateEvent = Updater.subscribe.getBookEvent(book, Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize(), stringToDate((String) ((JSONObject) bookJson).get("updated_at")));
+                        book.setLastCheck(new Date());
                         return bookUpdateEvent;
                     }
             }
@@ -56,8 +57,9 @@ public class LitEraUpdater {
                     && ((String) ((JSONObject) updateJson).get("author")).startsWith(author.getName())
                     && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() > author.getLastCheck().getTime()) {
                 try {
-                    Logger.getLogger().print("Обнаруженно обновление книги. Последнее проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + ((JSONObject) updateJson).get("updated_at"));
+                    Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + ". Последняя проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + ((JSONObject) updateJson).get("updated_at"));
                     IBook book = MainParser.getBook((String) ((JSONObject) updateJson).get("url"));
+                    author.setLastCheck(new Date());
                     if (book.getAuthors().contains(author))
                         return Updater.subscribe.getAuthorEvent(author, book, stringToDate((String) ((JSONObject) updateJson).get("updated_at")));
                 } catch (FileNotFoundException ex) {
