@@ -63,7 +63,7 @@ public class SamLibParser extends MainParser {
 
     public List<Author> getAuthors() {
         int first = html.indexOf("<li>&copy; Copyright <a href=") + 29;
-        String url = "http://samlib.ru/" + html.substring(first, html.indexOf(">", first));
+        String url = "http://samlib.ru" + html.substring(first, html.indexOf(">", first));
         Author author = MainParser.findAuthor(url);
         if (author == null) {
             author = new Author(html.substring(first - 16 + url.length(), html.indexOf("</a>", first)), url);

@@ -1,6 +1,7 @@
 package com.litrpg.booktracker.helper;
 
 import com.lionzxy.vkapi.messages.Message;
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.message.messages.Error;
 
 import java.io.*;
@@ -15,7 +16,7 @@ import java.net.URL;
 public class URLHelper {
 
     public static String getSiteAsString(String url, String encode) throws FileNotFoundException {
-        System.out.println("Получение файла " + url);
+        Logger.getLogger().debug("Получение файла " + url);
         StringBuilder stringBuilder = new StringBuilder();
 
         if (!url.startsWith("http://") && !url.startsWith("https://"))

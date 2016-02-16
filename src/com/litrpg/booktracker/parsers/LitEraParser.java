@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.parsers;
 
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.authors.Author;
 import com.litrpg.booktracker.books.Book;
 import com.litrpg.booktracker.books.IBook;
@@ -51,6 +52,7 @@ public class LitEraParser extends MainParser {
             book = new Book(TypeSite.LITERA, getName(), getAnnotation(), url, getAuthors(), getDateEdit(), getGenres(), getBookSize());
             book.setLastCheck(new Date());
             MainParser.addBook(book);
+            Logger.getLogger().debug("Создание книги " + book.getAuthors().get(0) + ':' + book.getNameBook() + " .Ссылка " + url);
         }
         return book;
     }
@@ -83,14 +85,16 @@ public class LitEraParser extends MainParser {
 
     public List<Author> getAuthors() {
         //TODO Multiple choise
-        int first = html.indexOf(" class=\"author\">");
+        int first = html.indexOf("\" class=\"author\">");
         String url = "https://lit-era.com" + html.substring(html.substring(0, first).lastIndexOf("\"") + 1, first);
         Author author = MainParser.findAuthor(url);
+        System.out.println(author);
         if (author == null) {
             author = new Author(html.substring(first + " class=\"author\">".length() + 1, html.indexOf("</a>", first)), url);
             author.setLastUpdate(new Date());
             author.setLastCheck(new Date());
             author.setTypeSite(TypeSite.LITERA);
+            System.out.println(author.getName());
             MainParser.addAuthor(author);
         }
         List<Author> authors = new ArrayList<>();
@@ -105,7 +109,6 @@ public class LitEraParser extends MainParser {
     public String findWord(String startWith, String endWith) {
         return findWord(html, startWith, endWith);
     }
-
 
 
     public static String removeLastSpace(String str) {

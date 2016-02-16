@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.authors;
 
+import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.TypeSite;
@@ -14,13 +15,13 @@ import java.util.List;
  * Created by LionZXY on 02.01.2016.
  * BookTracker
  */
-public class Author implements IUpdateObject{
-    private String name, url = "";
+public class Author implements IUpdateObject {
+    public String name, url = "";
     private TypeSite typeSite;
     public String photoUrl = null;
     Date lastCheck = null;
     Date lastUpdate = null;
-    List<IBook> books = new ArrayList<>();
+    public List<IBook> books = new ArrayList<>();
     int inDB = -1;
 
     public Author(String name, String url) {
@@ -67,6 +68,7 @@ public class Author implements IUpdateObject{
     public int getInDB() {
         if (inDB == -1) {
             inDB = BookTracker.DB.getIdAuthor(this);
+            Logger.getLogger().debug("Ошибка запроса индитификатора в БД. Новый индитификатор " + inDB);
         }
         return inDB;
     }
@@ -93,7 +95,7 @@ public class Author implements IUpdateObject{
 
     @Override
     public Date getLastCheck() {
-        if(lastCheck == null)
+        if (lastCheck == null)
             return new Date();
         return lastCheck;
     }
@@ -105,7 +107,7 @@ public class Author implements IUpdateObject{
 
     @Override
     public Date getLastUpdate() {
-        if(lastUpdate == null)
+        if (lastUpdate == null)
             return getLastCheck();
         return lastUpdate;
     }

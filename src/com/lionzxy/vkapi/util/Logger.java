@@ -20,7 +20,7 @@ public class Logger {
 
     public Logger(String name) {
         this.name = name;
-        File logFile = new File(System.getProperty("user.dir") + "/log/", name + CrashFileHelper.dateToString(new Date()) +  ".log");
+        File logFile = new File(System.getProperty("user.dir") + "/log/", name + CrashFileHelper.dateToString(new Date()) + ".log");
         try {
             byte[] buf = null;
             int av = 0;
@@ -52,6 +52,10 @@ public class Logger {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    public void debug(String l) {
+        print("[DEBUG] "+l);
     }
 
     public static Logger getLogger() {

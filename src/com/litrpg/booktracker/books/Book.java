@@ -135,6 +135,12 @@ public class Book implements IBook, IUpdateObject {
     }
 
     @Override
+    public IBook setAuthors(List<Author> authors) {
+        this.authors = authors;
+        return this;
+    }
+
+    @Override
     public IBook setSize(int size) {
         this.bookSize = size;
         return this;

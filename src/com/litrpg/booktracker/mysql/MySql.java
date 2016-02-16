@@ -54,6 +54,7 @@ public class MySql implements IBookUpdateListiner {
     }
 
     public void addBookInTable(IBook book) {
+        Logger.getLogger().debug("Идет добавление в БД книги " + book.getAuthors().get(0).getInDB() + ':' + book.getNameBook() + " .Ссылка " + book.getUrl());
         LinkedHashMap<String, String> column = new LinkedHashMap<>();
         column.put("name", book.getNameBook());
         column.put("authors", ListHelper.getAsStringAuthor(book.getAuthors()));
@@ -241,13 +242,13 @@ public class MySql implements IBookUpdateListiner {
 
     public void updateAuthorBook(Author author) {
         try {
-            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\", lastCheck = \"" + dateToString(author.getLastCheck()) + "\", lastUpdate = \"" + dateToString(author.getLastUpdate()) + "\" WHERE id = " + author.getInDB() + ";");
+            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\", url = \"" + author.getUrl() + "\",lastCheck = \"" + dateToString(author.getLastCheck()) + "\", lastUpdate = \"" + dateToString(author.getLastUpdate()) + "\" WHERE id = " + author.getInDB() + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void checkNowBook(){
+    public void checkNowBook() {
         try {
             statement.execute("UPDATE books SET lastChecked = \"" + dateToString(new Date()) + "\";");
         } catch (SQLException e) {
@@ -256,7 +257,7 @@ public class MySql implements IBookUpdateListiner {
     }
 
 
-    public void checkNowAuthor(){
+    public void checkNowAuthor() {
         try {
             statement.execute("UPDATE authors SET lastCheck = \"" + dateToString(new Date()) + "\";");
         } catch (SQLException e) {
@@ -266,7 +267,7 @@ public class MySql implements IBookUpdateListiner {
 
     public void updateBook(Book book) {
         try {
-            statement.execute("UPDATE books SET lastCheck = \"" + dateToString(book.getLastCheck()) + "\", lastUpdate = \"" + dateToString(book.getLastUpdate()) + "\" WHERE id = " + book.getIdInDB() + ";");
+            statement.execute("UPDATE books SET lastChecked = \"" + dateToString(book.getLastCheck()) + "\", authors = \"" + ListHelper.getAsStringAuthor(book.getAuthors()) + "\",lastUpdate = \"" + dateToString(book.getLastUpdate()) + "\" WHERE id = " + book.getIdInDB() + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }

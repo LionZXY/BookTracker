@@ -31,6 +31,7 @@ public interface IBook {
     IBook setLastCheck(Date date);
     IBook setAnnotation(String annotation);
     IBook setLastUpdate(Date lastUpdate);
+    IBook setAuthors(List<Author> authors);
     IBook setSize(int size);
 
 }

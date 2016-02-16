@@ -66,8 +66,10 @@ public abstract class MainParser {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (Author author : authors) {
-            if (author.getUrl().startsWith(url))
+            if (url.startsWith(author.getUrl())) {
+                Logger.getLogger().print("Найден автор" + author.getName() + "по запросу " + url);
                 return author;
+            }
         }
         return null;
     }
@@ -75,10 +77,10 @@ public abstract class MainParser {
     public static void addBook(IBook book) {
         if (!books.contains(book)) {
             books.add(book);
-            BookTracker.DB.addBookInTable(book);
             for (Author author : book.getAuthors()) {
                 author.addBook(book);
             }
+            BookTracker.DB.addBookInTable(book);
         }
 
     }

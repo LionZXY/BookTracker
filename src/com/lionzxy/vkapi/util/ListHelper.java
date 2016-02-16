@@ -70,4 +70,11 @@ public class ListHelper {
         }
         return toExit.toString();
     }
+
+    public static List<Object> getAsList(Object... objects) {
+        List<Object> objects1 = new ArrayList<>();
+        for (Object o : objects)
+            objects1.add(o);
+        return objects1;
+    }
 }
