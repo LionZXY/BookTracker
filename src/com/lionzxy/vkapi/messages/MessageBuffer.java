@@ -15,8 +15,14 @@ import java.util.List;
  * Created by LionZXY on 24.01.2016.
  * BookTracker
  */
-public class MessageBuffer {
+public class MessageBuffer implements Runnable {
     private static List<Message> messages = new ArrayList<>();
+    public VKUser vkUser;
+
+    public MessageBuffer(VKUser vkUser) {
+        this.vkUser = vkUser;
+        new Thread(this).start();
+    }
 
     public static void addMessage(Message msg, User user) {
         for (Message message : messages) {
@@ -40,10 +46,17 @@ public class MessageBuffer {
     }
 
     public static void flush(VKUser vkUser) {
+        new MessageBuffer(vkUser);
+    }
+
+    @Override
+    public void run() {
         if (messages.size() != 0)
             VKUser.log.print("Отправка " + messages.size() + " сообщений");
         List<Message> tmpList = new ArrayList<>();
-        for (Message message : messages)
+        //Не используется ForEach из-за гонки потоков
+        for (int i = 0; i < messages.size(); i++) {
+            Message message = messages.get(i);
             try {
                 try {
                     message.sendMessage(vkUser, message.getToUser());
@@ -57,6 +70,7 @@ public class MessageBuffer {
             } catch (Exception e) {
                 new CrashFileHelper(e, message);
             }
+        }
         VKUser.log.print("Не удалось отправить из-за флуда " + tmpList.size() + " сообщений.");
         messages = new ArrayList<>();
         for (Message m : tmpList)
