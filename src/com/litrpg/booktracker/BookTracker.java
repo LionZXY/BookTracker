@@ -4,6 +4,7 @@ import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.VKUser;
 import com.lionzxy.vkapi.auth.LoginPaswordAuth;
 import com.lionzxy.vkapi.messages.MessageBuffer;
+import com.lionzxy.vkapi.users.User;
 import com.lionzxy.vkapi.util.ListHelper;
 import com.lionzxy.vkapi.util.Logger;
 import com.lionzxy.vkapi.util.UsersFile;
@@ -17,12 +18,11 @@ import com.litrpg.booktracker.message.botanswer.UserBot;
 import com.litrpg.booktracker.mysql.MySql;
 import com.litrpg.booktracker.parsers.LitEraParser;
 import com.litrpg.booktracker.parsers.MainParser;
+import com.litrpg.booktracker.parsers.SamLibParser;
 import com.litrpg.booktracker.updaters.Updater;
+import com.litrpg.booktracker.user.IUser;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * com.litrpg.booktracker
@@ -30,7 +30,7 @@ import java.util.TimeZone;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.54F;
+    public static float VERSION = 1.55F;
     public static boolean stop = false;
 
     static {
@@ -78,4 +78,50 @@ public class BookTracker {
         MainParser.books.addAll(DB.getBooksFromTable());
         MainParser.users.addAll(DB.getUsersFromTable());
     }
+    /*HashMap<Integer, Integer> replace = new HashMap<>();
+        for (int i = 1; i < MainParser.books.size(); i++) {
+            for (int j = i - 1; j > 0; j--) {
+                if (MainParser.books.get(i).getUrl().equalsIgnoreCase(MainParser.books.get(j).getUrl())) {
+                    DB.removeRowFromTable("id=" + MainParser.books.get(i).getIdInDB(), "books");
+                    MainParser.books.remove(i);
+                    replace.put(MainParser.books.get(i).getIdInDB(), MainParser.books.get(j).getIdInDB());
+                    i--;
+                }
+            }
+        }
+        for (Author author : MainParser.authors) {
+            for (int i = 0; i < author.books.size(); i++) {
+                if (replace.get(author.books.get(i).getIdInDB()) != null) {
+                    author.addBook(MainParser.getBookById(replace.get(author.books.get(i).getIdInDB())));
+                    author.books.remove(author.books.get(i));
+                }
+            }
+            DB.updateAuthorBook(author);
+        }
+        /*
+        for (IUser usr : MainParser.users) {
+            for (IBook book : usr.getSubsBook()) {
+                if (replace.get(book.getIdInDB()) != null) {
+                    usr.getSubsBook().remove(book);
+                    usr.getSubsBook().add(MainParser.getBookById(replace.get(book.getIdInDB())));
+                }
+            }
+            DB.updateUser(usr);
+        }
+    sync();
+    for (IBook book : MainParser.books) {
+        if (book.getUrl().startsWith("http://samlib.ru/m/mir")) {
+            SamLibParser p = new SamLibParser(book.getUrl());
+            book.setAuthors(p.getAuthors());
+            DB.updateBook((Book) book);
+        }
+    }
+    for (Author author : MainParser.authors) {
+        for (int i = 0; i < author.books.size(); i++) {
+            if (!author.books.get(i).getAuthors().contains(author)) {
+                author.books.remove(author.books.get(i));
+                DB.updateAuthorBook(author);
+            }
+        }
+    }*/
 }

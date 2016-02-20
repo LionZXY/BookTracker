@@ -50,42 +50,36 @@ public class SamLibUpdater {
     public BookUpdateEvent checkUpdateBook(IBook book) {
         String updUrl = book.getUrl().substring(0, book.getUrl().lastIndexOf(".shtml")).replaceFirst("http://samlib.ru", "");
         for (String[] update : updateList) {
-            if (update[0].equalsIgnoreCase(updUrl) && Timestamp.valueOf(update[2]).getTime() > book.getLastCheck().getTime()) {
+            if ((update[0].equalsIgnoreCase(updUrl) || update[0].equalsIgnoreCase(updUrl + "/")) && Timestamp.valueOf(update[2]).getTime() - book.getLastUpdate().getTime() > 900000) {
                 int size = 0;
                 if (update[11].length() > 2)
                     size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
-                Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + ". Последняя проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + update[2]);
+                Logger.getLogger().print("[SL]Обнаруженно обновление книги " + book.getNameBook() + ". Последняя проверка " + MySql.dateToString(book.getLastCheck()) + "(" + book.getLastCheck().getTime() + ").А обновление от " + update[2] + "(" + Timestamp.valueOf(update[2]).getTime() + "). В базе данных: " + book.getLastUpdate());
                 BookUpdateEvent e = Updater.subscribe.getBookEvent(book, size, Timestamp.valueOf(update[2]));
                 book.setAnnotation(update[7]);
-                book.setLastCheck(new Date());
-                book.setLastUpdate(Timestamp.valueOf(update[2]));
                 return e;
             }
         }
-        book.setLastCheck(new Date());
         return null;
     }
 
     public AuthorUpdateEvent checkUpdateAuthor(Author author) {
         String updUrl = author.getUrl().replaceFirst("http://samlib.ru", "");
         for (String[] update : updateList) {
-            if (update[0].startsWith(updUrl))
-                if (Timestamp.valueOf(update[2]).getTime() > author.getLastCheck().getTime()) {
+            if (update[0].equalsIgnoreCase(updUrl) || update[0].equalsIgnoreCase(updUrl + "/"))
+                if (Timestamp.valueOf(update[2]).getTime() - author.getLastUpdate().getTime() > 900000) {
                     try {
-                        Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + ". Последняя проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + update[2]);
+                        Logger.getLogger().print("[SL]Обнаруженно обновление автора " + author.getName() + ". Последняя проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + update[2] + ".В базе данных: " + author.getLastUpdate());
                         int size = 0;
                         if (update[11].length() > 2)
                             size = Integer.parseInt(update[11].substring(0, update[11].length() - 2)) * 1000;
                         AuthorUpdateEvent e = Updater.subscribe.getAuthorEvent(author, MainParser.getBook("http://samlib.ru" + update[0] + ".shtml"), Timestamp.valueOf(update[2]), size);
-                        author.setLastUpdate(Timestamp.valueOf(update[2]));
-                        author.setLastCheck(new Date());
                         return e;
                     } catch (FileNotFoundException e) {
                         Logger.getLogger().print("Книга " + update[0] + " по видимому, была удалена.");
                     }
                 }
         }
-        author.setLastCheck(new Date());
         return null;
     }
 
@@ -109,5 +103,13 @@ public class SamLibUpdater {
             day = "0" + d;
         else day = String.valueOf(d);
         return "http://samlib.ru/logs/" + calendarDate.getYear() + "/" + mouth + "-" + day + ".log";
+    }
+
+    public Date getLastUpdate(String updUrl) {
+        for (int i = updateList.length; i > 0; i--) {
+            if (updateList[i][0].equalsIgnoreCase(updUrl) || updateList[i][0].equalsIgnoreCase(updUrl + "/"))
+                return Timestamp.valueOf(updateList[i][2]);
+        }
+        return null;
     }
 }

@@ -56,7 +56,7 @@ public abstract class MainParser {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (IBook book : books) {
-            if (book.getUrl().startsWith(url))
+            if (book.getUrl().equalsIgnoreCase(url) || book.getUrl().equalsIgnoreCase(url + "/"))
                 return book;
         }
         return null;
@@ -66,7 +66,7 @@ public abstract class MainParser {
         if (!url.startsWith("http://") && !url.startsWith("https://"))
             url = "http://" + url;
         for (Author author : authors) {
-            if (url.startsWith(author.getUrl())) {
+            if (url.equalsIgnoreCase(author.getUrl()) || (url + "/").equalsIgnoreCase(author.getUrl())) {
                 Logger.getLogger().print("Найден автор" + author.getName() + "по запросу " + url);
                 return author;
             }

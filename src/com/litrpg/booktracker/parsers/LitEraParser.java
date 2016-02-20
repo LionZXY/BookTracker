@@ -7,6 +7,7 @@ import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.helper.URLHelper;
+import com.litrpg.booktracker.updaters.Updater;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
@@ -62,11 +63,7 @@ public class LitEraParser extends MainParser {
     }
 
     public Date getDateEdit() {
-        try {
-            return new SimpleDateFormat("dd.MM.yyyy").parse(findWord("<p class=\"last-edit\">Отредактировано: ", "</p>"));
-        } catch (ParseException e) {
-            return null;
-        }
+        return Updater.litera.getLastUpdate(url);
     }
 
     public List<Genres> getGenres() {

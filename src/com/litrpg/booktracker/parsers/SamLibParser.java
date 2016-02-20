@@ -6,6 +6,7 @@ import com.litrpg.booktracker.books.IBook;
 import com.litrpg.booktracker.enums.Genres;
 import com.litrpg.booktracker.enums.TypeSite;
 import com.litrpg.booktracker.helper.URLHelper;
+import com.litrpg.booktracker.updaters.Updater;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
@@ -23,7 +24,7 @@ public class SamLibParser extends MainParser {
     public String html;
     public String url;
 
-    public SamLibParser(String url) throws FileNotFoundException{
+    public SamLibParser(String url) throws FileNotFoundException {
         this.url = url.replaceAll("editors/", "");
         if (TypeSite.getTypeFromUrl(url) == TypeSite.SAMLIB) {
             html = URLHelper.getSiteAsString(url, "Windows-1251");
@@ -66,7 +67,7 @@ public class SamLibParser extends MainParser {
         String url = "http://samlib.ru" + html.substring(first, html.indexOf(">", first));
         Author author = MainParser.findAuthor(url);
         if (author == null) {
-            author = new Author(html.substring(first - 16 + url.length(), html.indexOf("</a>", first)), url);
+            author = new Author(html.substring(first - 15 + url.length(), html.indexOf("</a>", first)), url);
             author.setLastUpdate(new Date());
             author.setLastCheck(new Date());
             author.setTypeSite(TypeSite.SAMLIB);
@@ -96,7 +97,8 @@ public class SamLibParser extends MainParser {
     public Date getDateEdit() {
         String dataBlock = findWord(html, "<li>Размещен: ", " <a href=");
         try {
-            return new SimpleDateFormat("dd/MM/yyyy").parse(findWord(dataBlock, ", изменен: ", ". "));
+            Date tmp = new SimpleDateFormat("dd/MM/yyyy").parse(findWord(dataBlock, ", изменен: ", ". "));
+            return Updater.getSamlib(tmp).getLastUpdate(url);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;

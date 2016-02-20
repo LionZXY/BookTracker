@@ -71,7 +71,9 @@ public class Updater implements IBookUpdateListiner {
                 if (event == null)
                     event = getSamlib(new Date()).checkUpdateBook(book);
         }
+        book.setLastCheck(new Date());
         if (event != null) {
+            book.setLastUpdate(event.updateTime);
             Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + " от " + event.updateTime);
             subscribe.sendUpdateEvent(event);
         }
@@ -92,7 +94,9 @@ public class Updater implements IBookUpdateListiner {
                 if (event == null)
                     event = getSamlib(new Date()).checkUpdateAuthor(author);
         }
+        author.setLastCheck(new Date());
         if (event != null) {
+            author.setLastUpdate(event.getUpdateTime());
             Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + " от " + event.getUpdateTime());
             subscribe.sendUpdateEvent(event);
         }

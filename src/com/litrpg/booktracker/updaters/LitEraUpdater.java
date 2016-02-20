@@ -14,6 +14,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.FileNotFoundException;
 import java.io.StringReader;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,17 +38,15 @@ public class LitEraUpdater {
 
     public BookUpdateEvent checkUpdateBook(IBook book) {
         for (Object bookJson : jsonArray) {
-            if (bookJson instanceof JSONObject && ((String) ((JSONObject) bookJson).get("url")).startsWith(book.getUrl())) {
-                if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() > book.getLastCheck().getTime())
+            if (bookJson instanceof JSONObject && ((String) ((JSONObject) bookJson).get("url")).equalsIgnoreCase(book.getUrl())) {
+                if (stringToDate((String) ((JSONObject) bookJson).get("updated_at")).getTime() - book.getLastUpdate().getTime() > 900000)
                     if (Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize() > Updater.minSizeUp) {
-                        Logger.getLogger().print("Обнаруженно обновление книги " + book.getNameBook() + ". Последняя проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + ((JSONObject) bookJson).get("updated_at"));
+                        Logger.getLogger().print("[LE]Обнаруженно обновление книги " + book.getNameBook() + ". Последняя проверка " + MySql.dateToString(book.getLastCheck()) + ".А обновление от " + ((JSONObject) bookJson).get("updated_at") + ".В базе данных: " + book.getLastUpdate());
                         BookUpdateEvent bookUpdateEvent = Updater.subscribe.getBookEvent(book, Math.toIntExact((Long) ((JSONObject) bookJson).get("chr_length")) - book.getSize(), stringToDate((String) ((JSONObject) bookJson).get("updated_at")));
-                        book.setLastCheck(new Date());
                         return bookUpdateEvent;
                     }
             }
         }
-        book.setLastCheck(new Date());
         return null;
     }
 
@@ -55,11 +54,10 @@ public class LitEraUpdater {
         for (Object updateJson : jsonArray) {
             if (updateJson instanceof JSONObject
                     && ((String) ((JSONObject) updateJson).get("author")).startsWith(author.getName())
-                    && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() > author.getLastCheck().getTime()) {
+                    && stringToDate((String) ((JSONObject) updateJson).get("updated_at")).getTime() - author.getLastUpdate().getTime() > 900000) {
                 try {
-                    Logger.getLogger().print("Обнаруженно обновление автора " + author.getName() + ". Последняя проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + ((JSONObject) updateJson).get("updated_at"));
+                    Logger.getLogger().print("[LE]Обнаруженно обновление автора " + author.getName() + ". Последняя проверка " + MySql.dateToString(author.getLastCheck()) + ".А обновление от " + ((JSONObject) updateJson).get("updated_at") + ".В базе данных: " + author.getLastUpdate());
                     IBook book = MainParser.getBook((String) ((JSONObject) updateJson).get("url"));
-                    author.setLastCheck(new Date());
                     if (book.getAuthors().contains(author))
                         return Updater.subscribe.getAuthorEvent(author, book, stringToDate((String) ((JSONObject) updateJson).get("updated_at")));
                 } catch (FileNotFoundException ex) {
@@ -67,18 +65,19 @@ public class LitEraUpdater {
                 }
             }
         }
-        author.setLastCheck(new Date());
         return null;
     }
 
     public static Date stringToDate(String date) {
         //YYYY-MM-DD HH:MM:SS
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date date1 = simpleDateFormat.parse(date);
-            return new Date(date1.getTime() + 3600000);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        return Timestamp.valueOf(date);
+    }
+
+    public Date getLastUpdate(String url){
+        for(Object bJ : jsonArray){
+            if (bJ instanceof JSONObject && ((String) ((JSONObject) bJ).get("url")).equalsIgnoreCase(url)) {
+                return stringToDate((String) ((JSONObject) bJ).get("updated_at"));
+            }
         }
         return null;
     }

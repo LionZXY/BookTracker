@@ -52,6 +52,7 @@ public class URLHelper {
     public static Message isValidLinkForBook(String link) {
         if (link == null)
             return new Message("Эта команда требует ссылки!").addMedia("photo286477373_399671795");
+        link = link.replaceAll("/reader/", "/book/");
         if (link.startsWith("%"))
             return Error.withoutProc;
         if (!isBook(link))
@@ -64,6 +65,7 @@ public class URLHelper {
     public static Message isValidLinkForAuthor(String link) {
         if (link == null)
             return new Message("Эта команда требует ссылки!").addMedia("photo286477373_399671795");
+        link = link.replaceAll("/reader/", "/book/");
         if (link.startsWith("%"))
             return Error.withoutProc;
         if (!isAuthor(link))

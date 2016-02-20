@@ -32,6 +32,7 @@ public class MySql implements IBookUpdateListiner {
 
     public Connection connection;
     public Statement statement;
+    Logger log = new Logger("[MYSQL]");
 
     //Только для локал-хост MySQL базы. Предпологается, что в этом проекте удаленная база использоваться не будет. Пока.
     //Предпологается, что БД уже созданна и её заново создавать не нужно
@@ -44,9 +45,9 @@ public class MySql implements IBookUpdateListiner {
             statement = connection.createStatement();
 
             if (!connection.isClosed())
-                Logger.getLogger().print("Соединение с БД установленно!");
+                log.print("Соединение с БД установленно!");
         } catch (SQLException e) {
-            Logger.getLogger().print("Соединение с БД не установленно!");
+            log.print("Соединение с БД не установленно!");
             e.printStackTrace();
             System.exit(-1);
         }
@@ -54,8 +55,10 @@ public class MySql implements IBookUpdateListiner {
     }
 
     public void addBookInTable(IBook book) {
-        Logger.getLogger().debug("Идет добавление в БД книги " + book.getAuthors().get(0).getInDB() + ':' + book.getNameBook() + " .Ссылка " + book.getUrl());
+        log.debug("Идет добавление в БД книги " + book.getAuthors().get(0).getInDB() + ':' + book.getNameBook() + " .Ссылка " + book.getUrl());
         LinkedHashMap<String, String> column = new LinkedHashMap<>();
+        if (!MainParser.books.contains(book))
+            MainParser.books.add(book);
         column.put("name", book.getNameBook());
         column.put("authors", ListHelper.getAsStringAuthor(book.getAuthors()));
         column.put("annotation", book.getAnnotation());
@@ -67,11 +70,14 @@ public class MySql implements IBookUpdateListiner {
         column.put("photo", book.getPhotoUrl());
         addInTable("books", column);
         getIdBook(book);
-        Logger.getLogger().print("Добавленна книга \"" + book.getNameBook() + "\"");
+        log.print("Добавленна книга \"" + book.getNameBook() + "\"");
     }
 
     public void addAuthorInTable(Author author) {
+        log.debug("Идет добавление в БД автора " + author.getName());
         LinkedHashMap<String, String> column = new LinkedHashMap<>();
+        if (!MainParser.authors.contains(author))
+            MainParser.authors.add(author);
         column.put("name", author.getName());
         column.put("url", author.getUrl());
         column.put("books", author.getBooks());
@@ -204,9 +210,9 @@ public class MySql implements IBookUpdateListiner {
                 stmt.setString(i, request.get(names.get(i - 1)));
             stmt.executeUpdate();
             stmt.close();
-            Logger.getLogger().print("MySQL add to table " + table + " successful");
+            log.print("MySQL add to table " + table + " successful");
         } catch (SQLException e) {
-            Logger.getLogger().print(e.getMessage() + ".Error while try add in table " + table);
+            log.print(e.getMessage() + ".Error while try add in table " + table);
             e.printStackTrace();
         }
     }
@@ -242,7 +248,7 @@ public class MySql implements IBookUpdateListiner {
 
     public void updateAuthorBook(Author author) {
         try {
-            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\", url = \"" + author.getUrl() + "\",lastCheck = \"" + dateToString(author.getLastCheck()) + "\", lastUpdate = \"" + dateToString(author.getLastUpdate()) + "\" WHERE id = " + author.getInDB() + ";");
+            statement.execute("UPDATE authors SET books = \"" + author.getBooks() + "\",lastCheck = \"" + dateToString(author.getLastCheck()) + "\", lastUpdate = \"" + new Timestamp(author.getLastUpdate().getTime()) + "\" WHERE id = " + author.getInDB() + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -282,7 +288,8 @@ public class MySql implements IBookUpdateListiner {
     }
 
     public static String dateToString(java.util.Date date) {
-        return new Timestamp(date.getTime()).toString();
+        String te = new Timestamp(date.getTime()).toString();
+        return te.substring(0, te.lastIndexOf("."));
         //YYYY-MM-DD HH:MM:SS
         /*if (date == null)
             return dateToString(new Date());
@@ -301,13 +308,13 @@ public class MySql implements IBookUpdateListiner {
         try {
             stmt = connection.prepareStatement(sb.toString());
             stmt.setString(1, e.book.getAnnotation());
-            stmt.setString(2, dateToString(e.updateTime));
+            stmt.setString(2, new Timestamp(e.updateTime.getTime()).toString());
             stmt.setString(3, e.book.getSize() + "");
             stmt.executeUpdate();
             stmt.close();
-            Logger.getLogger().print("Информация о книге \"" + e.book.getNameBook() + "\" обновленна");
+            log.print("Информация о книге \"" + e.book.getNameBook() + "\" обновленна");
         } catch (SQLException ex) {
-            Logger.getLogger().print("Ошибка при обновлении книги в базе данных");
+            log.print("Ошибка при обновлении книги в базе данных");
             ex.printStackTrace();
         }
     }

@@ -20,7 +20,8 @@ public class Logger {
 
     public Logger(String name) {
         this.name = name;
-        File logFile = new File(System.getProperty("user.dir") + "/log/", name + CrashFileHelper.dateToString(new Date()) + ".log");
+        String tmp = CrashFileHelper.dateToString(new Date());
+        File logFile = new File(System.getProperty("user.dir") + "/log/", name + tmp.substring(0, tmp.lastIndexOf("_")) + ".log");
         try {
             byte[] buf = null;
             int av = 0;
@@ -36,6 +37,10 @@ public class Logger {
             this.log = new FileOutputStream(logFile);
             if (buf != null)
                 this.log.write(buf, 0, av);
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < 100; i++)
+                sb.append('=');
+            print(sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Ошибка инициализации системы логирования");
@@ -55,7 +60,7 @@ public class Logger {
     }
 
     public void debug(String l) {
-        print("[DEBUG] "+l);
+        print("[DEBUG] " + l);
     }
 
     public static Logger getLogger() {
