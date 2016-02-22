@@ -98,7 +98,9 @@ public class SamLibParser extends MainParser {
         String dataBlock = findWord(html, "<li>Размещен: ", " <a href=");
         try {
             Date tmp = new SimpleDateFormat("dd/MM/yyyy").parse(findWord(dataBlock, ", изменен: ", ". "));
-            return Updater.getSamlib(tmp).getLastUpdate(url);
+            if (tmp.getTime() > (long) 14356116 * 100000)
+                return Updater.getSamlib(tmp).getLastUpdate(url);
+            else return tmp;
         } catch (ParseException e) {
             e.printStackTrace();
             return null;

@@ -22,6 +22,7 @@ import com.litrpg.booktracker.parsers.SamLibParser;
 import com.litrpg.booktracker.updaters.Updater;
 import com.litrpg.booktracker.user.IUser;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -30,7 +31,7 @@ import java.util.*;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.55F;
+    public static float VERSION = 1.56F;
     public static boolean stop = false;
 
     static {
@@ -45,10 +46,12 @@ public class BookTracker {
 
     public static void main(String... args) throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"));
+        System.out.print(Timestamp.valueOf("2015-06-30 00:00:00").getTime());
         Logger.getLogger().print("Бот версии " + VERSION + " запущен! Текущее время " + new Date());
         Logger.getLogger().print("Время " + MySql.dateToString(new Date()));
         Logger.getLogger().print("Время в мс " + new Date().getTime());
         sync();
+
         try {
             while (!stop) {
                 Updater.checkAllBooks();

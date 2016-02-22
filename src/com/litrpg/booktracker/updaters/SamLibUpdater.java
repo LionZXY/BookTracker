@@ -28,18 +28,14 @@ public class SamLibUpdater {
     Date date;
     //12
 
-    public SamLibUpdater(Date date) {
+    public SamLibUpdater(Date date) throws FileNotFoundException {
         this.date = date;
         update();
     }
 
-    public void update() {
+    public void update() throws FileNotFoundException {
         String[] tmp = new String[0];
-        try {
-            tmp = URLHelper.getSiteAsString(getLink(date), "Windows-1251").split("\n");
-        } catch (FileNotFoundException e) {
-            this.update();
-        }
+        tmp = URLHelper.getSiteAsString(getLink(date), "Windows-1251").split("\n");
 
         updateList = new String[tmp.length][12];
         for (int i = 0; i < tmp.length; i++) {

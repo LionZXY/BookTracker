@@ -1,5 +1,6 @@
 package com.litrpg.booktracker.updaters;
 
+import com.lionzxy.core.crash.CrashFileHelper;
 import com.lionzxy.vkapi.util.Logger;
 import com.litrpg.booktracker.BookTracker;
 import com.litrpg.booktracker.authors.Author;
@@ -34,12 +35,20 @@ public class Updater implements IBookUpdateListiner {
         subscribe.subscribe(new Users());
         long t = System.currentTimeMillis();
         Date tmp = new Date(t - t % 86400000);
-        samlib.put(tmp, new SamLibUpdater(tmp));
+        try {
+            samlib.put(tmp, new SamLibUpdater(tmp));
+        } catch (Exception e) {
+            new CrashFileHelper(e);
+        }
     }
 
     public static void checkAllBooks() {
         litera = new LitEraUpdater();
-        getSamlib(new Date()).update();
+        try {
+            getSamlib(new Date()).update();
+        } catch (Exception e) {
+            new CrashFileHelper(e);
+        }
         Logger.getLogger().print("Проверка книг началась. На очереди " + MainParser.books.size() + " книг");
         MainParser.books.forEach(Updater::checkBook);
         BookTracker.DB.checkNowBook();
@@ -129,7 +138,11 @@ public class Updater implements IBookUpdateListiner {
         Date day = new Date(date.getTime() - date.getTime() % 86400000);
         SamLibUpdater samLibUpdater = samlib.get(day);
         if (samLibUpdater == null) {
-            samlib.put(day, new SamLibUpdater(day));
+            try {
+                samlib.put(day, new SamLibUpdater(day));
+            } catch (FileNotFoundException e) {
+                return getSamlib(new Date());
+            }
             return getSamlib(day);
         }
         return samLibUpdater;
