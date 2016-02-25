@@ -18,6 +18,7 @@ import java.util.List;
 public class MessageBuffer implements Runnable {
     private static List<Message> messages = new ArrayList<>();
     public VKUser vkUser;
+    private static MessageBuffer buf = null;
 
     public MessageBuffer(VKUser vkUser) {
         this.vkUser = vkUser;
@@ -46,7 +47,8 @@ public class MessageBuffer implements Runnable {
     }
 
     public static void flush(VKUser vkUser) {
-        new MessageBuffer(vkUser);
+        if (buf == null)
+            buf = new MessageBuffer(vkUser);
     }
 
     @Override
@@ -75,5 +77,6 @@ public class MessageBuffer implements Runnable {
         messages = new ArrayList<>();
         for (Message m : tmpList)
             addMessage(m, (User) null);
+        buf = null;
     }
 }

@@ -31,7 +31,7 @@ import java.util.*;
  * BookTracker
  */
 public class BookTracker {
-    public static float VERSION = 1.56F;
+    public static float VERSION = 1.57F;
     public static boolean stop = false;
 
     static {

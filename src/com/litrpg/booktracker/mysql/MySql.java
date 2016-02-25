@@ -288,6 +288,8 @@ public class MySql implements IBookUpdateListiner {
     }
 
     public static String dateToString(java.util.Date date) {
+        if(date == null)
+            return null;
         String te = new Timestamp(date.getTime()).toString();
         return te.substring(0, te.lastIndexOf("."));
         //YYYY-MM-DD HH:MM:SS

@@ -139,8 +139,10 @@ public class VKUser implements IUser {
     public String getSubAsString() {
         StringBuilder sb = new StringBuilder();
         for (IBook book : books) {
-            if (sb.length() > 0) sb.append(",");
-            sb.append(book.getIdInDB());
+            if (book != null) {
+                if (sb.length() > 0) sb.append(",");
+                sb.append(book.getIdInDB());
+            }
         }
         for (Author author : authors) {
             if (sb.length() > 0) sb.append(",");

@@ -102,7 +102,7 @@ public class SamLibUpdater {
     }
 
     public Date getLastUpdate(String updUrl) {
-        for (int i = updateList.length; i > 0; i--) {
+        for (int i = updateList.length - 1; i > -1; i--) {
             if (updateList[i][0].equalsIgnoreCase(updUrl) || updateList[i][0].equalsIgnoreCase(updUrl + "/"))
                 return Timestamp.valueOf(updateList[i][2]);
         }
